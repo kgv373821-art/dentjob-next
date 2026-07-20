@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+:root {
+  --color-paper: #faf7f2;
+  --color-paper-dim: #f2eee6;
+  --color-ink: #1c2b28;
+  --color-ink-soft: #5b6c68;
+  --color-teal: #0e4a44;
+  --color-teal-deep: #0a3733;
+  --color-teal-tint: #e4efec;
+  --color-coral: #ff6247;
+  --color-coral-deep: #e44c33;
+  --color-gold: #d9a441;
+  --color-line: #d8d0c2;
+}
+
+@theme inline {
+  --color-paper: var(--color-paper);
+  --color-paper-dim: var(--color-paper-dim);
+  --color-ink: var(--color-ink);
+  --color-ink-soft: var(--color-ink-soft);
+  --color-teal: var(--color-teal);
+  --color-teal-deep: var(--color-teal-deep);
+  --color-teal-tint: var(--color-teal-tint);
+  --color-coral: var(--color-coral);
+  --color-coral-deep: var(--color-coral-deep);
+  --color-gold: var(--color-gold);
+  --color-line: var(--color-line);
+  --font-sans: "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+.ticket-dot {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-line);
+  border-radius: 9999px;
+  transform: translateY(-50%);
+}
