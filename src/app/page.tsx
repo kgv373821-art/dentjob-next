@@ -150,3 +150,13 @@ export default async function HomePage() {
         <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
           {((seekers || []) as (Seeker & { profiles: { name: string } })[]).map((s) => (
             <SeekerCard key={s.id} seeker={s} name={s.profiles?.name || "구직자"} />
+))}
+          {(!seekers || seekers.length === 0) && (
+            <p className="col-span-full py-12 text-center text-ink-soft">아직 등록된 구직자가 없습니다.</p>
+          )}
+        </div>
+      </section>
+    </div>
+  );
+}
+      
