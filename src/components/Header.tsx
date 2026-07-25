@@ -33,6 +33,9 @@ export default async function Header() {
           <Link href="/jobs?category=lab" className="text-[14.5px] font-semibold text-ink-soft hover:text-teal">
             치과기공사 전문관
           </Link>
+          <Link href="/jobs?job_type=치과위생사" className="text-[14.5px] font-semibold text-ink-soft hover:text-teal">
+            치과위생사 전문관
+          </Link>
           <Link href="/jobs/map" className="text-[14.5px] font-semibold text-ink-soft hover:text-teal">
             지도검색
           </Link>
