@@ -11,7 +11,7 @@ export const revalidate = 60;
 export default async function HomePage() {
   const supabase = await createClient();
 
-  const [{ data: popularJobs }, { data: labJobs }, { data: seekers }, { data: { user } }, favoriteIds] = await Promise.all([
+  const [{ data: popularJobs }, { data: labJobs }, { data: hygienistJobs }, { data: seekers }, { data: { user } }, favoriteIds] = await Promise.all([
     supabase
       .from("job_posts")
       .select("*, clinics(clinic_name), labs(lab_name)")
@@ -24,6 +24,15 @@ export default async function HomePage() {
       .select("*, labs(lab_name)")
       .eq("status", "approved")
       .not("lab_id", "is", null)
+      .order("is_pinned", { ascending: false })
+      .order("is_urgent", { ascending: false })
+      .order("posted_at", { ascending: false })
+      .limit(6),
+    supabase
+      .from("job_posts")
+      .select("*, clinics(clinic_name)")
+      .eq("status", "approved")
+      .eq("job_type", "치과위생사")
       .order("is_pinned", { ascending: false })
       .order("is_urgent", { ascending: false })
       .order("posted_at", { ascending: false })
@@ -105,6 +114,30 @@ export default async function HomePage() {
           {(!labJobs || labJobs.length === 0) && (
             <p className="col-span-full py-12 text-center text-[#B9BFBC]">
               기공소 채용공고가 아직 없습니다.
+            </p>
+          )}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl rounded px-6 py-9" style={{ background: "var(--color-teal)" }}>
+        <div className="mb-1.5 flex items-end justify-between border-b-2 border-white/40 pb-2.5">
+          <h2 className="text-[21px] font-extrabold tracking-tight text-white">
+            치과위생사 전문관 <span className="ml-2 text-[13px] font-bold text-teal-tint">위생사 채용 특화</span>
+          </h2>
+          <Link href="/jobs?job_type=치과위생사" className="rounded-sm border border-white px-3 py-1.5 text-[12.5px] font-bold text-white hover:bg-white/10">
+            치과위생사 공고 더보기
+          </Link>
+        </div>
+        <p className="mb-4.5 mt-1 text-[13.5px] text-teal-tint">
+          치과위생사 채용만 모아봤습니다. 스케일링·진료보조·환자 응대 경력을 살릴 수 있는 자리를 확인하세요.
+        </p>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {normalizeJobs(hygienistJobs).map((job) => (
+            <JobCard key={job.id} job={job} isLoggedIn={!!user} isFavorited={favoriteIds.includes(job.id)} isSeeker={isSeeker} />
+          ))}
+          {(!hygienistJobs || hygienistJobs.length === 0) && (
+            <p className="col-span-full py-12 text-center text-teal-tint">
+              치과위생사 채용공고가 아직 없습니다.
             </p>
           )}
         </div>
