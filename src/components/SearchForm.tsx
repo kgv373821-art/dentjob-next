@@ -21,7 +21,7 @@ export default function SearchForm({ bar = false }: { bar?: boolean }) {
     return (
       <form
         action={handleSubmit}
-        className="mx-auto flex max-w-6xl flex-col gap-2 rounded border border-line bg-white p-3 shadow-sm sm:flex-row"
+        className="mx-auto flex max-w-6xl flex-col gap-2 rounded border border-line bg-white p-3 shadow-xl sm:flex-row"
       >
         <select name="region" className="rounded-sm border border-line bg-paper-dim px-3 py-2.5 text-[13.5px] sm:w-40">
           <option value="전체">전체 지역</option>
@@ -44,7 +44,10 @@ export default function SearchForm({ bar = false }: { bar?: boolean }) {
           placeholder="공고 제목으로 검색"
           className="flex-1 rounded-sm border border-line bg-paper-dim px-3 py-2.5 text-[13.5px]"
         />
-        <button type="submit" className="rounded-sm bg-teal px-6 py-2.5 text-[14px] font-bold text-white hover:bg-teal-deep">
+        <button
+          type="submit"
+          className="rounded-sm bg-coral px-7 py-2.5 text-[14.5px] font-extrabold text-white shadow-md shadow-coral/30 transition hover:-translate-y-0.5 hover:bg-coral-deep"
+        >
           검색
         </button>
       </form>
