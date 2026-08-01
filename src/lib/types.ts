@@ -111,6 +111,7 @@ export interface JobPost {
   view_count: number;
   posted_at: string | null;
   created_at: string;
+  image_urls: string[];
   // join된 표시용 필드
   clinic_name?: string;
   lab_name?: string;

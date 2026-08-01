@@ -20,9 +20,9 @@ const SORTS = [
 export default async function JobsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ region?: string; job_type?: string; category?: string; sort?: string; lab_specialty?: string }>;
+  searchParams: Promise<{ region?: string; job_type?: string; category?: string; sort?: string; lab_specialty?: string; q?: string }>;
 }) {
-  const { region, job_type, category, sort = "new", lab_specialty } = await searchParams;
+  const { region, job_type, category, sort = "new", lab_specialty, q } = await searchParams;
   const supabase = await createClient();
 
   let query = supabase
@@ -36,6 +36,7 @@ export default async function JobsPage({
   if (category === "lab") query = query.not("lab_id", "is", null);
   if (category === "clinic") query = query.not("clinic_id", "is", null);
   if (sort === "urgent") query = query.eq("is_urgent", true);
+  if (q) query = query.ilike("title", `%${q}%`);
 
   query = query.order("is_pinned", { ascending: false });
   if (sort === "pay") query = query.order("pay_min", { ascending: false });
@@ -59,7 +60,7 @@ export default async function JobsPage({
 
   const qs = (overrides: Record<string, string | undefined>) => {
     const params = new URLSearchParams();
-    const merged = { region, job_type, category, sort, lab_specialty, ...overrides };
+    const merged = { region, job_type, category, sort, lab_specialty, q, ...overrides };
     Object.entries(merged).forEach(([k, v]) => v && params.set(k, v));
     return `/jobs?${params.toString()}`;
   };
@@ -102,6 +103,7 @@ export default async function JobsPage({
             </option>
           ))}
         </select>
+        <input name="q" defaultValue={q || ""} placeholder="공고 제목으로 검색" className="rounded-sm border border-line bg-white px-3 py-2 text-[13px]" />
         <input type="hidden" name="category" value={category || ""} />
         <input type="hidden" name="sort" value={sort} />
         <button className="rounded-sm border border-teal px-4 py-2 text-[13px] font-bold text-teal hover:bg-teal-tint">

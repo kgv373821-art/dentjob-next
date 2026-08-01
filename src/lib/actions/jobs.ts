@@ -44,6 +44,14 @@ export async function createJobPost(_prev: FormState, formData: FormData): Promi
     .filter(Boolean);
   const is_urgent = formData.get("is_urgent") === "on";
 
+  let image_urls: string[] = [];
+  try {
+    const raw = JSON.parse(String(formData.get("image_urls") || "[]"));
+    if (Array.isArray(raw)) image_urls = raw.filter((u) => typeof u === "string").slice(0, 5);
+  } catch {
+    image_urls = [];
+  }
+
   // 기공소 전용 필드 (치과기공사 채용 축)
   const lab_specialty = owner.role === "lab" ? String(formData.get("lab_specialty") || "") || null : null;
   const lab_category = owner.role === "lab" ? String(formData.get("lab_category") || "") || null : null;
@@ -65,6 +73,7 @@ export async function createJobPost(_prev: FormState, formData: FormData): Promi
     welfare,
     description,
     is_urgent,
+    image_urls,
     status: "pending",
   });
   if (error) return { error: error.message };
