@@ -5,6 +5,7 @@ import JobCard from "@/components/JobCard";
 import AiRecommend from "@/components/AiRecommend";
 import PopularClinics from "@/components/PopularClinics";
 import RecentlyViewedJobs from "@/components/RecentlyViewedJobs";
+import NoticesSidebar from "@/components/NoticesSidebar";
 import AdSlot from "@/components/AdSlot";
 import { LAB_SPECIALTIES } from "@/lib/constants";
 import { getMyFavoriteIds } from "@/lib/actions/favorites";
@@ -282,6 +283,7 @@ export default async function HomePage() {
             </Link>
           </div>
           <RecentlyViewedJobs />
+          <NoticesSidebar />
         </aside>
       </section>
 
