@@ -46,13 +46,16 @@ export default async function PopularClinics() {
   if (ranked.length === 0) return null;
 
   return (
-    <div className="rounded-[3px] border border-line bg-white p-4">
-      <h3 className="mb-2.5 border-b border-line pb-2 text-[13.5px] font-extrabold">인기 병원</h3>
+    <div className="rounded-[3px] border border-l-4 border-line border-l-gold bg-white p-4">
+      <h3 className="mb-2.5 border-b border-line pb-2 text-[13.5px] font-extrabold text-gold">🏆 인기 병원</h3>
       <ul className="space-y-2">
-        {ranked.map((c) => (
+        {ranked.map((c, i) => (
           <li key={c.id}>
             <Link href={`/clinics/${c.id}`} className="flex items-center justify-between text-[12.5px] hover:text-teal">
-              <span className="truncate font-semibold">{c.clinic_name}</span>
+              <span className="flex items-center gap-1.5 truncate font-semibold">
+                <span className="text-[10px] font-mono font-bold text-gold">{i + 1}</span>
+                {c.clinic_name}
+              </span>
               <span className="ml-2 flex-shrink-0 text-[11px] text-ink-soft">
                 {c.count > 0 ? `★ ${c.avg.toFixed(1)}` : c.region_main}
               </span>

@@ -13,7 +13,12 @@ import { BOARD_LABELS } from "@/lib/types";
 
 export const revalidate = 60;
 
-const JOB_TYPE_SHORTCUTS = ["치과기공사", "치과위생사", "치과조무사", "치과의사"];
+const JOB_TYPE_SHORTCUTS: { label: string; icon: string; accent: string; tint: string }[] = [
+  { label: "치과기공사", icon: "🦷", accent: "border-t-teal", tint: "bg-teal-tint" },
+  { label: "치과위생사", icon: "✨", accent: "border-t-gold", tint: "bg-gold/10" },
+  { label: "치과조무사", icon: "📋", accent: "border-t-coral", tint: "bg-coral/10" },
+  { label: "치과의사", icon: "⚕️", accent: "border-t-ink", tint: "bg-ink/5" },
+];
 
 function normalizeJobs(rows: unknown) {
   return ((rows as Record<string, unknown>[]) || []).map((r) => ({
@@ -161,22 +166,28 @@ export default async function HomePage() {
 
       {/* 통계바 */}
       <section className="mx-auto max-w-6xl px-6 pb-9">
-        <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 rounded border border-line bg-white py-3.5 text-[13px] font-bold text-ink-soft">
+        <div
+          className="flex flex-wrap justify-center gap-x-10 gap-y-2 rounded border border-line py-4 text-[13px] font-bold text-ink-soft"
+          style={{ background: "linear-gradient(90deg, var(--color-teal-tint), #fff, rgba(245,158,11,0.08))" }}
+        >
           <span>
-            오늘 등록 <span className="text-teal">{todayCount ?? 0}건</span>
+            🆕 오늘 등록 <span className="text-teal">{todayCount ?? 0}건</span>
           </span>
           <span>
-            긴급채용 <span className="text-coral">{urgentCount ?? 0}건</span>
+            🔥 긴급채용 <span className="text-coral">{urgentCount ?? 0}건</span>
           </span>
           <span>
-            구직자 <span className="text-teal">{seekerCount ?? 0}명</span>
+            👥 구직자 <span className="text-gold">{seekerCount ?? 0}명</span>
           </span>
         </div>
       </section>
 
       {/* 프리미엄 채용관 */}
       {premiumJobs && premiumJobs.length > 0 && (
-        <section className="mx-auto max-w-6xl px-6 pb-9">
+        <section
+          className="mx-auto max-w-6xl rounded px-6 py-8"
+          style={{ background: "linear-gradient(180deg, rgba(20,184,166,0.08), transparent)" }}
+        >
           <div className="mb-4.5 flex items-end justify-between border-b-2 border-gold pb-2.5">
             <h2 className="text-[18px] font-extrabold tracking-tight text-gold">★★★★ 프리미엄 채용</h2>
             <Link href="/jobs" className="text-[13px] font-bold text-teal hover:underline">
@@ -200,13 +211,14 @@ export default async function HomePage() {
           <h2 className="text-[18px] font-extrabold tracking-tight">직종별 바로가기</h2>
         </div>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {JOB_TYPE_SHORTCUTS.map((jt) => (
+          {JOB_TYPE_SHORTCUTS.map(({ label, icon, accent, tint }) => (
             <Link
-              key={jt}
-              href={`/jobs?job_type=${encodeURIComponent(jt)}`}
-              className="rounded-[3px] border border-line bg-white py-6 text-center font-bold transition hover:-translate-y-0.5 hover:border-teal hover:text-teal hover:shadow-lg"
+              key={label}
+              href={`/jobs?job_type=${encodeURIComponent(label)}`}
+              className={`flex flex-col items-center gap-2 rounded-[3px] border border-t-4 border-line bg-white py-6 text-center font-bold transition hover:-translate-y-0.5 hover:shadow-lg ${accent}`}
             >
-              {jt}
+              <span className={`flex h-10 w-10 items-center justify-center rounded-full text-[18px] ${tint}`}>{icon}</span>
+              {label}
             </Link>
           ))}
         </div>
@@ -271,8 +283,8 @@ export default async function HomePage() {
           <AiRecommend compact />
           <PopularClinics />
           <AdSlot position="sidebar" />
-          <div className="rounded-[3px] border border-dashed border-line bg-white p-4 text-center">
-            <p className="mb-1 text-[12px] font-bold text-ink-soft">광고</p>
+          <div className="rounded-[3px] border border-dashed border-coral/40 bg-coral/5 p-4 text-center">
+            <p className="mb-1 text-[12px] font-bold text-coral">📢 광고</p>
             <p className="mb-3 text-[12.5px]">우리 병원/기공소를 메인에 노출해보세요.</p>
             <Link href="/pricing" className="inline-block rounded-sm bg-coral px-4 py-2 text-[12px] font-bold text-white hover:bg-coral-deep">
               광고 상품 보기
@@ -286,8 +298,9 @@ export default async function HomePage() {
       <section className="mx-auto max-w-6xl px-6 py-9">
         <div className="grid gap-6 sm:grid-cols-3">
           <PreviewList
-            title="커뮤니티"
+            title="💬 커뮤니티"
             href="/community"
+            accent="border-t-teal"
             items={(communityPosts || []).map((p: BoardPost) => ({
               id: p.id,
               href: `/community/${p.board}/${p.id}`,
@@ -296,8 +309,9 @@ export default async function HomePage() {
             emptyLabel="아직 등록된 글이 없습니다."
           />
           <PreviewList
-            title="중고장비"
+            title="🛠 중고장비"
             href="/community/used_equipment"
+            accent="border-t-gold"
             items={(usedEquipment || []).map((p: BoardPost) => ({
               id: p.id,
               href: `/community/used_equipment/${p.id}`,
@@ -306,8 +320,9 @@ export default async function HomePage() {
             emptyLabel="등록된 중고장비가 없습니다."
           />
           <PreviewList
-            title="외주거래"
+            title="🔗 외주거래"
             href="/jobs?category=lab&lab_specialty=외주 의뢰"
+            accent="border-t-coral"
             items={normalizeJobs(outsourcing).map((j) => ({ id: j.id, href: `/jobs/${j.id}`, label: `${j.title} · ${j.lab_name || ""}` }))}
             emptyLabel="등록된 외주 공고가 없습니다."
           />
@@ -327,14 +342,16 @@ function PreviewList({
   href,
   items,
   emptyLabel,
+  accent,
 }: {
   title: string;
   href: string;
   items: { id: string; href: string; label: string }[];
   emptyLabel: string;
+  accent: string;
 }) {
   return (
-    <div className="rounded-[3px] border border-line bg-white p-4">
+    <div className={`rounded-[3px] border border-t-4 border-line bg-white p-4 ${accent}`}>
       <div className="mb-2.5 flex items-center justify-between border-b border-line pb-2">
         <h3 className="text-[13.5px] font-extrabold">{title}</h3>
         <Link href={href} className="text-[11.5px] font-bold text-teal hover:underline">

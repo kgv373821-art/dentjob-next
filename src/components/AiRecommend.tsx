@@ -58,8 +58,8 @@ export default async function AiRecommend({ compact = false }: { compact?: boole
 
   if (compact) {
     return (
-      <div className="rounded-[3px] border border-line bg-white p-4">
-        <h3 className="mb-2.5 border-b border-line pb-2 text-[13.5px] font-extrabold text-teal">맞춤 추천 채용</h3>
+      <div className="rounded-[3px] border border-l-4 border-line border-l-teal bg-white p-4">
+        <h3 className="mb-2.5 border-b border-line pb-2 text-[13.5px] font-extrabold text-teal">✨ 맞춤 추천 채용</h3>
         <ul className="space-y-2">
           {normalized.map((job) => (
             <li key={job.id}>

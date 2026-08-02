@@ -28,8 +28,8 @@ export default function RecentlyViewedJobs() {
   if (jobs.length === 0) return null;
 
   return (
-    <div className="rounded-[3px] border border-line bg-white p-4">
-      <h3 className="mb-2.5 border-b border-line pb-2 text-[13.5px] font-extrabold">최근 본 공고</h3>
+    <div className="rounded-[3px] border border-l-4 border-line border-l-coral bg-white p-4">
+      <h3 className="mb-2.5 border-b border-line pb-2 text-[13.5px] font-extrabold text-coral">🕘 최근 본 공고</h3>
       <ul className="space-y-2">
         {jobs.map((j) => (
           <li key={j.id}>
