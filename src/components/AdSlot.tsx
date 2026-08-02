@@ -66,6 +66,13 @@ function AdCard({ ad, compact }: { ad: Ad; compact?: boolean }) {
     );
   }
 
+  const placeholder: Record<string, { bg: string; icon: string }> = {
+    game: { bg: "linear-gradient(135deg, var(--color-ink), var(--color-teal-deep))", icon: "🎮" },
+    blog: { bg: "linear-gradient(135deg, var(--color-teal-tint), #fff)", icon: "📝" },
+    image: { bg: "linear-gradient(135deg, var(--color-teal-tint), rgba(245,158,11,0.12))", icon: "🖼" },
+  };
+  const ph = placeholder[ad.type] || placeholder.image;
+
   return (
     <a
       href={ad.link}
@@ -73,7 +80,7 @@ function AdCard({ ad, compact }: { ad: Ad; compact?: boolean }) {
       rel="noopener noreferrer sponsored"
       className="block overflow-hidden rounded-[3px] border border-line bg-white transition hover:-translate-y-0.5 hover:border-teal hover:shadow-lg"
     >
-      {ad.image && (
+      {ad.image ? (
         <Image
           src={ad.image}
           alt={ad.title}
@@ -82,6 +89,13 @@ function AdCard({ ad, compact }: { ad: Ad; compact?: boolean }) {
           loading="lazy"
           className={`w-full object-cover ${compact ? "h-24" : "h-32"}`}
         />
+      ) : (
+        <div
+          className={`flex w-full items-center justify-center text-[32px] ${compact ? "h-24" : "h-32"}`}
+          style={{ background: ph.bg }}
+        >
+          {ph.icon}
+        </div>
       )}
       <div className="p-2.5">
         <div className="mb-0.5 flex items-center gap-1.5">
