@@ -62,6 +62,9 @@ export default async function LabDashboard() {
                       </Link>
                     </td>
                     <td className="p-2.5 text-right">
+                      <Link href={`/dashboard/lab/edit/${job.id}`} className="mr-2 text-[12px] font-bold text-teal hover:underline">
+                        수정
+                      </Link>
                       {job.status !== "closed" && (
                         <form action={closeJobPost.bind(null, job.id)} className="inline">
                           <button className="mr-2 text-[12px] font-bold text-ink-soft hover:text-teal">마감</button>

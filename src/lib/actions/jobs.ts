@@ -87,20 +87,50 @@ export async function updateJobPost(id: string, _prev: FormState, formData: Form
   const owner = await getOwner(supabase);
   if (!owner) return { error: "권한이 없습니다." };
 
-  const patch: Record<string, unknown> = {};
-  for (const key of ["title", "pay_min", "pay_note", "work_hours", "description"]) {
-    const v = formData.get(key);
-    if (v !== null && v !== "") patch[key] = key === "pay_min" ? Number(v) : v;
-  }
-  if (formData.has("is_urgent")) patch.is_urgent = formData.get("is_urgent") === "on";
-  if (formData.get("welfare")) {
-    patch.welfare = String(formData.get("welfare"))
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean);
+  const job_type = String(formData.get("job_type") || "");
+  const title = String(formData.get("title") || "");
+  const region = String(formData.get("region") || "");
+  const pay_min = Number(formData.get("pay_min") || 0);
+  const work_hours = String(formData.get("work_hours") || "") || null;
+  const description = String(formData.get("description") || "") || null;
+  const welfare = String(formData.get("welfare") || "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const is_urgent = formData.get("is_urgent") === "on";
+
+  let image_urls: string[] = [];
+  try {
+    const raw = JSON.parse(String(formData.get("image_urls") || "[]"));
+    if (Array.isArray(raw)) image_urls = raw.filter((u) => typeof u === "string").slice(0, 5);
+  } catch {
+    image_urls = [];
   }
 
-  const { error } = await supabase.from("job_posts").update(patch).eq("id", id);
+  const lab_specialty = owner.role === "lab" ? String(formData.get("lab_specialty") || "") || null : null;
+  const lab_category = owner.role === "lab" ? String(formData.get("lab_category") || "") || null : null;
+  const pay_note = owner.role === "lab" ? "+ 기공 수당 별도" : null;
+
+  if (!job_type || !title || !region || !pay_min) return { error: "필수 항목을 입력해주세요." };
+
+  const { error } = await supabase
+    .from("job_posts")
+    .update({
+      job_type,
+      lab_specialty,
+      lab_category,
+      title,
+      region,
+      pay_min,
+      pay_note,
+      work_hours,
+      welfare,
+      description,
+      is_urgent,
+      image_urls,
+    })
+    .eq("id", id)
+    .eq(owner.role === "clinic" ? "clinic_id" : "lab_id", owner.id);
   if (error) return { error: error.message };
 
   revalidatePath(`/jobs/${id}`);
