@@ -20,6 +20,9 @@ export const metadata: Metadata = {
     siteName: "Job2804 덴트잡",
   },
   robots: { index: true, follow: true },
+  verification: {
+    other: { "naver-site-verification": "33233772043dc751d8dfccbe4f299e6917005098" },
+  },
 };
 
 export const viewport: Viewport = {
