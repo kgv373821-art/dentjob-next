@@ -13,12 +13,7 @@ import { BOARD_LABELS } from "@/lib/types";
 
 export const revalidate = 60;
 
-const JOB_TYPE_SHORTCUTS: { label: string; icon: string; accent: string; tint: string }[] = [
-  { label: "치과기공사", icon: "🦷", accent: "border-t-teal", tint: "bg-teal-tint" },
-  { label: "치과위생사", icon: "✨", accent: "border-t-gold", tint: "bg-gold/10" },
-  { label: "치과조무사", icon: "📋", accent: "border-t-coral", tint: "bg-coral/10" },
-  { label: "치과의사", icon: "⚕️", accent: "border-t-ink", tint: "bg-ink/5" },
-];
+const JOB_TYPE_SHORTCUTS = ["치과기공사", "치과위생사", "치과조무사", "치과의사"];
 
 function normalizeJobs(rows: unknown) {
   return ((rows as Record<string, unknown>[]) || []).map((r) => ({
@@ -166,18 +161,15 @@ export default async function HomePage() {
 
       {/* 통계바 */}
       <section className="mx-auto max-w-6xl px-6 pb-9">
-        <div
-          className="flex flex-wrap justify-center gap-x-10 gap-y-2 rounded border border-line py-4 text-[13px] font-bold text-ink-soft"
-          style={{ background: "linear-gradient(90deg, var(--color-teal-tint), #fff, rgba(245,158,11,0.08))" }}
-        >
+        <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 rounded border border-line bg-white py-3.5 text-[13px] font-bold text-ink-soft">
           <span>
-            🆕 오늘 등록 <span className="text-teal">{todayCount ?? 0}건</span>
+            오늘 등록 <span className="text-teal">{todayCount ?? 0}건</span>
           </span>
           <span>
-            🔥 긴급채용 <span className="text-coral">{urgentCount ?? 0}건</span>
+            긴급채용 <span className="text-coral">{urgentCount ?? 0}건</span>
           </span>
           <span>
-            👥 구직자 <span className="text-gold">{seekerCount ?? 0}명</span>
+            구직자 <span className="text-teal">{seekerCount ?? 0}명</span>
           </span>
         </div>
       </section>
@@ -211,14 +203,13 @@ export default async function HomePage() {
           <h2 className="text-[18px] font-extrabold tracking-tight">직종별 바로가기</h2>
         </div>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {JOB_TYPE_SHORTCUTS.map(({ label, icon, accent, tint }) => (
+          {JOB_TYPE_SHORTCUTS.map((jt) => (
             <Link
-              key={label}
-              href={`/jobs?job_type=${encodeURIComponent(label)}`}
-              className={`flex flex-col items-center gap-2 rounded-[3px] border border-t-4 border-line bg-white py-6 text-center font-bold transition hover:-translate-y-0.5 hover:shadow-lg ${accent}`}
+              key={jt}
+              href={`/jobs?job_type=${encodeURIComponent(jt)}`}
+              className="rounded-[3px] border border-line bg-white py-6 text-center font-bold transition hover:-translate-y-0.5 hover:border-teal hover:text-teal hover:shadow-lg"
             >
-              <span className={`flex h-10 w-10 items-center justify-center rounded-full text-[18px] ${tint}`}>{icon}</span>
-              {label}
+              {jt}
             </Link>
           ))}
         </div>
