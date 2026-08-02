@@ -190,6 +190,38 @@ export interface BoardComment {
   author_name?: string;
 }
 
+export type AdPosition = "main_top" | "main_mid" | "main_bottom" | "sidebar";
+export type AdType = "image" | "youtube" | "game" | "blog";
+
+export const AD_POSITION_LABELS: Record<AdPosition, string> = {
+  main_top: "메인상단",
+  main_mid: "메인중단",
+  main_bottom: "메인하단",
+  sidebar: "사이드바",
+};
+
+export const AD_TYPE_LABELS: Record<AdType, string> = {
+  image: "이미지",
+  youtube: "유튜브",
+  game: "게임",
+  blog: "블로그",
+};
+
+export interface Ad {
+  id: string;
+  title: string;
+  description: string | null;
+  image: string | null;
+  link: string;
+  position: AdPosition;
+  type: AdType;
+  start_date: string | null;
+  end_date: string | null;
+  priority: number;
+  active: boolean;
+  created_at: string;
+}
+
 export interface ChatMessage {
   id: string;
   conversation_id: string;

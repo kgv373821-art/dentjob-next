@@ -5,6 +5,7 @@ import JobCard from "@/components/JobCard";
 import AiRecommend from "@/components/AiRecommend";
 import PopularClinics from "@/components/PopularClinics";
 import RecentlyViewedJobs from "@/components/RecentlyViewedJobs";
+import AdSlot from "@/components/AdSlot";
 import { LAB_SPECIALTIES } from "@/lib/constants";
 import { getMyFavoriteIds } from "@/lib/actions/favorites";
 import type { JobPost, BoardPost } from "@/lib/types";
@@ -153,6 +154,11 @@ export default async function HomePage() {
       </section>
       <div className="pb-6" />
 
+      {/* 광고: 메인상단 */}
+      <section className="mx-auto max-w-6xl px-6 pb-9">
+        <AdSlot position="main_top" />
+      </section>
+
       {/* 통계바 */}
       <section className="mx-auto max-w-6xl px-6 pb-9">
         <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 rounded border border-line bg-white py-3.5 text-[13px] font-bold text-ink-soft">
@@ -204,6 +210,11 @@ export default async function HomePage() {
             </Link>
           ))}
         </div>
+      </section>
+
+      {/* 광고: 메인중단 */}
+      <section className="mx-auto max-w-6xl px-6 pb-9">
+        <AdSlot position="main_mid" />
       </section>
 
       {/* 치과기공사 전문관 */}
@@ -259,6 +270,7 @@ export default async function HomePage() {
         <aside className="space-y-4 md:sticky md:top-20 md:self-start">
           <AiRecommend compact />
           <PopularClinics />
+          <AdSlot position="sidebar" />
           <div className="rounded-[3px] border border-dashed border-line bg-white p-4 text-center">
             <p className="mb-1 text-[12px] font-bold text-ink-soft">광고</p>
             <p className="mb-3 text-[12.5px]">우리 병원/기공소를 메인에 노출해보세요.</p>
@@ -300,6 +312,11 @@ export default async function HomePage() {
             emptyLabel="등록된 외주 공고가 없습니다."
           />
         </div>
+      </section>
+
+      {/* 광고: 메인하단 */}
+      <section className="mx-auto max-w-6xl px-6 pb-9">
+        <AdSlot position="main_bottom" />
       </section>
     </div>
   );
