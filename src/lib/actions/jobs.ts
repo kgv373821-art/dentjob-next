@@ -6,6 +6,10 @@ import { createClient } from "@/lib/supabase/server";
 
 export type FormState = { error: string | null };
 
+// 테스트 기간 동안 관리자 승인 없이 공고가 바로 노출되게 하는 스위치.
+// 환경변수 AUTO_APPROVE_JOBS=true 로 켜고, 테스트가 끝나면 지우거나 false로 바꾸면 원래대로 승인 절차가 돌아온다.
+const AUTO_APPROVE_JOBS = process.env.AUTO_APPROVE_JOBS === "true";
+
 /** 현재 로그인한 사용자의 clinic 또는 lab 소유 레코드를 반환 */
 async function getOwner(supabase: Awaited<ReturnType<typeof createClient>>) {
   const {
@@ -74,7 +78,7 @@ export async function createJobPost(_prev: FormState, formData: FormData): Promi
     description,
     is_urgent,
     image_urls,
-    status: "pending",
+    status: AUTO_APPROVE_JOBS ? "approved" : "pending",
   });
   if (error) return { error: error.message };
 
