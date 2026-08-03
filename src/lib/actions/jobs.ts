@@ -59,7 +59,8 @@ export async function createJobPost(_prev: FormState, formData: FormData): Promi
   const job_type = String(formData.get("job_type") || "");
   const title = String(formData.get("title") || "");
   const region = String(formData.get("region") || "");
-  const pay_min = Number(formData.get("pay_min") || 0);
+  const payMinRaw = formData.get("pay_min");
+  const pay_min = payMinRaw ? Number(payMinRaw) : null;
   const work_hours = String(formData.get("work_hours") || "") || null;
   const description = String(formData.get("description") || "") || null;
   const welfare = String(formData.get("welfare") || "")
@@ -81,7 +82,7 @@ export async function createJobPost(_prev: FormState, formData: FormData): Promi
   const lab_category = owner.role === "lab" ? String(formData.get("lab_category") || "") || null : null;
   const pay_note = owner.role === "lab" ? "+ 기공 수당 별도" : null;
 
-  if (!job_type || !title || !region || !pay_min) return { error: "필수 항목을 입력해주세요." };
+  if (!job_type || !title || !region) return { error: "필수 항목을 입력해주세요." };
 
   const now = new Date();
   const expiresAt = new Date(now.getTime() + JOB_EXPIRY_DAYS * 24 * 60 * 60 * 1000);
@@ -120,7 +121,8 @@ export async function updateJobPost(id: string, _prev: FormState, formData: Form
   const job_type = String(formData.get("job_type") || "");
   const title = String(formData.get("title") || "");
   const region = String(formData.get("region") || "");
-  const pay_min = Number(formData.get("pay_min") || 0);
+  const payMinRaw = formData.get("pay_min");
+  const pay_min = payMinRaw ? Number(payMinRaw) : null;
   const work_hours = String(formData.get("work_hours") || "") || null;
   const description = String(formData.get("description") || "") || null;
   const welfare = String(formData.get("welfare") || "")
@@ -141,7 +143,7 @@ export async function updateJobPost(id: string, _prev: FormState, formData: Form
   const lab_category = owner.role === "lab" ? String(formData.get("lab_category") || "") || null : null;
   const pay_note = owner.role === "lab" ? "+ 기공 수당 별도" : null;
 
-  if (!job_type || !title || !region || !pay_min) return { error: "필수 항목을 입력해주세요." };
+  if (!job_type || !title || !region) return { error: "필수 항목을 입력해주세요." };
 
   const { error } = await supabase
     .from("job_posts")

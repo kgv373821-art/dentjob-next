@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { JobPost } from "@/lib/types";
+import { formatPay } from "@/lib/constants";
 import FavoriteButton from "@/components/FavoriteButton";
 import QuickApplyButton from "@/components/QuickApplyButton";
 
@@ -83,7 +84,7 @@ export default function JobCard({
 
         <div className="flex items-center justify-between text-[12px] text-ink-soft">
           <span className={`font-mono font-bold text-teal ${compact ? "text-[12px]" : "text-[13.5px]"}`}>
-            월 {job.pay_min}만원{isLab ? " + 기공수당" : ""}
+            {formatPay(job.pay_min, isLab ? " + 기공수당" : "")}
           </span>
           {!compact && <span className="font-mono text-[11px]">조회 {job.view_count}</span>}
         </div>

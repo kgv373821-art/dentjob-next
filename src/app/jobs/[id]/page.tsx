@@ -7,6 +7,7 @@ import FavoriteButton from "@/components/FavoriteButton";
 import KakaoShareButton from "@/components/KakaoShareButton";
 import RecentlyViewedTracker from "@/components/RecentlyViewedTracker";
 import { getMyFavoriteIds } from "@/lib/actions/favorites";
+import { formatPay } from "@/lib/constants";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -26,7 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!job) return { title: "공고를 찾을 수 없습니다" };
   return {
     title: job.title,
-    description: `${job.region} · ${job.job_type} · 월 ${job.pay_min}만원 — ${job.description?.slice(0, 100) || ""}`,
+    description: `${job.region} · ${job.job_type} · ${formatPay(job.pay_min)} — ${job.description?.slice(0, 100) || ""}`,
   };
 }
 
@@ -110,7 +111,7 @@ export default async function JobDetailPage({ params }: Props) {
                 </a>
               </>
             )}
-            <KakaoShareButton title={job.title} description={`${org} · ${job.region} · 월 ${job.pay_min}만원`} url={pageUrl} />
+            <KakaoShareButton title={job.title} description={`${org} · ${job.region} · ${formatPay(job.pay_min)}`} url={pageUrl} />
           </div>
 
           <dl className="mb-4.5 grid grid-cols-[90px_1fr] gap-y-2 gap-x-3 text-[13.5px]">
@@ -127,7 +128,7 @@ export default async function JobDetailPage({ params }: Props) {
             )}
             <dt className="font-semibold text-ink-soft">급여</dt>
             <dd className="font-mono">
-              월 {job.pay_min}만원 {job.pay_note}
+              {formatPay(job.pay_min)} {job.pay_min != null ? job.pay_note : ""}
             </dd>
             {(job.employment_type || job.headcount) && (
               <>

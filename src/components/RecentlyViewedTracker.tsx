@@ -10,7 +10,7 @@ export type RecentlyViewedJob = {
   title: string;
   region: string;
   job_type: string;
-  pay_min: number;
+  pay_min: number | null;
 };
 
 export default function RecentlyViewedTracker({ job }: { job: RecentlyViewedJob }) {

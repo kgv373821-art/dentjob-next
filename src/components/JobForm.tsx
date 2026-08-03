@@ -24,6 +24,7 @@ export default function JobForm({
   const [state, formAction, pending] = useActionState(action, { error: null });
   const jobTypeOptions = role === "lab" ? ["치과기공사", "CAD/CAM", "기공소 직원"] : JOB_TYPES;
 
+  const [payNegotiable, setPayNegotiable] = useState(job ? job.pay_min == null : false);
   const [photoUrls, setPhotoUrls] = useState<string[]>(job?.image_urls || []);
   const [photoUploading, setPhotoUploading] = useState(false);
   const [photoError, setPhotoError] = useState<string | null>(null);
@@ -185,15 +186,23 @@ export default function JobForm({
         ))}
       </select>
 
-      <input
-        ref={payRef}
-        name="pay_min"
-        type="number"
-        required
-        defaultValue={job?.pay_min}
-        placeholder="급여 (만원, 예: 280)"
-        className="w-full rounded-sm border border-line px-3 py-2.5 text-[13.5px]"
-      />
+      <div>
+        {!payNegotiable && (
+          <input
+            ref={payRef}
+            name="pay_min"
+            type="number"
+            required
+            defaultValue={job?.pay_min ?? undefined}
+            placeholder="급여 (만원, 예: 280)"
+            className="mb-1.5 w-full rounded-sm border border-line px-3 py-2.5 text-[13.5px]"
+          />
+        )}
+        <label className="flex items-center gap-2 text-[12.5px] text-ink-soft">
+          <input type="checkbox" checked={payNegotiable} onChange={(e) => setPayNegotiable(e.target.checked)} />
+          급여 협의 (금액 비공개, &quot;급여 협의&quot;로 표시)
+        </label>
+      </div>
       <input
         ref={hoursRef}
         name="work_hours"

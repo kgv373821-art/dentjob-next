@@ -99,7 +99,7 @@ export interface JobPost {
   lab_category: LabJobCategory | null;
   title: string;
   region: string;
-  pay_min: number;
+  pay_min: number | null;
   pay_note: string | null;
   work_hours: string | null;
   welfare: string[];

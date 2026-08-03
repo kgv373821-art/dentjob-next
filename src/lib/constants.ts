@@ -27,6 +27,12 @@ export const JOB_EXPIRY_DAYS = 30;
 export const EMPLOYMENT_TYPES = ["정규직", "계약직", "파트타임", "인턴"];
 export const EDUCATION_LEVELS = ["학력무관", "고졸", "전문대졸업", "대졸", "대학원졸업"];
 
+/** pay_min이 null이면(급여 협의) "급여 협의"를, 아니면 "월 000만원"을 반환합니다. */
+export function formatPay(pay_min: number | null, suffix = ""): string {
+  if (pay_min == null) return "급여 협의";
+  return `월 ${pay_min}만원${suffix}`;
+}
+
 // 수익 모델 — 요청하신 5개 상품을 반드시 포함
 export const PRODUCT_LABELS: Record<string, { label: string; price: string; desc: string }> = {
   general_post: { label: "일반 채용", price: "무료", desc: "기본 채용공고 등록" },
