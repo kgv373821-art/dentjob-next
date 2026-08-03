@@ -28,7 +28,8 @@ export default async function JobsPage({
   let query = supabase
     .from("job_posts")
     .select("*, clinics(clinic_name), labs(lab_name)")
-    .eq("status", "approved");
+    .eq("status", "approved")
+    .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`);
 
   if (region) query = query.eq("region", region);
   if (job_type) query = query.eq("job_type", job_type);

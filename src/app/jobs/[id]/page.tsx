@@ -49,9 +49,15 @@ export default async function JobDetailPage({ params }: Props) {
   const address = clinic?.address || lab?.address;
   const phone = clinic?.profiles?.phone || lab?.profiles?.phone;
   const pageUrl = `${process.env.NEXT_PUBLIC_SITE_URL || ""}/jobs/${job.id}`;
+  const isExpired = !!job.expires_at && job.expires_at < new Date().toISOString();
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-10">
+      {isExpired && (
+        <p className="mb-4 rounded-sm border border-dashed border-line bg-paper-dim px-3.5 py-2.5 text-center text-[12.5px] font-bold text-ink-soft">
+          노출 기간이 만료된 공고입니다. 지원 전 채용 여부를 다시 확인해주세요.
+        </p>
+      )}
       <RecentlyViewedTracker
         job={{ id: job.id, title: job.title, region: job.region, job_type: job.job_type, pay_min: job.pay_min }}
       />

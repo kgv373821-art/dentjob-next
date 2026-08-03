@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { JOB_EXPIRY_DAYS } from "@/lib/constants";
 
 async function assertAdmin(supabase: Awaited<ReturnType<typeof createClient>>) {
   const {
@@ -15,7 +16,12 @@ async function assertAdmin(supabase: Awaited<ReturnType<typeof createClient>>) {
 export async function approveJobPost(id: string) {
   const supabase = await createClient();
   await assertAdmin(supabase);
-  await supabase.from("job_posts").update({ status: "approved", posted_at: new Date().toISOString() }).eq("id", id);
+  const now = new Date();
+  const expiresAt = new Date(now.getTime() + JOB_EXPIRY_DAYS * 24 * 60 * 60 * 1000);
+  await supabase
+    .from("job_posts")
+    .update({ status: "approved", posted_at: now.toISOString(), expires_at: expiresAt.toISOString() })
+    .eq("id", id);
   revalidatePath("/admin");
   revalidatePath("/jobs");
 }

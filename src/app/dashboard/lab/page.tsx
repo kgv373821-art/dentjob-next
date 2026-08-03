@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { deleteJobPost, closeJobPost } from "@/lib/actions/jobs";
 import { LAB_JOB_CATEGORIES } from "@/lib/constants";
+import ExpiryCell from "@/components/ExpiryCell";
 
 export default async function LabDashboard() {
   const supabase = await createClient();
@@ -54,6 +55,9 @@ export default async function LabDashboard() {
                     </td>
                     <td className="p-2.5">
                       <StatusBadge status={job.status} />
+                    </td>
+                    <td className="p-2.5">
+                      <ExpiryCell jobId={job.id} expiresAt={job.expires_at} />
                     </td>
                     <td className="p-2.5">
                       {(job as unknown as { applications: { count: number }[] }).applications?.[0]?.count ?? 0}명{" "}

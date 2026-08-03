@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { deleteJobPost, closeJobPost } from "@/lib/actions/jobs";
+import ExpiryCell from "@/components/ExpiryCell";
 
 export default async function ClinicDashboard() {
   const supabase = await createClient();
@@ -42,6 +43,7 @@ export default async function ClinicDashboard() {
           <tr className="border-b border-line bg-paper-dim text-[11.5px] text-ink-soft">
             <th className="p-2.5 text-left">제목</th>
             <th className="p-2.5 text-left">상태</th>
+            <th className="p-2.5 text-left">노출기간</th>
             <th className="p-2.5 text-left">지원자</th>
             <th className="p-2.5 text-left">조회수</th>
             <th className="p-2.5"></th>
@@ -57,6 +59,9 @@ export default async function ClinicDashboard() {
               </td>
               <td className="p-2.5">
                 <StatusBadge status={job.status} />
+              </td>
+              <td className="p-2.5">
+                <ExpiryCell jobId={job.id} expiresAt={job.expires_at} />
               </td>
               <td className="p-2.5">
                 {(job as unknown as { applications: { count: number }[] }).applications?.[0]?.count ?? 0}명

@@ -4,7 +4,12 @@ import { createClient } from "@/lib/supabase/server";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = process.env.NEXT_PUBLIC_SITE_URL || "https://dentjob.example.com";
   const supabase = await createClient();
-  const { data: jobs } = await supabase.from("job_posts").select("id, updated_at").eq("status", "approved").limit(1000);
+  const { data: jobs } = await supabase
+    .from("job_posts")
+    .select("id, updated_at")
+    .eq("status", "approved")
+    .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
+    .limit(1000);
 
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: `${base}/`, changeFrequency: "hourly", priority: 1 },

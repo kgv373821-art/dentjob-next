@@ -28,6 +28,8 @@ export default async function HomePage() {
   const supabase = await createClient();
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0);
+  const nowIso = new Date().toISOString();
+  const notExpired = `expires_at.is.null,expires_at.gt.${nowIso}`;
 
   const [
     { data: premiumJobs },
@@ -38,7 +40,7 @@ export default async function HomePage() {
     { count: seekerCount },
     { data: communityPosts },
     { data: usedEquipment },
-    { data: outsourcing },
+    { data: outsourcingRaw },
     { data: { user } },
     favoriteIds,
   ] = await Promise.all([
@@ -47,12 +49,14 @@ export default async function HomePage() {
       .select("*, clinics(clinic_name), labs(lab_name)")
       .eq("status", "approved")
       .eq("is_main_exposed", true)
+      .or(notExpired)
       .order("posted_at", { ascending: false })
       .limit(6),
     supabase
       .from("job_posts")
       .select("*, clinics(clinic_name), labs(lab_name)")
       .eq("status", "approved")
+      .or(notExpired)
       .order("is_pinned", { ascending: false })
       .order("posted_at", { ascending: false })
       .limit(9),
@@ -61,6 +65,7 @@ export default async function HomePage() {
       .select("*, labs(lab_name)")
       .eq("status", "approved")
       .not("lab_id", "is", null)
+      .or(notExpired)
       .order("is_pinned", { ascending: false })
       .order("is_urgent", { ascending: false })
       .order("posted_at", { ascending: false })
@@ -74,7 +79,8 @@ export default async function HomePage() {
       .from("job_posts")
       .select("*", { count: "exact", head: true })
       .eq("status", "approved")
-      .eq("is_urgent", true),
+      .eq("is_urgent", true)
+      .or(notExpired),
     supabase.from("seekers").select("*", { count: "exact", head: true }),
     supabase.from("board_posts").select("*, profiles(name)").order("created_at", { ascending: false }).limit(5),
     supabase.from("board_posts").select("*, profiles(name)").eq("board", "used_equipment").order("created_at", { ascending: false }).limit(4),
@@ -84,10 +90,14 @@ export default async function HomePage() {
       .eq("status", "approved")
       .or("lab_category.eq.외주모집,lab_specialty.eq.외주 의뢰")
       .order("posted_at", { ascending: false })
-      .limit(4),
+      .limit(8),
     supabase.auth.getUser(),
     getMyFavoriteIds("job_post"),
   ]);
+
+  const outsourcing = (outsourcingRaw || [])
+    .filter((j) => !j.expires_at || j.expires_at > nowIso)
+    .slice(0, 4);
 
   let isSeeker = false;
   if (user) {

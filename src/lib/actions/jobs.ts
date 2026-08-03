@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { JOB_EXPIRY_DAYS } from "@/lib/constants";
 
 export type FormState = { error: string | null };
 
@@ -63,6 +64,9 @@ export async function createJobPost(_prev: FormState, formData: FormData): Promi
 
   if (!job_type || !title || !region || !pay_min) return { error: "필수 항목을 입력해주세요." };
 
+  const now = new Date();
+  const expiresAt = new Date(now.getTime() + JOB_EXPIRY_DAYS * 24 * 60 * 60 * 1000);
+
   const { error } = await supabase.from("job_posts").insert({
     clinic_id: owner.role === "clinic" ? owner.id : null,
     lab_id: owner.role === "lab" ? owner.id : null,
@@ -79,6 +83,8 @@ export async function createJobPost(_prev: FormState, formData: FormData): Promi
     is_urgent,
     image_urls,
     status: AUTO_APPROVE_JOBS ? "approved" : "pending",
+    posted_at: AUTO_APPROVE_JOBS ? now.toISOString() : null,
+    expires_at: AUTO_APPROVE_JOBS ? expiresAt.toISOString() : null,
   });
   if (error) return { error: error.message };
 
@@ -156,6 +162,23 @@ export async function closeJobPost(id: string) {
   const supabase = await createClient();
   await supabase.from("job_posts").update({ status: "closed" }).eq("id", id);
   revalidatePath("/jobs");
+}
+
+/** 노출 기간을 오늘부터 다시 JOB_EXPIRY_DAYS일로 연장합니다. */
+export async function extendJobPost(id: string) {
+  const supabase = await createClient();
+  const owner = await getOwner(supabase);
+  if (!owner) throw new Error("권한이 없습니다.");
+
+  const expiresAt = new Date(Date.now() + JOB_EXPIRY_DAYS * 24 * 60 * 60 * 1000);
+  await supabase
+    .from("job_posts")
+    .update({ expires_at: expiresAt.toISOString() })
+    .eq("id", id)
+    .eq(owner.role === "clinic" ? "clinic_id" : "lab_id", owner.id);
+
+  revalidatePath("/jobs");
+  revalidatePath(owner.role === "clinic" ? "/dashboard/clinic" : "/dashboard/lab");
 }
 
 export async function incrementViewCount(id: string) {

@@ -43,16 +43,20 @@ export default async function AiRecommend({ compact = false }: { compact?: boole
 
   if (conditions.length > 0) query = query.or(conditions.join(","));
 
+  const nowIso = new Date().toISOString();
   const [{ data: jobs }, favoriteIds] = await Promise.all([
-    query.order("posted_at", { ascending: false }).limit(compact ? 3 : 6),
+    query.order("posted_at", { ascending: false }).limit((compact ? 3 : 6) * 3),
     getMyFavoriteIds("job_post"),
   ]);
 
-  const normalized = (jobs || []).map((r) => ({
-    ...r,
-    clinic_name: (r as unknown as { clinics?: { clinic_name: string } }).clinics?.clinic_name,
-    lab_name: (r as unknown as { labs?: { lab_name: string } }).labs?.lab_name,
-  })) as JobPost[];
+  const normalized = (jobs || [])
+    .filter((r) => !r.expires_at || r.expires_at > nowIso)
+    .slice(0, compact ? 3 : 6)
+    .map((r) => ({
+      ...r,
+      clinic_name: (r as unknown as { clinics?: { clinic_name: string } }).clinics?.clinic_name,
+      lab_name: (r as unknown as { labs?: { lab_name: string } }).labs?.lab_name,
+    })) as JobPost[];
 
   if (normalized.length === 0) return null;
 

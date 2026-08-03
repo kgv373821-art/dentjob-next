@@ -21,6 +21,9 @@ export const LAB_SPECIALTIES: LabSpecialty[] = [
 
 export const LAB_JOB_CATEGORIES: LabJobCategory[] = ["기사모집", "아르바이트모집", "외주모집"];
 
+// 승인된 공고의 기본 노출 기간(일) — 승인 시 이 기간만큼 뒤를 expires_at으로 설정
+export const JOB_EXPIRY_DAYS = 30;
+
 // 수익 모델 — 요청하신 5개 상품을 반드시 포함
 export const PRODUCT_LABELS: Record<string, { label: string; price: string; desc: string }> = {
   general_post: { label: "일반 채용", price: "무료", desc: "기본 채용공고 등록" },
