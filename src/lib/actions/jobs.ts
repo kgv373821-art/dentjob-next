@@ -11,6 +11,25 @@ export type FormState = { error: string | null };
 // 환경변수 AUTO_APPROVE_JOBS=true 로 켜고, 테스트가 끝나면 지우거나 false로 바꾸면 원래대로 승인 절차가 돌아온다.
 const AUTO_APPROVE_JOBS = process.env.AUTO_APPROVE_JOBS === "true";
 
+/** 채용정보 상세 항목(담당업무/근무형태/모집인원/학력/경력/모집기간/접수방법 등)을 폼에서 읽어옵니다. */
+function parseJobDetailFields(formData: FormData) {
+  const str = (key: string) => String(formData.get(key) || "").trim() || null;
+  return {
+    duties: str("duties"),
+    employment_type: str("employment_type"),
+    headcount: str("headcount"),
+    education_level: str("education_level"),
+    career_requirement: str("career_requirement"),
+    recruit_start_date: str("recruit_start_date"),
+    recruit_end_date: str("recruit_end_date"),
+    application_method: str("application_method"),
+    application_email: str("application_email"),
+    required_documents: str("required_documents"),
+    work_address: str("work_address"),
+    nearby_station: str("nearby_station"),
+  };
+}
+
 /** 현재 로그인한 사용자의 clinic 또는 lab 소유 레코드를 반환 */
 async function getOwner(supabase: Awaited<ReturnType<typeof createClient>>) {
   const {
@@ -85,6 +104,7 @@ export async function createJobPost(_prev: FormState, formData: FormData): Promi
     status: AUTO_APPROVE_JOBS ? "approved" : "pending",
     posted_at: AUTO_APPROVE_JOBS ? now.toISOString() : null,
     expires_at: AUTO_APPROVE_JOBS ? expiresAt.toISOString() : null,
+    ...parseJobDetailFields(formData),
   });
   if (error) return { error: error.message };
 
@@ -138,6 +158,7 @@ export async function updateJobPost(id: string, _prev: FormState, formData: Form
       description,
       is_urgent,
       image_urls,
+      ...parseJobDetailFields(formData),
     })
     .eq("id", id)
     .eq(owner.role === "clinic" ? "clinic_id" : "lab_id", owner.id);

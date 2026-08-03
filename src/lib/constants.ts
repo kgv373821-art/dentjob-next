@@ -24,6 +24,9 @@ export const LAB_JOB_CATEGORIES: LabJobCategory[] = ["기사모집", "아르바�
 // 승인된 공고의 기본 노출 기간(일) — 승인 시 이 기간만큼 뒤를 expires_at으로 설정
 export const JOB_EXPIRY_DAYS = 30;
 
+export const EMPLOYMENT_TYPES = ["정규직", "계약직", "파트타임", "인턴"];
+export const EDUCATION_LEVELS = ["학력무관", "고졸", "전문대졸업", "대졸", "대학원졸업"];
+
 // 수익 모델 — 요청하신 5개 상품을 반드시 포함
 export const PRODUCT_LABELS: Record<string, { label: string; price: string; desc: string }> = {
   general_post: { label: "일반 채용", price: "무료", desc: "기본 채용공고 등록" },

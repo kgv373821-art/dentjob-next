@@ -113,6 +113,19 @@ export interface JobPost {
   expires_at: string | null;
   created_at: string;
   image_urls: string[];
+  // 상세 채용정보
+  duties: string | null;
+  employment_type: string | null;
+  headcount: string | null;
+  education_level: string | null;
+  career_requirement: string | null;
+  recruit_start_date: string | null;
+  recruit_end_date: string | null;
+  application_method: string | null;
+  application_email: string | null;
+  required_documents: string | null;
+  work_address: string | null;
+  nearby_station: string | null;
   // join된 표시용 필드
   clinic_name?: string;
   lab_name?: string;

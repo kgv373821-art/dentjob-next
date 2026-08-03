@@ -119,10 +119,36 @@ export default async function JobDetailPage({ params }: Props) {
               {job.job_type}
               {job.lab_specialty ? ` · ${job.lab_specialty}` : ""}
             </dd>
+            {job.duties && (
+              <>
+                <dt className="font-semibold text-ink-soft">담당업무</dt>
+                <dd>{job.duties}</dd>
+              </>
+            )}
             <dt className="font-semibold text-ink-soft">급여</dt>
             <dd className="font-mono">
               월 {job.pay_min}만원 {job.pay_note}
             </dd>
+            {(job.employment_type || job.headcount) && (
+              <>
+                <dt className="font-semibold text-ink-soft">근무형태</dt>
+                <dd>
+                  {job.employment_type}
+                  {job.employment_type && job.headcount ? " · " : ""}
+                  {job.headcount ? `모집 ${job.headcount}` : ""}
+                </dd>
+              </>
+            )}
+            {(job.education_level || job.career_requirement) && (
+              <>
+                <dt className="font-semibold text-ink-soft">자격요건</dt>
+                <dd>
+                  {job.education_level}
+                  {job.education_level && job.career_requirement ? " · " : ""}
+                  {job.career_requirement}
+                </dd>
+              </>
+            )}
             {job.work_hours && (
               <>
                 <dt className="font-semibold text-ink-soft">근무시간</dt>
@@ -135,10 +161,45 @@ export default async function JobDetailPage({ params }: Props) {
                 <dd>{job.welfare.join(", ")}</dd>
               </>
             )}
-            {address && (
+            {(job.recruit_start_date || job.recruit_end_date) && (
+              <>
+                <dt className="font-semibold text-ink-soft">모집기간</dt>
+                <dd>
+                  {job.recruit_start_date || "상시"} ~ {job.recruit_end_date || "채용시 마감"}
+                </dd>
+              </>
+            )}
+            {(job.application_method || job.application_email) && (
+              <>
+                <dt className="font-semibold text-ink-soft">접수방법</dt>
+                <dd>
+                  {job.application_method}
+                  {job.application_method && job.application_email ? " · " : ""}
+                  {job.application_email}
+                </dd>
+              </>
+            )}
+            {job.required_documents && (
+              <>
+                <dt className="font-semibold text-ink-soft">제출서류</dt>
+                <dd>{job.required_documents}</dd>
+              </>
+            )}
+            {(job.work_address || address) && (
               <>
                 <dt className="font-semibold text-ink-soft">위치</dt>
-                <dd>{address}</dd>
+                <dd>
+                  {job.work_address || address}
+                  {job.nearby_station ? ` · ${job.nearby_station}` : ""}
+                  <a
+                    href={`https://map.kakao.com/link/search/${encodeURIComponent(job.work_address || address || "")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="ml-2 whitespace-nowrap text-[12px] font-bold text-teal hover:underline"
+                  >
+                    지도에서 보기 →
+                  </a>
+                </dd>
               </>
             )}
           </dl>
