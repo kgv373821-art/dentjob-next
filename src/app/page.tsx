@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import SearchForm from "@/components/SearchForm";
 import JobCard from "@/components/JobCard";
@@ -110,15 +111,24 @@ export default async function HomePage() {
   return (
     <div>
       {/* 히어로 배너 */}
-      <section
-        className="relative overflow-hidden px-6 py-14 sm:py-16"
-        style={{ background: "linear-gradient(135deg, var(--color-teal), var(--color-teal-deep))" }}
-      >
-        <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/5" />
-        <div className="pointer-events-none absolute -bottom-24 left-1/4 h-72 w-72 rounded-full bg-white/5" />
+      <section className="relative min-h-[440px] overflow-hidden px-6 py-14 sm:py-16">
+        <Image
+          src="/hero-bg.png"
+          alt=""
+          fill
+          priority
+          className="object-cover object-[center_30%]"
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(90deg, rgba(11,61,58,0.97) 0%, rgba(11,61,58,0.92) 32%, rgba(11,61,58,0.55) 58%, rgba(11,61,58,0.12) 82%)",
+          }}
+        />
 
-        <div className="relative mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1.1fr_.9fr]">
-          <div className="text-center lg:text-left">
+        <div className="relative mx-auto flex max-w-6xl items-center">
+          <div className="max-w-lg text-center lg:text-left">
             <span className="mb-4 inline-block rounded-full border border-gold/60 bg-white/10 px-3.5 py-1.5 font-mono text-[11.5px] font-bold tracking-widest text-gold">
               SEOUL · GYEONGGI DENTAL NO.1
             </span>
@@ -137,24 +147,6 @@ export default async function HomePage() {
                 </span>
               ))}
             </div>
-          </div>
-
-          <div className="hidden justify-center lg:flex">
-            <svg viewBox="0 0 220 220" className="h-56 w-56" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="110" cy="110" r="108" stroke="white" strokeOpacity="0.15" strokeWidth="2" />
-              <circle cx="110" cy="110" r="82" fill="white" fillOpacity="0.06" />
-              <path
-                d="M110 46c-14 0-24 9-32 9-9 0-16-7-25-7-14 0-23 13-23 30 0 24 12 55 21 71 6 11 12 18 20 18 9 0 12-8 20-8s11 8 20 8c8 0 14-7 20-18 9-16 21-47 21-71 0-17-9-30-23-30-9 0-16 7-25 7-8 0-18-9-32-9Z"
-                fill="var(--color-gold)"
-                fillOpacity="0.9"
-              />
-              <path
-                d="M92 96c-3 14-2 34 4 50 3 9 6 15 9 15s5-9 8-9 5 9 8 9c3 0 6-6 9-15 6-16 7-36 4-50"
-                stroke="var(--color-teal-deep)"
-                strokeWidth="3"
-                strokeLinecap="round"
-              />
-            </svg>
           </div>
         </div>
       </section>
