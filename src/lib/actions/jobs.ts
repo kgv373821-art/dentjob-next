@@ -82,6 +82,14 @@ export async function createJobPost(_prev: FormState, formData: FormData): Promi
   const owner = await getOwner(supabase);
   if (!owner) return { error: "치과 또는 기공소 회원만 공고를 등록할 수 있습니다." };
 
+  const org_name = String(formData.get("org_name") || "").trim();
+  if (org_name) {
+    await supabase
+      .from(owner.role === "clinic" ? "clinics" : "labs")
+      .update(owner.role === "clinic" ? { clinic_name: org_name } : { lab_name: org_name })
+      .eq("id", owner.id);
+  }
+
   const job_type = String(formData.get("job_type") || "");
   const title = String(formData.get("title") || "");
   const region = String(formData.get("region") || "");
@@ -148,6 +156,14 @@ export async function updateJobPost(id: string, _prev: FormState, formData: Form
   const supabase = await createClient();
   const owner = await getOwner(supabase);
   if (!owner) return { error: "권한이 없습니다." };
+
+  const org_name = String(formData.get("org_name") || "").trim();
+  if (org_name) {
+    await supabase
+      .from(owner.role === "clinic" ? "clinics" : "labs")
+      .update(owner.role === "clinic" ? { clinic_name: org_name } : { lab_name: org_name })
+      .eq("id", owner.id);
+  }
 
   const job_type = String(formData.get("job_type") || "");
   const title = String(formData.get("title") || "");
