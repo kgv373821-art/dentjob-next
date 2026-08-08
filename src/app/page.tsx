@@ -271,8 +271,8 @@ export default async function HomePage() {
 
       {/* 치과 구인등록 */}
       <section
-        className="mx-auto max-w-6xl rounded px-6 py-9"
-        style={{ background: "linear-gradient(135deg, var(--color-teal), var(--color-teal-deep))" }}
+        className="mx-auto mt-6 max-w-6xl rounded px-6 py-9"
+        style={{ background: "linear-gradient(135deg, #0b4a45, #06211f)" }}
       >
         <div className="mb-1.5 flex items-end justify-between border-b-2 border-gold pb-2.5">
           <h2 className="text-[18px] font-extrabold tracking-tight text-white">
