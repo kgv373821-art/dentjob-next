@@ -257,7 +257,7 @@ export default async function HomePage() {
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {normalizeJobs(labJobs).map((job) => (
-            <JobCard key={job.id} job={job} {...cardProps} isFavorited={favoriteIds.includes(job.id)} />
+            <JobCard key={job.id} job={job} {...cardProps} isFavorited={favoriteIds.includes(job.id)} emphasizeUrgent />
           ))}
           {(!labJobs || labJobs.length === 0) && (
             <p className="col-span-full py-12 text-center text-[#B9BFBC]">기공소 채용공고가 아직 없습니다.</p>
@@ -273,7 +273,7 @@ export default async function HomePage() {
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             {normalizeJobs(todayJobs).map((job) => (
-              <JobCard key={job.id} job={job} {...cardProps} isFavorited={favoriteIds.includes(job.id)} showNewBadge />
+              <JobCard key={job.id} job={job} {...cardProps} isFavorited={favoriteIds.includes(job.id)} showNewBadge emphasizeUrgent />
             ))}
             {(!todayJobs || todayJobs.length === 0) && (
               <p className="col-span-full py-12 text-center text-ink-soft">아직 등록된 공고가 없습니다.</p>

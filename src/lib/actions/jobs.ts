@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { JOB_EXPIRY_DAYS } from "@/lib/constants";
+import { JOB_EXPIRY_DAYS, URGENT_LIMIT_CLINIC, URGENT_LIMIT_LAB } from "@/lib/constants";
 
 export type FormState = { error: string | null };
 
@@ -55,6 +55,28 @@ async function getOwner(supabase: Awaited<ReturnType<typeof createClient>>) {
   return null;
 }
 
+/** 이 업체가 지금 이미 보유 중인(승인대기+게시중) 긴급 공고 개수가 상한을 넘는지 확인합니다. */
+async function checkUrgentLimit(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  owner: { role: "clinic" | "lab"; id: string },
+  excludeId?: string
+): Promise<string | null> {
+  const limit = owner.role === "clinic" ? URGENT_LIMIT_CLINIC : URGENT_LIMIT_LAB;
+  let query = supabase
+    .from("job_posts")
+    .select("id", { count: "exact", head: true })
+    .eq(owner.role === "clinic" ? "clinic_id" : "lab_id", owner.id)
+    .eq("is_urgent", true)
+    .in("status", ["pending", "approved"]);
+  if (excludeId) query = query.neq("id", excludeId);
+
+  const { count } = await query;
+  if ((count || 0) >= limit) {
+    return `긴급 채용은 ${owner.role === "clinic" ? "치과" : "기공소"} 계정당 동시에 최대 ${limit}개까지만 등록할 수 있습니다. 기존 긴급 공고를 마감한 뒤 다시 시도해주세요.`;
+  }
+  return null;
+}
+
 export async function createJobPost(_prev: FormState, formData: FormData): Promise<FormState> {
   const supabase = await createClient();
   const owner = await getOwner(supabase);
@@ -87,6 +109,11 @@ export async function createJobPost(_prev: FormState, formData: FormData): Promi
   const pay_note = owner.role === "lab" ? "+ 기공 수당 별도" : null;
 
   if (!job_type || !title || !region) return { error: "필수 항목을 입력해주세요." };
+
+  if (is_urgent) {
+    const urgentError = await checkUrgentLimit(supabase, owner);
+    if (urgentError) return { error: urgentError };
+  }
 
   const now = new Date();
   const expiresAt = new Date(now.getTime() + JOB_EXPIRY_DAYS * 24 * 60 * 60 * 1000);
@@ -148,6 +175,11 @@ export async function updateJobPost(id: string, _prev: FormState, formData: Form
   const pay_note = owner.role === "lab" ? "+ 기공 수당 별도" : null;
 
   if (!job_type || !title || !region) return { error: "필수 항목을 입력해주세요." };
+
+  if (is_urgent) {
+    const urgentError = await checkUrgentLimit(supabase, owner, id);
+    if (urgentError) return { error: urgentError };
+  }
 
   const { error } = await supabase
     .from("job_posts")

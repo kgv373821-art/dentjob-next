@@ -25,6 +25,10 @@ export const LAB_JOB_CATEGORIES: LabJobCategory[] = ["정직원", "아르바이�
 export const JOB_EXPIRY_DAYS = 30;
 
 export const EMPLOYMENT_TYPES = ["정규직", "계약직", "파트타임", "인턴"];
+
+// 업체당 동시에 보유할 수 있는 "긴급 채용" 공고 개수 상한 (승인대기+게시중 기준)
+export const URGENT_LIMIT_CLINIC = 5;
+export const URGENT_LIMIT_LAB = 2;
 export const EDUCATION_LEVELS = ["학력무관", "고졸", "전문대졸업", "대졸", "대학원졸업"];
 
 /** pay_min이 null이면(급여 협의) "급여 협의"를, 아니면 "월 000만원"을 반환합니다. */

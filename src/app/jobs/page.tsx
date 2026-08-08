@@ -130,7 +130,7 @@ export default async function JobsPage({
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {jobs.map((job) => (
-          <JobCard key={job.id} job={job} isLoggedIn={!!user} isFavorited={favoriteIds.includes(job.id)} isSeeker={isSeeker} />
+          <JobCard key={job.id} job={job} isLoggedIn={!!user} isFavorited={favoriteIds.includes(job.id)} isSeeker={isSeeker} emphasizeUrgent />
         ))}
       </div>
       {jobs.length === 0 && (
