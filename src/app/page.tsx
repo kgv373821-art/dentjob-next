@@ -16,6 +16,7 @@ import { BOARD_LABELS } from "@/lib/types";
 export const revalidate = 60;
 
 const JOB_TYPE_SHORTCUTS = ["치과기공사", "치과위생사", "치과조무사", "치과의사"];
+const CLINIC_JOB_SHORTCUTS = ["치과의사", "치과위생사", "치과조무사", "상담실장", "데스크"];
 
 function normalizeJobs(rows: unknown) {
   return ((rows as Record<string, unknown>[]) || []).map((r) => ({
@@ -36,6 +37,7 @@ export default async function HomePage() {
     { data: premiumJobs },
     { data: todayJobs },
     { data: labJobs },
+    { data: clinicJobs },
     { count: todayCount },
     { count: urgentCount },
     { count: seekerCount },
@@ -66,6 +68,16 @@ export default async function HomePage() {
       .select("*, labs(lab_name)")
       .eq("status", "approved")
       .not("lab_id", "is", null)
+      .or(notExpired)
+      .order("is_pinned", { ascending: false })
+      .order("is_urgent", { ascending: false })
+      .order("posted_at", { ascending: false })
+      .limit(6),
+    supabase
+      .from("job_posts")
+      .select("*, clinics(clinic_name)")
+      .eq("status", "approved")
+      .not("clinic_id", "is", null)
       .or(notExpired)
       .order("is_pinned", { ascending: false })
       .order("is_urgent", { ascending: false })
@@ -253,6 +265,43 @@ export default async function HomePage() {
           ))}
           {(!labJobs || labJobs.length === 0) && (
             <p className="col-span-full py-12 text-center text-[#B9BFBC]">기공소 채용공고가 아직 없습니다.</p>
+          )}
+        </div>
+      </section>
+
+      {/* 치과 구인등록 */}
+      <section
+        className="mx-auto max-w-6xl rounded px-6 py-9"
+        style={{ background: "linear-gradient(180deg, var(--color-teal-tint), transparent)" }}
+      >
+        <div className="mb-1.5 flex items-end justify-between border-b-2 border-teal pb-2.5">
+          <h2 className="text-[18px] font-extrabold tracking-tight text-teal">
+            치과 구인등록 <span className="ml-2 text-[13px] font-bold text-ink-soft">치과·병원 채용 특화</span>
+          </h2>
+          <Link href="/jobs?category=clinic" className="rounded-sm border border-teal px-3 py-1.5 text-[12.5px] font-bold text-teal hover:bg-teal-tint">
+            치과 채용 전체보기
+          </Link>
+        </div>
+        <p className="mb-4 mt-1 text-[13.5px] text-ink-soft">
+          치과의사·치과위생사·치과조무사부터 데스크·상담실장까지, 치과 전용 채용공고만 모아봤습니다.
+        </p>
+        <div className="mb-5 flex flex-wrap gap-1.5">
+          {CLINIC_JOB_SHORTCUTS.map((jt) => (
+            <Link
+              key={jt}
+              href={`/jobs?category=clinic&job_type=${encodeURIComponent(jt)}`}
+              className="rounded-full border border-teal px-3 py-1.5 text-[12px] font-bold text-teal hover:bg-teal-tint"
+            >
+              {jt}
+            </Link>
+          ))}
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {normalizeJobs(clinicJobs).map((job) => (
+            <JobCard key={job.id} job={job} {...cardProps} isFavorited={favoriteIds.includes(job.id)} emphasizeUrgent />
+          ))}
+          {(!clinicJobs || clinicJobs.length === 0) && (
+            <p className="col-span-full py-12 text-center text-ink-soft">치과 채용공고가 아직 없습니다.</p>
           )}
         </div>
       </section>
