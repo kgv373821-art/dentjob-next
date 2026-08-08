@@ -139,7 +139,7 @@ export default function JobForm({
             defaultValue={job?.lab_specialty || ""}
             className="w-full rounded-sm border border-line px-3 py-2.5 text-[13.5px]"
           >
-            <option value="">전문분야 선택 (CAD/CAM · 지르코니아 · 포세린 · 덴처 · 교정 · 임플란트 · 밀링센터 · 외주 의뢰)</option>
+            <option value="">전문분야 선택 (CAD/CAM · 디자인 · 지르코니아 · 포세린 · 덴처 · 교정 · 임플란트 · 밀링센터 · 외주 의뢰)</option>
             {LAB_SPECIALTIES.map((s) => (
               <option key={s} value={s}>
                 {s}

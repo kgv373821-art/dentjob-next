@@ -20,6 +20,7 @@ export type LabSpecialty =
   | "심미보철(지르코니아)"
   | "총의치 기공"
   | "CAD/CAM"
+  | "디자인"
   | "지르코니아"
   | "포세린"
   | "덴처"
@@ -28,7 +29,7 @@ export type LabSpecialty =
   | "밀링센터"
   | "외주 의뢰";
 
-export type LabJobCategory = "기사모집" | "아르바이트모집" | "외주모집";
+export type LabJobCategory = "정직원" | "아르바이트모집" | "외주모집";
 
 export type PostStatus = "draft" | "pending" | "approved" | "rejected" | "closed";
 

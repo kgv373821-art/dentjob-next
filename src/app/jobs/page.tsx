@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import JobCard from "@/components/JobCard";
-import { REGIONS, JOB_TYPES } from "@/lib/constants";
+import { REGIONS, JOB_TYPES, LAB_SPECIALTIES } from "@/lib/constants";
 import { getMyFavoriteIds } from "@/lib/actions/favorites";
 import type { JobPost } from "@/lib/types";
 
@@ -114,7 +114,7 @@ export default async function JobsPage({
 
       {category === "lab" && (
         <div className="mb-5 flex flex-wrap gap-1.5">
-          {["", ...["CAD/CAM", "지르코니아", "포세린", "덴처", "교정", "임플란트", "밀링센터", "외주 의뢰"]].map((s) => (
+          {["", ...LAB_SPECIALTIES].map((s) => (
             <a
               key={s || "all"}
               href={qs({ lab_specialty: s || undefined })}

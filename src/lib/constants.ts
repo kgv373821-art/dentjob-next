@@ -16,10 +16,10 @@ export const JOB_TYPES: JobType[] = [
 
 // 치과기공 특화 필터 — 요청하신 8개 분야를 우선 노출
 export const LAB_SPECIALTIES: LabSpecialty[] = [
-  "CAD/CAM", "지르코니아", "포세린", "덴처", "교정", "임플란트", "밀링센터", "외주 의뢰",
+  "CAD/CAM", "디자인", "지르코니아", "포세린", "덴처", "교정", "임플란트", "밀링센터", "외주 의뢰",
 ];
 
-export const LAB_JOB_CATEGORIES: LabJobCategory[] = ["기사모집", "아르바이트모집", "외주모집"];
+export const LAB_JOB_CATEGORIES: LabJobCategory[] = ["정직원", "아르바이트모집", "외주모집"];
 
 // 승인된 공고의 기본 노출 기간(일) — 승인 시 이 기간만큼 뒤를 expires_at으로 설정
 export const JOB_EXPIRY_DAYS = 30;
