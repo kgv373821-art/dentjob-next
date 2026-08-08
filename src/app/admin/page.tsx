@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import ApprovalActions from "@/components/ApprovalActions";
+import PendingJobRow from "@/components/PendingJobRow";
+import type { JobPost } from "@/lib/types";
 
 export default async function AdminPage() {
   const supabase = await createClient();
@@ -54,17 +55,7 @@ export default async function AdminPage() {
           const org =
             (job as unknown as { clinics?: { clinic_name: string } }).clinics?.clinic_name ||
             (job as unknown as { labs?: { lab_name: string } }).labs?.lab_name;
-          return (
-            <div key={job.id} className="flex flex-wrap items-center justify-between gap-3 rounded-sm border border-line bg-white p-3.5">
-              <div>
-                <div className="font-semibold">{job.title}</div>
-                <div className="text-[12px] text-ink-soft">
-                  {org} · {job.region} · {job.job_type}
-                </div>
-              </div>
-              <ApprovalActions jobId={job.id} />
-            </div>
-          );
+          return <PendingJobRow key={job.id} job={job as JobPost} org={org} />;
         })}
         {(!pending || pending.length === 0) && <p className="py-10 text-center text-ink-soft">승인 대기 중인 공고가 없습니다.</p>}
       </div>
