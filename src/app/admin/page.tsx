@@ -38,6 +38,7 @@ export default async function AdminPage() {
           <Link href="/admin/notices">공지사항</Link>
           <Link href="/admin/sms">문자 발송</Link>
           <Link href="/admin/ads">광고관리</Link>
+          <Link href="/admin/community">커뮤니티관리</Link>
         </nav>
       </div>
 

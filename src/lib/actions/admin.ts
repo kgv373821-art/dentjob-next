@@ -33,6 +33,26 @@ export async function rejectJobPost(id: string) {
   revalidatePath("/admin");
 }
 
+export async function deleteBoardPosts(ids: string[]) {
+  const supabase = await createClient();
+  await assertAdmin(supabase);
+  if (ids.length === 0) return;
+  await supabase.from("board_posts").delete().in("id", ids);
+  revalidatePath("/admin/community");
+  revalidatePath("/community");
+  revalidatePath("/");
+}
+
+export async function deleteJobPostsAdmin(ids: string[]) {
+  const supabase = await createClient();
+  await assertAdmin(supabase);
+  if (ids.length === 0) return;
+  await supabase.from("job_posts").delete().in("id", ids);
+  revalidatePath("/admin/community");
+  revalidatePath("/jobs");
+  revalidatePath("/");
+}
+
 export async function resolveReport(id: string, status: "resolved" | "dismissed") {
   const supabase = await createClient();
   await assertAdmin(supabase);
