@@ -27,6 +27,10 @@ function parseJobDetailFields(formData: FormData) {
     required_documents: str("required_documents"),
     work_address: str("work_address"),
     nearby_station: str("nearby_station"),
+    homepage_url: str("homepage_url"),
+    hr_contact_name: str("hr_contact_name"),
+    hr_contact_phone: str("hr_contact_phone"),
+    contact_email: str("contact_email"),
   };
 }
 

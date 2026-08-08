@@ -158,6 +158,37 @@ export default function JobForm({
               </option>
             ))}
           </select>
+
+          <div className="rounded-sm border border-line bg-paper-dim p-3 space-y-2.5">
+            <p className="text-[12px] font-bold text-ink-soft">구인 담당자 정보 (선택, 공고 상세페이지 상단에 표시됩니다)</p>
+            <input
+              name="homepage_url"
+              defaultValue={job?.homepage_url || ""}
+              placeholder="기공소 홈페이지 URL"
+              className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
+            />
+            <div className="grid grid-cols-2 gap-2.5">
+              <input
+                name="hr_contact_name"
+                defaultValue={job?.hr_contact_name || ""}
+                placeholder="구인 담당자 이름"
+                className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
+              />
+              <input
+                name="hr_contact_phone"
+                defaultValue={job?.hr_contact_phone || ""}
+                placeholder="구인 상담 전화번호"
+                className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
+              />
+            </div>
+            <input
+              type="email"
+              name="contact_email"
+              defaultValue={job?.contact_email || ""}
+              placeholder="담당자 E-mail"
+              className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
+            />
+          </div>
         </>
       )}
 
