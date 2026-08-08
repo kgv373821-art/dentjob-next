@@ -29,7 +29,7 @@ export default function JobCard({
   emphasizeUrgent?: boolean;
 }) {
   const isLab = !!job.lab_id;
-  const org = isLab ? job.lab_name : job.clinic_name;
+  const org = job.org_name || (isLab ? job.lab_name : job.clinic_name);
   const small = emphasizeUrgent && !job.is_urgent && !compact;
 
   return (

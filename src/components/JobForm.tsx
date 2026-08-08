@@ -115,11 +115,11 @@ export default function JobForm({
   return (
     <form action={formAction} className="max-w-lg space-y-3">
       <div>
-        <label className="mb-1 block text-[12px] font-bold text-ink-soft">업체명 (대시보드와 공고 목록에 표시됩니다)</label>
+        <label className="mb-1 block text-[12px] font-bold text-ink-soft">업체명 (이 공고에 표시됩니다)</label>
         <input
           name="org_name"
           required
-          defaultValue={orgName || ""}
+          defaultValue={job?.org_name || orgName || ""}
           placeholder={role === "lab" ? "업체명 (예: OO치과기공소)" : "업체명 (예: OO치과의원)"}
           className="w-full rounded-sm border border-line px-3 py-2.5 text-[13.5px]"
         />

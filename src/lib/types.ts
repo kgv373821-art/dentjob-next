@@ -131,6 +131,8 @@ export interface JobPost {
   hr_contact_name: string | null;
   hr_contact_phone: string | null;
   contact_email: string | null;
+  // 이 공고에 표시할 업체명(계정 기본 이름 대신 이 공고에서만 다르게 표시하고 싶을 때)
+  org_name: string | null;
   // join된 표시용 필드
   clinic_name?: string;
   lab_name?: string;

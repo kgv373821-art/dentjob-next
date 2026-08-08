@@ -54,6 +54,7 @@ export default async function AdminPage() {
       <div className="space-y-2">
         {(pending || []).map((job) => {
           const org =
+            job.org_name ||
             (job as unknown as { clinics?: { clinic_name: string } }).clinics?.clinic_name ||
             (job as unknown as { labs?: { lab_name: string } }).labs?.lab_name;
           return <PendingJobRow key={job.id} job={job as JobPost} org={org} />;

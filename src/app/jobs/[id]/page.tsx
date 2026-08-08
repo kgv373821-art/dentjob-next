@@ -72,7 +72,7 @@ export default async function JobDetailPage({ params }: Props) {
       labs?: { lab_name: string; address: string; specialties: string[]; photo_url: string | null; profiles?: { phone: string } };
     }
   ).labs;
-  const org = clinic?.clinic_name || lab?.lab_name;
+  const org = job.org_name || clinic?.clinic_name || lab?.lab_name;
   const address = clinic?.address || lab?.address;
   const phone = clinic?.profiles?.phone || lab?.profiles?.phone;
   const pageUrl = `${process.env.NEXT_PUBLIC_SITE_URL || ""}/jobs/${job.id}`;
