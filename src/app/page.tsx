@@ -123,7 +123,7 @@ export default async function HomePage() {
   return (
     <div>
       {/* 히어로 배너 */}
-      <section className="relative min-h-[440px] overflow-hidden px-6 py-14 sm:py-16">
+      <section className="relative min-h-[300px] overflow-hidden px-6 py-10 sm:min-h-[440px] sm:py-16">
         <Image
           src="/hero-bg.png"
           alt=""
@@ -131,8 +131,9 @@ export default async function HomePage() {
           priority
           className="object-cover object-[center_30%]"
         />
+        <div className="absolute inset-0 bg-[rgba(11,61,58,0.9)] sm:hidden" />
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 hidden sm:block"
           style={{
             background:
               "linear-gradient(90deg, rgba(11,61,58,0.97) 0%, rgba(11,61,58,0.92) 32%, rgba(11,61,58,0.55) 58%, rgba(11,61,58,0.12) 82%)",
