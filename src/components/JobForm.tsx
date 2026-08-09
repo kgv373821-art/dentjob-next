@@ -228,6 +228,22 @@ export default function JobForm({
         ))}
       </select>
 
+      <select
+        name="employment_type"
+        required
+        defaultValue={job?.employment_type || ""}
+        className="w-full rounded-sm border border-line px-3 py-2.5 text-[13.5px]"
+      >
+        <option value="" disabled>
+          근무형태 선택 (정규직 · 파트타임 · 주중알바 · 주말알바 등)
+        </option>
+        {EMPLOYMENT_TYPES.map((t) => (
+          <option key={t} value={t}>
+            {t}
+          </option>
+        ))}
+      </select>
+
       <div>
         {!payNegotiable && (
           <input
@@ -270,26 +286,12 @@ export default function JobForm({
           className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
         />
 
-        <div className="grid grid-cols-2 gap-2.5">
-          <select
-            name="employment_type"
-            defaultValue={job?.employment_type || ""}
-            className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
-          >
-            <option value="">근무형태 선택</option>
-            {EMPLOYMENT_TYPES.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </select>
-          <input
-            name="headcount"
-            defaultValue={job?.headcount || ""}
-            placeholder="모집인원 (예: 1명)"
-            className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
-          />
-        </div>
+        <input
+          name="headcount"
+          defaultValue={job?.headcount || ""}
+          placeholder="모집인원 (예: 1명)"
+          className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
+        />
 
         <div className="grid grid-cols-2 gap-2.5">
           <select

@@ -82,6 +82,7 @@ export default function JobCard({
         <h3 className={`font-extrabold leading-snug ${compact ? "text-[13.5px]" : small ? "text-[12px]" : "text-[15.5px]"}`}>{job.title}</h3>
         <div className={`text-ink-soft ${compact ? "mb-1.5 text-[11.5px]" : small ? "mb-1.5 text-[10.5px]" : "mb-2.5 text-[12.5px]"}`}>
           {org} · {job.job_type}
+          {job.employment_type ? ` · ${job.employment_type}` : ""}
         </div>
 
         {!compact && <div className={`border-t border-dashed border-line ${small ? "my-1.5" : "my-2.5"}`} />}
