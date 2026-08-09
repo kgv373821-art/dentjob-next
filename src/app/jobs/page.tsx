@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import JobCard from "@/components/JobCard";
-import { REGIONS, JOB_TYPES, LAB_SPECIALTIES } from "@/lib/constants";
+import { REGIONS, JOB_TYPES, LAB_SPECIALTIES, EMPLOYMENT_TYPES } from "@/lib/constants";
 import { getMyFavoriteIds } from "@/lib/actions/favorites";
 import type { JobPost } from "@/lib/types";
 
@@ -20,9 +20,17 @@ const SORTS = [
 export default async function JobsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ region?: string; job_type?: string; category?: string; sort?: string; lab_specialty?: string; q?: string }>;
+  searchParams: Promise<{
+    region?: string;
+    job_type?: string;
+    category?: string;
+    sort?: string;
+    lab_specialty?: string;
+    employment_type?: string;
+    q?: string;
+  }>;
 }) {
-  const { region, job_type, category, sort = "new", lab_specialty, q } = await searchParams;
+  const { region, job_type, category, sort = "new", lab_specialty, employment_type, q } = await searchParams;
   const supabase = await createClient();
 
   let query = supabase
@@ -34,6 +42,7 @@ export default async function JobsPage({
   if (region) query = query.eq("region", region);
   if (job_type) query = query.eq("job_type", job_type);
   if (lab_specialty) query = query.eq("lab_specialty", lab_specialty);
+  if (employment_type) query = query.eq("employment_type", employment_type);
   if (category === "lab") query = query.not("lab_id", "is", null);
   if (category === "clinic") query = query.not("clinic_id", "is", null);
   if (sort === "urgent") query = query.eq("is_urgent", true);
@@ -61,7 +70,7 @@ export default async function JobsPage({
 
   const qs = (overrides: Record<string, string | undefined>) => {
     const params = new URLSearchParams();
-    const merged = { region, job_type, category, sort, lab_specialty, q, ...overrides };
+    const merged = { region, job_type, category, sort, lab_specialty, employment_type, q, ...overrides };
     Object.entries(merged).forEach(([k, v]) => v && params.set(k, v));
     return `/jobs?${params.toString()}`;
   };
@@ -101,6 +110,18 @@ export default async function JobsPage({
           {JOB_TYPES.map((j) => (
             <option key={j} value={j}>
               {j}
+            </option>
+          ))}
+        </select>
+        <select
+          name="employment_type"
+          defaultValue={employment_type || ""}
+          className="rounded-sm border border-line bg-white px-3 py-2 text-[13px]"
+        >
+          <option value="">전체 근무형태</option>
+          {EMPLOYMENT_TYPES.map((t) => (
+            <option key={t} value={t}>
+              {t}
             </option>
           ))}
         </select>

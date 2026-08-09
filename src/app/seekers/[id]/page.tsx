@@ -1,13 +1,38 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { maskName } from "@/lib/constants";
 
 export default async function SeekerDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  let role: string | null = null;
+  if (user) {
+    const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
+    role = profile?.role ?? null;
+  }
+  const isEmployer = role === "clinic" || role === "lab" || role === "admin";
+
+  if (!isEmployer) {
+    return (
+      <div className="mx-auto max-w-lg px-6 py-16 text-center">
+        <h1 className="mb-3 text-[19px] font-extrabold">구직자 정보는 치과·기공소 회원만 볼 수 있습니다</h1>
+        <p className="mb-6 text-[13.5px] text-ink-soft">구직자 개인정보 보호를 위해 사업자(치과·기공소) 계정으로 로그인해야 열람할 수 있습니다.</p>
+        <Link href="/login" className="inline-block rounded-sm bg-teal px-5 py-2.5 text-[13.5px] font-bold text-white hover:bg-teal-deep">
+          로그인하기
+        </Link>
+      </div>
+    );
+  }
+
   const { data: seeker } = await supabase.from("seekers").select("*, profiles(name)").eq("id", id).single();
   if (!seeker) notFound();
 
-  const name = (seeker as unknown as { profiles?: { name: string } }).profiles?.name || "구직자";
+  const name = maskName((seeker as unknown as { profiles?: { name: string } }).profiles?.name || "");
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-10">

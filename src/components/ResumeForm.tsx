@@ -2,12 +2,14 @@
 
 import { useActionState, useRef, useState } from "react";
 import { updateResume } from "@/lib/actions/seeker";
-import { JOB_TYPES, LAB_SPECIALTIES, REGIONS } from "@/lib/constants";
+import { JOB_TYPES, LAB_SPECIALTIES, LAB_RELATED_JOB_TYPES, REGIONS } from "@/lib/constants";
 import type { Seeker } from "@/lib/types";
 
 export default function ResumeForm({ seeker }: { seeker: Seeker }) {
   const [state, formAction, pending] = useActionState(updateResume, { error: null, success: false });
   const introRef = useRef<HTMLTextAreaElement>(null);
+  const [desiredJob, setDesiredJob] = useState(seeker.desired_job || "");
+  const isLabJob = LAB_RELATED_JOB_TYPES.includes(desiredJob);
   const [aiLoading, setAiLoading] = useState<"resume" | "cover" | null>(null);
   const [aiError, setAiError] = useState<string | null>(null);
 
@@ -40,7 +42,12 @@ export default function ResumeForm({ seeker }: { seeker: Seeker }) {
 
   return (
     <form action={formAction} className="max-w-lg space-y-3">
-      <select name="desired_job" defaultValue={seeker.desired_job || ""} className="w-full rounded-sm border border-line px-3 py-2.5 text-[13.5px]">
+      <select
+        name="desired_job"
+        value={desiredJob}
+        onChange={(e) => setDesiredJob(e.target.value)}
+        className="w-full rounded-sm border border-line px-3 py-2.5 text-[13.5px]"
+      >
         <option value="">희망 직종</option>
         {JOB_TYPES.map((j) => (
           <option key={j} value={j}>
@@ -48,14 +55,18 @@ export default function ResumeForm({ seeker }: { seeker: Seeker }) {
           </option>
         ))}
       </select>
-      <select name="lab_specialty" defaultValue={seeker.lab_specialty || ""} className="w-full rounded-sm border border-line px-3 py-2.5 text-[13.5px]">
-        <option value="">기공 전문분야 (해당 시)</option>
-        {LAB_SPECIALTIES.map((s) => (
-          <option key={s} value={s}>
-            {s}
-          </option>
-        ))}
-      </select>
+      {isLabJob ? (
+        <select name="lab_specialty" defaultValue={seeker.lab_specialty || ""} className="w-full rounded-sm border border-line px-3 py-2.5 text-[13.5px]">
+          <option value="">기공 전문분야</option>
+          {LAB_SPECIALTIES.map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <input type="hidden" name="lab_specialty" value="" />
+      )}
       <select name="desired_region" defaultValue={seeker.desired_region || ""} className="w-full rounded-sm border border-line px-3 py-2.5 text-[13.5px]">
         <option value="">희망 지역</option>
         {REGIONS.map((r) => (

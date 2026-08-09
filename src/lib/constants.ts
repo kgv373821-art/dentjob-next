@@ -24,12 +24,21 @@ export const LAB_JOB_CATEGORIES: LabJobCategory[] = ["정직원", "아르바이�
 // 승인된 공고의 기본 노출 기간(일) — 승인 시 이 기간만큼 뒤를 expires_at으로 설정
 export const JOB_EXPIRY_DAYS = 30;
 
-export const EMPLOYMENT_TYPES = ["정규직", "계약직", "파트타임", "인턴"];
+export const EMPLOYMENT_TYPES = ["정규직", "계약직", "파트타임", "주중알바", "주말알바", "인턴"];
+
+// 치과기공사 계열(기공소 관련) 직종 — 구직자 희망직종이 이 중 하나일 때만 "기공 전문분야"를 노출
+export const LAB_RELATED_JOB_TYPES = ["치과기공사", "CAD/CAM", "기공소 직원"];
 
 // 업체당 동시에 보유할 수 있는 "긴급 채용" 공고 개수 상한 (승인대기+게시중 기준)
 export const URGENT_LIMIT_CLINIC = 5;
 export const URGENT_LIMIT_LAB = 2;
 export const EDUCATION_LEVELS = ["학력무관", "고졸", "전문대졸업", "대졸", "대학원졸업"];
+
+/** 이름을 "성 + OO"로 가려서 반환합니다 (구직자 목록 사생활 보호용). */
+export function maskName(name: string): string {
+  if (!name) return "구직자";
+  return `${name[0]}OO`;
+}
 
 /** pay_min이 null이면(급여 협의) "급여 협의"를, 아니면 "월 000만원"을 반환합니다. */
 export function formatPay(pay_min: number | null, suffix = ""): string {
