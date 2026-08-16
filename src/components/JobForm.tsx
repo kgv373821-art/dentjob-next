@@ -435,7 +435,7 @@ export default function JobForm({
       >
         {pending ? "저장 중..." : isEdit ? "수정 내용 저장" : "공고 등록하기"}
       </button>
-      {!isEdit && <p className="text-[11.5px] text-ink-soft">등록한 공고는 관리자 승인 후 목록에 노출됩니다.</p>}
+      {!isEdit && <p className="text-[11.5px] text-ink-soft">등록한 공고는 별도 승인 절차 없이 바로 목록에 노출됩니다.</p>}
     </form>
   );
 }
