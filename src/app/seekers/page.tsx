@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import SeekerCard from "@/components/SeekerCard";
 import { maskName } from "@/lib/constants";
+import { getMyFavoriteIds } from "@/lib/actions/favorites";
 import type { Seeker } from "@/lib/types";
 
 export const metadata: Metadata = {
@@ -35,7 +36,10 @@ export default async function SeekersPage() {
     );
   }
 
-  const { data } = await supabase.from("seekers").select("*, profiles(name)").order("updated_at", { ascending: false }).limit(40);
+  const [{ data }, favoriteIds] = await Promise.all([
+    supabase.from("seekers").select("*, profiles(name)").order("updated_at", { ascending: false }).limit(40),
+    getMyFavoriteIds("seeker"),
+  ]);
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-9">
@@ -44,7 +48,13 @@ export default async function SeekersPage() {
       </div>
       <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
         {((data || []) as (Seeker & { profiles: { name: string } })[]).map((s) => (
-          <SeekerCard key={s.id} seeker={s} name={maskName(s.profiles?.name || "")} />
+          <SeekerCard
+            key={s.id}
+            seeker={s}
+            name={maskName(s.profiles?.name || "")}
+            isLoggedIn={!!user}
+            isFavorited={favoriteIds.includes(s.id)}
+          />
         ))}
       </div>
       {(!data || data.length === 0) && <p className="py-16 text-center text-ink-soft">등록된 구직자가 없습니다.</p>}
