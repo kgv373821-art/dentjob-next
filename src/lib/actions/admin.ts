@@ -33,6 +33,16 @@ export async function rejectJobPost(id: string) {
   revalidatePath("/admin");
 }
 
+/** 결제 없이(계좌이체 등 사이트 밖에서 대금을 받은 뒤) 관리자가 상단고정/프리미엄/긴급 강조를 수동으로 켜고 끕니다. */
+export async function togglePromotion(id: string, field: "is_pinned" | "is_main_exposed" | "is_urgent", value: boolean) {
+  const supabase = await createClient();
+  await assertAdmin(supabase);
+  await supabase.from("job_posts").update({ [field]: value }).eq("id", id);
+  revalidatePath("/admin/jobs");
+  revalidatePath("/jobs");
+  revalidatePath("/");
+}
+
 export async function deleteBoardPosts(ids: string[]) {
   const supabase = await createClient();
   await assertAdmin(supabase);
