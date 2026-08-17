@@ -1,12 +1,13 @@
+// PRODUCT_LABELS(src/lib/constants.ts)의 표시 가격과 반드시 일치해야 함
 export const PRODUCT_PRICES: Record<string, number> = {
   general_post: 0,
-  premium_post: 50000,
+  premium_post: 15000,
   main_exposure: 100000,
-  urgent_post: 30000,
-  pinned_post: 70000,
-  banner_ad: 300000,
-  company_page_ad: 150000,
-  talent_recommend: 500000,
+  urgent_post: 10000,
+  pinned_post: 30000,
+  banner_ad: 200000,
+  company_page_ad: 100000,
+  talent_recommend: 300000,
 };
 
 function authHeader() {
