@@ -47,13 +47,15 @@ export function formatPay(pay_min: number | null, suffix = ""): string {
 }
 
 // 수익 모델 — 요청하신 5개 상품을 반드시 포함
+// 가격은 업계 1위 덴탈잡(dentaljob.co.kr) 실제 요금(2026-08 기준)을 참고해, 개설 초기 신생 사이트로서
+// 그보다 낮게 책정함 (덴탈잡: 강조상품 8,000~18,000원/주, 배너 135,000~950,000원/7일 등).
 export const PRODUCT_LABELS: Record<string, { label: string; price: string; desc: string }> = {
   general_post: { label: "일반 채용", price: "무료", desc: "기본 채용공고 등록" },
-  premium_post: { label: "프리미엄 공고", price: "50,000원", desc: "목록 상단 강조 노출 + 골드 뱃지" },
-  pinned_post: { label: "상단 고정", price: "70,000원", desc: "목록 최상단 7일간 고정 노출" },
-  urgent_post: { label: "긴급 채용", price: "30,000원", desc: "긴급 배지 + 알림 발송" },
+  premium_post: { label: "프리미엄 공고", price: "15,000원", desc: "목록 상단 강조 노출 + 골드 뱃지" },
+  pinned_post: { label: "상단 고정", price: "30,000원", desc: "목록 최상단 7일간 고정 노출" },
+  urgent_post: { label: "긴급 채용", price: "10,000원", desc: "긴급 배지 + 알림 발송" },
   main_exposure: { label: "메인 노출", price: "100,000원", desc: "메인화면 인기공고 배치" },
-  banner_ad: { label: "메인 배너 광고", price: "월 300,000원", desc: "메인 페이지 배너 슬롯" },
-  company_page_ad: { label: "기업 페이지 광고", price: "월 150,000원", desc: "치과/기공소 소개 페이지 상단 강조" },
-  talent_recommend: { label: "인재 추천", price: "월 500,000원", desc: "AI 기반 맞춤 인재 매칭" },
+  banner_ad: { label: "메인 배너 광고", price: "월 200,000원", desc: "메인 페이지 배너 슬롯" },
+  company_page_ad: { label: "기업 페이지 광고", price: "월 100,000원", desc: "치과/기공소 소개 페이지 상단 강조" },
+  talent_recommend: { label: "인재 추천", price: "월 300,000원", desc: "AI 기반 맞춤 인재 매칭" },
 };
