@@ -1,17 +1,20 @@
 "use client";
 
 import { useActionState, useMemo, useRef, useState } from "react";
-import { adminCreateJobPost } from "@/lib/actions/admin";
+import { adminCreateJobPost, adminUpdateJobPost } from "@/lib/actions/admin";
 import { createClient } from "@/lib/supabase/client";
 import { REGIONS, JOB_TYPES, LAB_SPECIALTIES, LAB_JOB_CATEGORIES, EMPLOYMENT_TYPES, EDUCATION_LEVELS } from "@/lib/constants";
+import type { JobPost } from "@/lib/types";
 
 const MAX_PHOTOS = 5;
 const MAX_PHOTO_MB = 5;
 
 type Account = { id: string; role: "clinic" | "lab"; name: string; region: string };
 
-export default function AdminJobForm({ accounts }: { accounts: Account[] }) {
-  const [state, formAction, pending] = useActionState(adminCreateJobPost, { error: null });
+export default function AdminJobForm({ accounts, job }: { accounts: Account[]; job?: JobPost }) {
+  const isEdit = !!job;
+  const action = isEdit ? adminUpdateJobPost.bind(null, job!.id) : adminCreateJobPost;
+  const [state, formAction, pending] = useActionState(action, { error: null });
 
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<Account | null>(null);
@@ -25,12 +28,13 @@ export default function AdminJobForm({ accounts }: { accounts: Account[] }) {
     return accounts.filter((a) => a.name.includes(q) || a.region.includes(q)).slice(0, 30);
   }, [accounts, query]);
 
-  const role = selected?.role ?? noAccountRole ?? undefined;
-  const targetChosen = !!selected || !!noAccountRole;
+  const editRole: "clinic" | "lab" | undefined = job ? (job.clinic_id ? "clinic" : "lab") : undefined;
+  const role = isEdit ? editRole : selected?.role ?? noAccountRole ?? undefined;
+  const targetChosen = isEdit || !!selected || !!noAccountRole;
   const jobTypeOptions = role === "lab" ? ["치과기공사", "CAD/CAM", "기공소 직원"] : JOB_TYPES;
 
-  const [payNegotiable, setPayNegotiable] = useState(false);
-  const [photoUrls, setPhotoUrls] = useState<string[]>([]);
+  const [payNegotiable, setPayNegotiable] = useState(job ? job.pay_min == null : false);
+  const [photoUrls, setPhotoUrls] = useState<string[]>(job?.image_urls || []);
   const [photoUploading, setPhotoUploading] = useState(false);
   const [photoError, setPhotoError] = useState<string | null>(null);
 
@@ -119,90 +123,92 @@ export default function AdminJobForm({ accounts }: { accounts: Account[] }) {
 
   return (
     <form action={formAction} className="max-w-lg space-y-3">
-      <div className="rounded-sm border border-line bg-paper-dim p-3.5">
-        <label className="mb-1.5 block text-[12px] font-bold text-ink-soft">등록할 치과/기공소 계정 선택 (필수)</label>
-        {selected ? (
-          <div className="flex items-center justify-between rounded-sm border border-teal bg-white px-3 py-2.5">
-            <div>
-              <span className="mr-1.5 rounded-sm bg-teal-tint px-1.5 py-0.5 text-[11px] font-bold text-teal">
-                {selected.role === "clinic" ? "치과" : "기공소"}
-              </span>
-              <span className="text-[13.5px] font-semibold">{selected.name}</span>
-              <span className="ml-1.5 text-[12px] text-ink-soft">{selected.region}</span>
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                setSelected(null);
-                setQuery("");
-              }}
-              className="text-[12px] font-bold text-ink-soft hover:text-coral"
-            >
-              변경
-            </button>
-          </div>
-        ) : noAccountRole ? (
-          <div className="flex items-center justify-between rounded-sm border border-line bg-white px-3 py-2.5">
-            <div>
-              <span className="mr-1.5 rounded-sm bg-paper-dim px-1.5 py-0.5 text-[11px] font-bold text-ink-soft">
-                {noAccountRole === "clinic" ? "치과" : "기공소"}
-              </span>
-              <span className="text-[13.5px]">계정 연결 없이 업체명 직접 입력</span>
-            </div>
-            <button type="button" onClick={() => setNoAccountRole(null)} className="text-[12px] font-bold text-ink-soft hover:text-coral">
-              변경
-            </button>
-          </div>
-        ) : (
-          <div>
-            <div className="relative">
-              <input
-                value={query}
-                onChange={(e) => {
-                  setQuery(e.target.value);
-                  setPickerOpen(true);
+      {!isEdit && (
+        <div className="rounded-sm border border-line bg-paper-dim p-3.5">
+          <label className="mb-1.5 block text-[12px] font-bold text-ink-soft">등록할 치과/기공소 계정 선택 (필수)</label>
+          {selected ? (
+            <div className="flex items-center justify-between rounded-sm border border-teal bg-white px-3 py-2.5">
+              <div>
+                <span className="mr-1.5 rounded-sm bg-teal-tint px-1.5 py-0.5 text-[11px] font-bold text-teal">
+                  {selected.role === "clinic" ? "치과" : "기공소"}
+                </span>
+                <span className="text-[13.5px] font-semibold">{selected.name}</span>
+                <span className="ml-1.5 text-[12px] text-ink-soft">{selected.region}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelected(null);
+                  setQuery("");
                 }}
-                onFocus={() => setPickerOpen(true)}
-                placeholder="치과/기공소 이름으로 검색"
-                className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
-              />
-              {pickerOpen && (
-                <div className="absolute z-10 mt-1 max-h-64 w-full overflow-y-auto rounded-sm border border-line bg-white shadow-md">
-                  {filtered.length === 0 && <p className="p-3 text-[12.5px] text-ink-soft">검색 결과가 없습니다.</p>}
-                  {filtered.map((a) => (
-                    <button
-                      key={`${a.role}-${a.id}`}
-                      type="button"
-                      onClick={() => {
-                        setSelected(a);
-                        setPickerOpen(false);
-                      }}
-                      className="flex w-full items-center gap-2 border-b border-line px-3 py-2 text-left text-[13px] last:border-b-0 hover:bg-teal-tint"
-                    >
-                      <span className="rounded-sm bg-paper-dim px-1.5 py-0.5 text-[11px] font-bold text-ink-soft">
-                        {a.role === "clinic" ? "치과" : "기공소"}
-                      </span>
-                      <span className="font-semibold">{a.name}</span>
-                      <span className="text-[11.5px] text-ink-soft">{a.region}</span>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-            <p className="mt-2 text-[12px] text-ink-soft">
-              아직 가입하지 않은 치과/기공소인가요?{" "}
-              <button type="button" onClick={() => setNoAccountRole("clinic")} className="font-bold text-teal hover:underline">
-                치과
-              </button>{" "}
-              또는{" "}
-              <button type="button" onClick={() => setNoAccountRole("lab")} className="font-bold text-teal hover:underline">
-                기공소
+                className="text-[12px] font-bold text-ink-soft hover:text-coral"
+              >
+                변경
               </button>
-              로 계정 연결 없이 등록하기
-            </p>
-          </div>
-        )}
-      </div>
+            </div>
+          ) : noAccountRole ? (
+            <div className="flex items-center justify-between rounded-sm border border-line bg-white px-3 py-2.5">
+              <div>
+                <span className="mr-1.5 rounded-sm bg-paper-dim px-1.5 py-0.5 text-[11px] font-bold text-ink-soft">
+                  {noAccountRole === "clinic" ? "치과" : "기공소"}
+                </span>
+                <span className="text-[13.5px]">계정 연결 없이 업체명 직접 입력</span>
+              </div>
+              <button type="button" onClick={() => setNoAccountRole(null)} className="text-[12px] font-bold text-ink-soft hover:text-coral">
+                변경
+              </button>
+            </div>
+          ) : (
+            <div>
+              <div className="relative">
+                <input
+                  value={query}
+                  onChange={(e) => {
+                    setQuery(e.target.value);
+                    setPickerOpen(true);
+                  }}
+                  onFocus={() => setPickerOpen(true)}
+                  placeholder="치과/기공소 이름으로 검색"
+                  className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
+                />
+                {pickerOpen && (
+                  <div className="absolute z-10 mt-1 max-h-64 w-full overflow-y-auto rounded-sm border border-line bg-white shadow-md">
+                    {filtered.length === 0 && <p className="p-3 text-[12.5px] text-ink-soft">검색 결과가 없습니다.</p>}
+                    {filtered.map((a) => (
+                      <button
+                        key={`${a.role}-${a.id}`}
+                        type="button"
+                        onClick={() => {
+                          setSelected(a);
+                          setPickerOpen(false);
+                        }}
+                        className="flex w-full items-center gap-2 border-b border-line px-3 py-2 text-left text-[13px] last:border-b-0 hover:bg-teal-tint"
+                      >
+                        <span className="rounded-sm bg-paper-dim px-1.5 py-0.5 text-[11px] font-bold text-ink-soft">
+                          {a.role === "clinic" ? "치과" : "기공소"}
+                        </span>
+                        <span className="font-semibold">{a.name}</span>
+                        <span className="text-[11.5px] text-ink-soft">{a.region}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <p className="mt-2 text-[12px] text-ink-soft">
+                아직 가입하지 않은 치과/기공소인가요?{" "}
+                <button type="button" onClick={() => setNoAccountRole("clinic")} className="font-bold text-teal hover:underline">
+                  치과
+                </button>{" "}
+                또는{" "}
+                <button type="button" onClick={() => setNoAccountRole("lab")} className="font-bold text-teal hover:underline">
+                  기공소
+                </button>
+                로 계정 연결 없이 등록하기
+              </p>
+            </div>
+          )}
+        </div>
+      )}
 
       {targetChosen && (
         <>
@@ -214,8 +220,8 @@ export default function AdminJobForm({ accounts }: { accounts: Account[] }) {
             <input
               name="org_name"
               required
-              defaultValue={selected?.name || ""}
-              placeholder={noAccountRole === "lab" ? "업체명 (예: OO치과기공소)" : "업체명 (예: OO치과의원)"}
+              defaultValue={job?.org_name || selected?.name || ""}
+              placeholder={role === "lab" ? "업체명 (예: OO치과기공소)" : "업체명 (예: OO치과의원)"}
               className="w-full rounded-sm border border-line px-3 py-2.5 text-[13.5px]"
             />
           </div>
@@ -224,7 +230,7 @@ export default function AdminJobForm({ accounts }: { accounts: Account[] }) {
             ref={jobTypeRef}
             name="job_type"
             required
-            defaultValue=""
+            defaultValue={job?.job_type || ""}
             className="w-full rounded-sm border border-line px-3 py-2.5 text-[13.5px]"
           >
             <option value="" disabled>
@@ -242,7 +248,7 @@ export default function AdminJobForm({ accounts }: { accounts: Account[] }) {
               <select
                 ref={specialtyRef}
                 name="lab_specialty"
-                defaultValue=""
+                defaultValue={job?.lab_specialty || ""}
                 className="w-full rounded-sm border border-line px-3 py-2.5 text-[13.5px]"
               >
                 <option value="">전문분야 선택 (CAD/CAM · 디자인 · 지르코니아 · 포세린 · 덴처 · 교정 · 임플란트 · 밀링센터 · 외주 의뢰)</option>
@@ -252,7 +258,7 @@ export default function AdminJobForm({ accounts }: { accounts: Account[] }) {
                   </option>
                 ))}
               </select>
-              <select name="lab_category" defaultValue="" className="w-full rounded-sm border border-line px-3 py-2.5 text-[13.5px]">
+              <select name="lab_category" defaultValue={job?.lab_category || ""} className="w-full rounded-sm border border-line px-3 py-2.5 text-[13.5px]">
                 <option value="">모집 구분 선택</option>
                 {LAB_JOB_CATEGORIES.map((c) => (
                   <option key={c} value={c}>
@@ -260,39 +266,44 @@ export default function AdminJobForm({ accounts }: { accounts: Account[] }) {
                   </option>
                 ))}
               </select>
-
-              <div className="rounded-sm border border-line bg-paper-dim p-3 space-y-2.5">
-                <p className="text-[12px] font-bold text-ink-soft">구인 담당자 정보 (선택, 공고 상세페이지 상단에 표시됩니다)</p>
-                <input
-                  name="homepage_url"
-                  placeholder="기공소 홈페이지 URL"
-                  className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
-                />
-                <div className="grid grid-cols-2 gap-2.5">
-                  <input
-                    name="hr_contact_name"
-                    placeholder="구인 담당자 이름"
-                    className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
-                  />
-                  <input
-                    name="hr_contact_phone"
-                    placeholder="구인 상담 전화번호"
-                    className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
-                  />
-                </div>
-                <input
-                  type="email"
-                  name="contact_email"
-                  placeholder="담당자 E-mail"
-                  className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
-                />
-              </div>
             </>
           )}
+
+          <div className="rounded-sm border border-line bg-paper-dim p-3 space-y-2.5">
+            <p className="text-[12px] font-bold text-ink-soft">구인 담당자 정보 (선택, 공고 상세페이지 상단에 표시됩니다)</p>
+            <input
+              name="homepage_url"
+              defaultValue={job?.homepage_url || ""}
+              placeholder="홈페이지 URL"
+              className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
+            />
+            <div className="grid grid-cols-2 gap-2.5">
+              <input
+                name="hr_contact_name"
+                defaultValue={job?.hr_contact_name || ""}
+                placeholder="구인 담당자 이름"
+                className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
+              />
+              <input
+                name="hr_contact_phone"
+                defaultValue={job?.hr_contact_phone || ""}
+                placeholder="구인 상담 전화번호"
+                className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
+              />
+            </div>
+            <input
+              type="email"
+              name="contact_email"
+              defaultValue={job?.contact_email || ""}
+              placeholder="담당자 E-mail"
+              className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
+            />
+          </div>
 
           <input
             name="title"
             required
+            defaultValue={job?.title || ""}
             placeholder="공고 제목"
             className="w-full rounded-sm border border-line px-3 py-2.5 text-[13.5px]"
           />
@@ -301,7 +312,7 @@ export default function AdminJobForm({ accounts }: { accounts: Account[] }) {
             ref={regionRef}
             name="region"
             required
-            defaultValue=""
+            defaultValue={job?.region || ""}
             className="w-full rounded-sm border border-line px-3 py-2.5 text-[13.5px]"
           >
             <option value="" disabled>
@@ -314,7 +325,12 @@ export default function AdminJobForm({ accounts }: { accounts: Account[] }) {
             ))}
           </select>
 
-          <select name="employment_type" required defaultValue="" className="w-full rounded-sm border border-line px-3 py-2.5 text-[13.5px]">
+          <select
+            name="employment_type"
+            required
+            defaultValue={job?.employment_type || ""}
+            className="w-full rounded-sm border border-line px-3 py-2.5 text-[13.5px]"
+          >
             <option value="" disabled>
               근무형태 선택 (정규직 · 파트타임 · 주중알바 · 주말알바 등)
             </option>
@@ -332,6 +348,7 @@ export default function AdminJobForm({ accounts }: { accounts: Account[] }) {
                 name="pay_min"
                 type="number"
                 required
+                defaultValue={job?.pay_min ?? undefined}
                 placeholder="급여 (만원, 예: 280)"
                 className="mb-1.5 w-full rounded-sm border border-line px-3 py-2.5 text-[13.5px]"
               />
@@ -344,12 +361,14 @@ export default function AdminJobForm({ accounts }: { accounts: Account[] }) {
           <input
             ref={hoursRef}
             name="work_hours"
+            defaultValue={job?.work_hours || ""}
             placeholder="근무시간 (예: 09:30 ~ 18:30)"
             className="w-full rounded-sm border border-line px-3 py-2.5 text-[13.5px]"
           />
           <input
             ref={welfareRef}
             name="welfare"
+            defaultValue={job?.welfare?.join(", ") || ""}
             placeholder="복지 (쉼표로 구분, 예: 4대보험, 명절상여)"
             className="w-full rounded-sm border border-line px-3 py-2.5 text-[13.5px]"
           />
@@ -359,18 +378,20 @@ export default function AdminJobForm({ accounts }: { accounts: Account[] }) {
 
             <input
               name="duties"
+              defaultValue={job?.duties || ""}
               placeholder="담당업무 (예: 진료보조, 상담, 보험청구)"
               className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
             />
 
             <input
               name="headcount"
+              defaultValue={job?.headcount || ""}
               placeholder="모집인원 (예: 1명)"
               className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
             />
 
             <div className="grid grid-cols-2 gap-2.5">
-              <select name="education_level" defaultValue="" className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]">
+              <select name="education_level" defaultValue={job?.education_level || ""} className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]">
                 <option value="">학력 선택</option>
                 {EDUCATION_LEVELS.map((e) => (
                   <option key={e} value={e}>
@@ -380,6 +401,7 @@ export default function AdminJobForm({ accounts }: { accounts: Account[] }) {
               </select>
               <input
                 name="career_requirement"
+                defaultValue={job?.career_requirement || ""}
                 placeholder="경력 (예: 경력 3년 이상)"
                 className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
               />
@@ -388,34 +410,49 @@ export default function AdminJobForm({ accounts }: { accounts: Account[] }) {
             <div>
               <label className="mb-1 block text-[11.5px] text-ink-soft">모집기간</label>
               <div className="grid grid-cols-2 gap-2.5">
-                <input type="date" name="recruit_start_date" className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]" />
-                <input type="date" name="recruit_end_date" className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]" />
+                <input
+                  type="date"
+                  name="recruit_start_date"
+                  defaultValue={job?.recruit_start_date || ""}
+                  className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
+                />
+                <input
+                  type="date"
+                  name="recruit_end_date"
+                  defaultValue={job?.recruit_end_date || ""}
+                  className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
+                />
               </div>
             </div>
 
             <input
               name="application_method"
+              defaultValue={job?.application_method || ""}
               placeholder="접수방법 (예: 온라인 접수, 이메일 접수)"
               className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
             />
             <input
               type="email"
               name="application_email"
+              defaultValue={job?.application_email || ""}
               placeholder="접수 이메일 (선택)"
               className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
             />
             <input
               name="required_documents"
+              defaultValue={job?.required_documents || ""}
               placeholder="제출서류 (예: 이력서, 자기소개서)"
               className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
             />
             <input
               name="work_address"
+              defaultValue={job?.work_address || ""}
               placeholder="근무지 상세주소"
               className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
             />
             <input
               name="nearby_station"
+              defaultValue={job?.nearby_station || ""}
               placeholder="인근 지하철역 (예: 2호선 강남역)"
               className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
             />
@@ -436,6 +473,7 @@ export default function AdminJobForm({ accounts }: { accounts: Account[] }) {
             <textarea
               ref={descRef}
               name="description"
+              defaultValue={job?.description || ""}
               placeholder="위 항목을 채운 뒤 AI 버튼을 누르면 초안을 자동으로 작성합니다."
               rows={5}
               className="w-full rounded-sm border border-line px-3 py-2.5 text-[13.5px]"
@@ -479,7 +517,7 @@ export default function AdminJobForm({ accounts }: { accounts: Account[] }) {
           </div>
 
           <label className="flex items-center gap-2 text-[13px]">
-            <input type="checkbox" name="is_urgent" /> 긴급 채용으로 등록
+            <input type="checkbox" name="is_urgent" defaultChecked={job?.is_urgent} /> 긴급 채용으로 등록
           </label>
 
           {state.error && <p className="text-[12.5px] font-bold text-coral">{state.error}</p>}
@@ -488,13 +526,15 @@ export default function AdminJobForm({ accounts }: { accounts: Account[] }) {
             disabled={pending}
             className="w-full rounded-sm bg-coral py-3 text-[14.5px] font-bold text-white hover:bg-coral-deep disabled:opacity-60"
           >
-            {pending ? "등록 중..." : selected ? `${selected.name} 명의로 공고 등록` : "계정 연결 없이 등록"}
+            {pending ? "저장 중..." : isEdit ? "수정 내용 저장" : selected ? `${selected.name} 명의로 공고 등록` : "계정 연결 없이 등록"}
           </button>
-          <p className="text-[11.5px] text-ink-soft">
-            {selected
-              ? "등록한 공고는 바로 승인되어 목록에 노출되며, 선택한 계정이 대시보드에서 그대로 확인·수정할 수 있습니다."
-              : "등록한 공고는 바로 승인되어 목록에 노출되지만, 아직 연결된 계정이 없어 관리자만 수정·마감할 수 있습니다. 이 업체가 나중에 회원가입하면 계정을 연결해주세요."}
-          </p>
+          {!isEdit && (
+            <p className="text-[11.5px] text-ink-soft">
+              {selected
+                ? "등록한 공고는 바로 승인되어 목록에 노출되며, 선택한 계정이 대시보드에서 그대로 확인·수정할 수 있습니다."
+                : "등록한 공고는 바로 승인되어 목록에 노출되지만, 아직 연결된 계정이 없어 관리자만 수정·마감할 수 있습니다. 이 업체가 나중에 회원가입하면 계정을 연결해주세요."}
+            </p>
+          )}
         </>
       )}
     </form>

@@ -70,6 +70,12 @@ export default async function AdminJobsPage() {
               </div>
               <div className="flex flex-wrap items-center gap-1.5">
                 {!job.clinic_id && !job.lab_id && <LinkJobAccount jobId={job.id} accounts={accounts} />}
+                <Link
+                  href={`/admin/jobs/edit/${job.id}`}
+                  className="rounded-full border border-line px-2.5 py-1 text-[11px] font-bold text-ink-soft hover:border-teal hover:text-teal"
+                >
+                  수정
+                </Link>
                 <AdminPromotionToggle jobId={job.id} field="is_urgent" label="긴급" initialValue={!!job.is_urgent} />
                 <AdminPromotionToggle jobId={job.id} field="is_pinned" label="상단고정" initialValue={!!job.is_pinned} />
                 <AdminPromotionToggle jobId={job.id} field="is_main_exposed" label="프리미엄" initialValue={!!job.is_main_exposed} />

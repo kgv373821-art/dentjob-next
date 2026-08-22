@@ -99,6 +99,68 @@ export async function adminCreateJobPost(_prev: FormState, formData: FormData): 
   redirect("/admin/jobs");
 }
 
+/** 관리자가 공고 내용을 수정합니다 (소유 계정 변경은 linkJobPostToAccount에서 따로 처리). */
+export async function adminUpdateJobPost(id: string, _prev: FormState, formData: FormData): Promise<FormState> {
+  const supabase = await createClient();
+  await assertAdmin(supabase);
+
+  const target_role = String(formData.get("target_role") || "");
+
+  const org_name = String(formData.get("org_name") || "").trim() || null;
+  const job_type = String(formData.get("job_type") || "");
+  const title = String(formData.get("title") || "");
+  const region = String(formData.get("region") || "");
+  const payMinRaw = formData.get("pay_min");
+  const pay_min = payMinRaw ? Number(payMinRaw) : null;
+  const work_hours = String(formData.get("work_hours") || "") || null;
+  const description = String(formData.get("description") || "") || null;
+  const welfare = String(formData.get("welfare") || "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const is_urgent = formData.get("is_urgent") === "on";
+
+  let image_urls: string[] = [];
+  try {
+    const raw = JSON.parse(String(formData.get("image_urls") || "[]"));
+    if (Array.isArray(raw)) image_urls = raw.filter((u) => typeof u === "string").slice(0, 5);
+  } catch {
+    image_urls = [];
+  }
+
+  const lab_specialty = target_role === "lab" ? String(formData.get("lab_specialty") || "") || null : null;
+  const lab_category = target_role === "lab" ? String(formData.get("lab_category") || "") || null : null;
+  const pay_note = target_role === "lab" ? "+ 기공 수당 별도" : null;
+
+  if (!job_type || !title || !region) return { error: "필수 항목을 입력해주세요." };
+
+  const { error: updateError } = await supabase
+    .from("job_posts")
+    .update({
+      job_type,
+      lab_specialty,
+      lab_category,
+      title,
+      region,
+      pay_min,
+      pay_note,
+      work_hours,
+      welfare,
+      description,
+      is_urgent,
+      image_urls,
+      org_name,
+      ...parseJobDetailFields(formData),
+    })
+    .eq("id", id);
+  if (updateError) return { error: updateError.message };
+
+  revalidatePath(`/jobs/${id}`);
+  revalidatePath("/jobs");
+  revalidatePath("/admin/jobs");
+  redirect("/admin/jobs");
+}
+
 /**
  * 계정 연결 없이(업체명만으로) 등록됐던 공고를, 나중에 그 업체가 실제로 가입한 계정에 연결합니다.
  * 이미 다른 계정에 연결된 공고를 덮어쓰지 않도록 clinic_id/lab_id가 둘 다 비어 있는 공고만 대상으로 합니다.
