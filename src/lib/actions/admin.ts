@@ -4,7 +4,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { JOB_EXPIRY_DAYS } from "@/lib/constants";
-import { parseJobDetailFields, type FormState } from "@/lib/actions/jobs";
+import { parseJobDetailFields } from "@/lib/jobFields";
+import type { FormState } from "@/lib/actions/jobs";
 
 async function assertAdmin(supabase: Awaited<ReturnType<typeof createClient>>) {
   const {

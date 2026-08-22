@@ -4,35 +4,13 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { JOB_EXPIRY_DAYS, URGENT_LIMIT_CLINIC, URGENT_LIMIT_LAB } from "@/lib/constants";
+import { parseJobDetailFields } from "@/lib/jobFields";
 
 export type FormState = { error: string | null };
 
 // 테스트 기간 동안 관리자 승인 없이 공고가 바로 노출되게 하는 스위치.
 // 환경변수 AUTO_APPROVE_JOBS=true 로 켜고, 테스트가 끝나면 지우거나 false로 바꾸면 원래대로 승인 절차가 돌아온다.
 const AUTO_APPROVE_JOBS = process.env.AUTO_APPROVE_JOBS === "true";
-
-/** 채용정보 상세 항목(담당업무/근무형태/모집인원/학력/경력/모집기간/접수방법 등)을 폼에서 읽어옵니다. */
-export function parseJobDetailFields(formData: FormData) {
-  const str = (key: string) => String(formData.get(key) || "").trim() || null;
-  return {
-    duties: str("duties"),
-    employment_type: str("employment_type"),
-    headcount: str("headcount"),
-    education_level: str("education_level"),
-    career_requirement: str("career_requirement"),
-    recruit_start_date: str("recruit_start_date"),
-    recruit_end_date: str("recruit_end_date"),
-    application_method: str("application_method"),
-    application_email: str("application_email"),
-    required_documents: str("required_documents"),
-    work_address: str("work_address"),
-    nearby_station: str("nearby_station"),
-    homepage_url: str("homepage_url"),
-    hr_contact_name: str("hr_contact_name"),
-    hr_contact_phone: str("hr_contact_phone"),
-    contact_email: str("contact_email"),
-  };
-}
 
 /** 현재 로그인한 사용자의 clinic 또는 lab 소유 레코드를 반환 */
 async function getOwner(supabase: Awaited<ReturnType<typeof createClient>>) {
