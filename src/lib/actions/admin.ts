@@ -163,8 +163,10 @@ export async function adminUpdateJobPost(id: string, _prev: FormState, formData:
 }
 
 /**
- * 계정 연결 없이(업체명만으로) 등록됐던 공고를, 나중에 그 업체가 실제로 가입한 계정에 연결합니다.
- * 이미 다른 계정에 연결된 공고를 덮어쓰지 않도록 clinic_id/lab_id가 둘 다 비어 있는 공고만 대상으로 합니다.
+ * 공고의 소유 계정을 지정한 치과/기공소 계정으로 연결(또는 재연결)합니다.
+ * - 계정 없이(업체명만으로) 등록됐던 공고를 나중에 가입한 계정에 처음 연결할 때
+ * - 중복 가입 등으로 잘못된 계정에 연결돼 있던 공고를 올바른 계정으로 옮길 때
+ * 두 경우 모두에 씁니다. org_type도 선택한 역할에 맞게 함께 갱신합니다.
  */
 export async function linkJobPostToAccount(jobId: string, role: "clinic" | "lab", accountId: string) {
   const supabase = await createClient();
@@ -179,10 +181,12 @@ export async function linkJobPostToAccount(jobId: string, role: "clinic" | "lab"
 
   const { error } = await supabase
     .from("job_posts")
-    .update({ clinic_id: role === "clinic" ? accountId : null, lab_id: role === "lab" ? accountId : null })
-    .eq("id", jobId)
-    .is("clinic_id", null)
-    .is("lab_id", null);
+    .update({
+      clinic_id: role === "clinic" ? accountId : null,
+      lab_id: role === "lab" ? accountId : null,
+      org_type: role,
+    })
+    .eq("id", jobId);
   if (error) throw new Error(error.message);
 
   revalidatePath("/admin/jobs");

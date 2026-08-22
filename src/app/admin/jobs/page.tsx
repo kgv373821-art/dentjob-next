@@ -31,13 +31,16 @@ export default async function AdminJobsPage() {
     ...(labs || []).map((l) => ({ id: l.id, role: "lab" as const, name: l.lab_name, region: l.region_main })),
   ];
 
-  const rows = (jobs || []).map((j) => ({
-    ...j,
-    org:
-      (j as unknown as { org_name?: string }).org_name ||
+  const rows = (jobs || []).map((j) => {
+    const linkedName =
       (j as unknown as { clinics?: { clinic_name: string } }).clinics?.clinic_name ||
-      (j as unknown as { labs?: { lab_name: string } }).labs?.lab_name,
-  })) as (JobPost & { org?: string })[];
+      (j as unknown as { labs?: { lab_name: string } }).labs?.lab_name;
+    return {
+      ...j,
+      org: (j as unknown as { org_name?: string }).org_name || linkedName,
+      linkedAccountName: linkedName,
+    };
+  }) as (JobPost & { org?: string; linkedAccountName?: string })[];
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-9">
@@ -69,7 +72,7 @@ export default async function AdminJobsPage() {
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-1.5">
-                {!job.clinic_id && !job.lab_id && <LinkJobAccount jobId={job.id} accounts={accounts} />}
+                <LinkJobAccount jobId={job.id} accounts={accounts} currentOwnerName={job.linkedAccountName} />
                 <Link
                   href={`/admin/jobs/edit/${job.id}`}
                   className="rounded-full border border-line px-2.5 py-1 text-[11px] font-bold text-ink-soft hover:border-teal hover:text-teal"

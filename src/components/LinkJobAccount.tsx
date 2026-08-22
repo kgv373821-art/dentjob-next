@@ -5,7 +5,16 @@ import { linkJobPostToAccount } from "@/lib/actions/admin";
 
 type Account = { id: string; role: "clinic" | "lab"; name: string; region: string };
 
-export default function LinkJobAccount({ jobId, accounts }: { jobId: string; accounts: Account[] }) {
+export default function LinkJobAccount({
+  jobId,
+  accounts,
+  currentOwnerName,
+}: {
+  jobId: string;
+  accounts: Account[];
+  /** 이미 연결된 계정이 있으면 그 이름 — 있으면 "계정 변경", 없으면 "미연결 · 계정 연결"로 표시합니다. */
+  currentOwnerName?: string | null;
+}) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [linkedName, setLinkedName] = useState<string | null>(null);
@@ -18,12 +27,17 @@ export default function LinkJobAccount({ jobId, accounts }: { jobId: string; acc
     return accounts.filter((a) => a.name.includes(q) || a.region.includes(q)).slice(0, 20);
   }, [accounts, query]);
 
-  if (linkedName) {
-    return <span className="rounded-sm bg-teal-tint px-1.5 py-0.5 text-[11px] font-bold text-teal">{linkedName} 계정에 연결됨</span>;
-  }
+  const ownerName = linkedName ?? currentOwnerName ?? null;
 
   if (!open) {
-    return (
+    return ownerName ? (
+      <span className="inline-flex items-center gap-1 rounded-sm bg-teal-tint px-1.5 py-0.5 text-[11px] font-bold text-teal">
+        {ownerName} 계정
+        <button type="button" onClick={() => setOpen(true)} className="font-bold text-ink-soft hover:text-coral">
+          변경
+        </button>
+      </span>
+    ) : (
       <button
         type="button"
         onClick={() => setOpen(true)}
