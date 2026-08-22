@@ -99,6 +99,34 @@ export async function adminCreateJobPost(_prev: FormState, formData: FormData): 
   redirect("/admin/jobs");
 }
 
+/**
+ * 계정 연결 없이(업체명만으로) 등록됐던 공고를, 나중에 그 업체가 실제로 가입한 계정에 연결합니다.
+ * 이미 다른 계정에 연결된 공고를 덮어쓰지 않도록 clinic_id/lab_id가 둘 다 비어 있는 공고만 대상으로 합니다.
+ */
+export async function linkJobPostToAccount(jobId: string, role: "clinic" | "lab", accountId: string) {
+  const supabase = await createClient();
+  await assertAdmin(supabase);
+
+  const { data: account } = await supabase
+    .from(role === "clinic" ? "clinics" : "labs")
+    .select("id")
+    .eq("id", accountId)
+    .single();
+  if (!account) throw new Error("선택한 계정을 찾을 수 없습니다.");
+
+  const { error } = await supabase
+    .from("job_posts")
+    .update({ clinic_id: role === "clinic" ? accountId : null, lab_id: role === "lab" ? accountId : null })
+    .eq("id", jobId)
+    .is("clinic_id", null)
+    .is("lab_id", null);
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/admin/jobs");
+  revalidatePath("/jobs");
+  revalidatePath(role === "clinic" ? "/dashboard/clinic" : "/dashboard/lab");
+}
+
 export async function approveJobPost(id: string) {
   const supabase = await createClient();
   await assertAdmin(supabase);

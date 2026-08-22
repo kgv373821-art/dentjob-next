@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import AdminPromotionToggle from "@/components/AdminPromotionToggle";
+import LinkJobAccount from "@/components/LinkJobAccount";
 import type { JobPost } from "@/lib/types";
 
 export default async function AdminJobsPage() {
@@ -14,12 +15,21 @@ export default async function AdminJobsPage() {
   const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
   if (profile?.role !== "admin") redirect("/");
 
-  const { data: jobs } = await supabase
-    .from("job_posts")
-    .select("*, clinics(clinic_name), labs(lab_name)")
-    .eq("status", "approved")
-    .order("posted_at", { ascending: false })
-    .limit(100);
+  const [{ data: jobs }, { data: clinics }, { data: labs }] = await Promise.all([
+    supabase
+      .from("job_posts")
+      .select("*, clinics(clinic_name), labs(lab_name)")
+      .eq("status", "approved")
+      .order("posted_at", { ascending: false })
+      .limit(100),
+    supabase.from("clinics").select("id, clinic_name, region_main").order("clinic_name"),
+    supabase.from("labs").select("id, lab_name, region_main").order("lab_name"),
+  ]);
+
+  const accounts = [
+    ...(clinics || []).map((c) => ({ id: c.id, role: "clinic" as const, name: c.clinic_name, region: c.region_main })),
+    ...(labs || []).map((l) => ({ id: l.id, role: "lab" as const, name: l.lab_name, region: l.region_main })),
+  ];
 
   const rows = (jobs || []).map((j) => ({
     ...j,
@@ -58,7 +68,8 @@ export default async function AdminJobsPage() {
                   {job.org} · {job.region} · {job.job_type}
                 </div>
               </div>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap items-center gap-1.5">
+                {!job.clinic_id && !job.lab_id && <LinkJobAccount jobId={job.id} accounts={accounts} />}
                 <AdminPromotionToggle jobId={job.id} field="is_urgent" label="긴급" initialValue={!!job.is_urgent} />
                 <AdminPromotionToggle jobId={job.id} field="is_pinned" label="상단고정" initialValue={!!job.is_pinned} />
                 <AdminPromotionToggle jobId={job.id} field="is_main_exposed" label="프리미엄" initialValue={!!job.is_main_exposed} />
