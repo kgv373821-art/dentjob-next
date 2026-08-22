@@ -16,6 +16,8 @@ export default function AdminJobForm({ accounts }: { accounts: Account[] }) {
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<Account | null>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
+  // 아직 회원가입하지 않은 치과/기공소를 대신 등록할 때 — 계정 연결 없이 업체명만 직접 입력하는 모드
+  const [noAccountRole, setNoAccountRole] = useState<"clinic" | "lab" | null>(null);
 
   const filtered = useMemo(() => {
     const q = query.trim();
@@ -23,7 +25,8 @@ export default function AdminJobForm({ accounts }: { accounts: Account[] }) {
     return accounts.filter((a) => a.name.includes(q) || a.region.includes(q)).slice(0, 30);
   }, [accounts, query]);
 
-  const role = selected?.role;
+  const role = selected?.role ?? noAccountRole ?? undefined;
+  const targetChosen = !!selected || !!noAccountRole;
   const jobTypeOptions = role === "lab" ? ["치과기공사", "CAD/CAM", "기공소 직원"] : JOB_TYPES;
 
   const [payNegotiable, setPayNegotiable] = useState(false);
@@ -138,55 +141,81 @@ export default function AdminJobForm({ accounts }: { accounts: Account[] }) {
               변경
             </button>
           </div>
+        ) : noAccountRole ? (
+          <div className="flex items-center justify-between rounded-sm border border-line bg-white px-3 py-2.5">
+            <div>
+              <span className="mr-1.5 rounded-sm bg-paper-dim px-1.5 py-0.5 text-[11px] font-bold text-ink-soft">
+                {noAccountRole === "clinic" ? "치과" : "기공소"}
+              </span>
+              <span className="text-[13.5px]">계정 연결 없이 업체명 직접 입력</span>
+            </div>
+            <button type="button" onClick={() => setNoAccountRole(null)} className="text-[12px] font-bold text-ink-soft hover:text-coral">
+              변경
+            </button>
+          </div>
         ) : (
-          <div className="relative">
-            <input
-              value={query}
-              onChange={(e) => {
-                setQuery(e.target.value);
-                setPickerOpen(true);
-              }}
-              onFocus={() => setPickerOpen(true)}
-              placeholder="치과/기공소 이름으로 검색"
-              className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
-            />
-            {pickerOpen && (
-              <div className="absolute z-10 mt-1 max-h-64 w-full overflow-y-auto rounded-sm border border-line bg-white shadow-md">
-                {filtered.length === 0 && <p className="p-3 text-[12.5px] text-ink-soft">검색 결과가 없습니다.</p>}
-                {filtered.map((a) => (
-                  <button
-                    key={`${a.role}-${a.id}`}
-                    type="button"
-                    onClick={() => {
-                      setSelected(a);
-                      setPickerOpen(false);
-                    }}
-                    className="flex w-full items-center gap-2 border-b border-line px-3 py-2 text-left text-[13px] last:border-b-0 hover:bg-teal-tint"
-                  >
-                    <span className="rounded-sm bg-paper-dim px-1.5 py-0.5 text-[11px] font-bold text-ink-soft">
-                      {a.role === "clinic" ? "치과" : "기공소"}
-                    </span>
-                    <span className="font-semibold">{a.name}</span>
-                    <span className="text-[11.5px] text-ink-soft">{a.region}</span>
-                  </button>
-                ))}
-              </div>
-            )}
+          <div>
+            <div className="relative">
+              <input
+                value={query}
+                onChange={(e) => {
+                  setQuery(e.target.value);
+                  setPickerOpen(true);
+                }}
+                onFocus={() => setPickerOpen(true)}
+                placeholder="치과/기공소 이름으로 검색"
+                className="w-full rounded-sm border border-line bg-white px-3 py-2.5 text-[13.5px]"
+              />
+              {pickerOpen && (
+                <div className="absolute z-10 mt-1 max-h-64 w-full overflow-y-auto rounded-sm border border-line bg-white shadow-md">
+                  {filtered.length === 0 && <p className="p-3 text-[12.5px] text-ink-soft">검색 결과가 없습니다.</p>}
+                  {filtered.map((a) => (
+                    <button
+                      key={`${a.role}-${a.id}`}
+                      type="button"
+                      onClick={() => {
+                        setSelected(a);
+                        setPickerOpen(false);
+                      }}
+                      className="flex w-full items-center gap-2 border-b border-line px-3 py-2 text-left text-[13px] last:border-b-0 hover:bg-teal-tint"
+                    >
+                      <span className="rounded-sm bg-paper-dim px-1.5 py-0.5 text-[11px] font-bold text-ink-soft">
+                        {a.role === "clinic" ? "치과" : "기공소"}
+                      </span>
+                      <span className="font-semibold">{a.name}</span>
+                      <span className="text-[11.5px] text-ink-soft">{a.region}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <p className="mt-2 text-[12px] text-ink-soft">
+              아직 가입하지 않은 치과/기공소인가요?{" "}
+              <button type="button" onClick={() => setNoAccountRole("clinic")} className="font-bold text-teal hover:underline">
+                치과
+              </button>{" "}
+              또는{" "}
+              <button type="button" onClick={() => setNoAccountRole("lab")} className="font-bold text-teal hover:underline">
+                기공소
+              </button>
+              로 계정 연결 없이 등록하기
+            </p>
           </div>
         )}
       </div>
 
-      {selected && (
+      {targetChosen && (
         <>
-          <input type="hidden" name="target_role" value={selected.role} />
-          <input type="hidden" name="target_id" value={selected.id} />
+          <input type="hidden" name="target_role" value={role} />
+          <input type="hidden" name="target_id" value={selected?.id || ""} />
 
           <div>
             <label className="mb-1 block text-[12px] font-bold text-ink-soft">업체명 (이 공고에 표시됩니다)</label>
             <input
               name="org_name"
               required
-              defaultValue={selected.name}
+              defaultValue={selected?.name || ""}
+              placeholder={noAccountRole === "lab" ? "업체명 (예: OO치과기공소)" : "업체명 (예: OO치과의원)"}
               className="w-full rounded-sm border border-line px-3 py-2.5 text-[13.5px]"
             />
           </div>
@@ -459,9 +488,13 @@ export default function AdminJobForm({ accounts }: { accounts: Account[] }) {
             disabled={pending}
             className="w-full rounded-sm bg-coral py-3 text-[14.5px] font-bold text-white hover:bg-coral-deep disabled:opacity-60"
           >
-            {pending ? "등록 중..." : `${selected.name} 명의로 공고 등록`}
+            {pending ? "등록 중..." : selected ? `${selected.name} 명의로 공고 등록` : "계정 연결 없이 등록"}
           </button>
-          <p className="text-[11.5px] text-ink-soft">등록한 공고는 바로 승인되어 목록에 노출되며, 선택한 계정이 대시보드에서 그대로 확인·수정할 수 있습니다.</p>
+          <p className="text-[11.5px] text-ink-soft">
+            {selected
+              ? "등록한 공고는 바로 승인되어 목록에 노출되며, 선택한 계정이 대시보드에서 그대로 확인·수정할 수 있습니다."
+              : "등록한 공고는 바로 승인되어 목록에 노출되지만, 아직 연결된 계정이 없어 관리자만 수정·마감할 수 있습니다. 이 업체가 나중에 회원가입하면 계정을 연결해주세요."}
+          </p>
         </>
       )}
     </form>

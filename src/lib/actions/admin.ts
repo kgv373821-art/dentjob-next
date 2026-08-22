@@ -27,17 +27,20 @@ export async function adminCreateJobPost(_prev: FormState, formData: FormData): 
 
   const target_role = String(formData.get("target_role") || "");
   const target_id = String(formData.get("target_id") || "");
-  if (target_role !== "clinic" && target_role !== "lab") return { error: "공고를 등록할 치과/기공소 계정을 선택해주세요." };
-  if (!target_id) return { error: "공고를 등록할 치과/기공소 계정을 선택해주세요." };
+  if (target_role !== "clinic" && target_role !== "lab") return { error: "치과 또는 기공소를 선택해주세요." };
 
-  const { data: target } = await supabase
-    .from(target_role === "clinic" ? "clinics" : "labs")
-    .select("id")
-    .eq("id", target_id)
-    .single();
-  if (!target) return { error: "선택한 계정을 찾을 수 없습니다." };
+  // target_id가 있으면(기존 가입 계정 선택) 실제로 존재하는지 확인 — 없으면(계정 없이 등록) clinic_id/lab_id를 비워둡니다.
+  if (target_id) {
+    const { data: target } = await supabase
+      .from(target_role === "clinic" ? "clinics" : "labs")
+      .select("id")
+      .eq("id", target_id)
+      .single();
+    if (!target) return { error: "선택한 계정을 찾을 수 없습니다." };
+  }
 
   const org_name = String(formData.get("org_name") || "").trim() || null;
+  if (!target_id && !org_name) return { error: "계정을 연결하지 않는 경우 업체명은 필수입니다." };
   const job_type = String(formData.get("job_type") || "");
   const title = String(formData.get("title") || "");
   const region = String(formData.get("region") || "");
@@ -69,8 +72,8 @@ export async function adminCreateJobPost(_prev: FormState, formData: FormData): 
   const expiresAt = new Date(now.getTime() + JOB_EXPIRY_DAYS * 24 * 60 * 60 * 1000);
 
   const { error } = await supabase.from("job_posts").insert({
-    clinic_id: target_role === "clinic" ? target_id : null,
-    lab_id: target_role === "lab" ? target_id : null,
+    clinic_id: target_id && target_role === "clinic" ? target_id : null,
+    lab_id: target_id && target_role === "lab" ? target_id : null,
     job_type,
     lab_specialty,
     lab_category,
