@@ -95,6 +95,8 @@ export interface JobPost {
   id: string;
   clinic_id: string | null;
   lab_id: string | null;
+  /** clinic_id/lab_id가 둘 다 비어있는(계정 미연결) 공고도 치과용/기공소용 폼을 구분할 수 있도록 항상 저장됨. */
+  org_type: "clinic" | "lab";
   job_type: JobType;
   lab_specialty: LabSpecialty | null;
   lab_category: LabJobCategory | null;

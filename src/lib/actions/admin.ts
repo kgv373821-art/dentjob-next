@@ -74,6 +74,7 @@ export async function adminCreateJobPost(_prev: FormState, formData: FormData): 
   const { error } = await supabase.from("job_posts").insert({
     clinic_id: target_id && target_role === "clinic" ? target_id : null,
     lab_id: target_id && target_role === "lab" ? target_id : null,
+    org_type: target_role,
     job_type,
     lab_specialty,
     lab_category,

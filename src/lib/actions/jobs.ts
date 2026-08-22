@@ -101,6 +101,7 @@ export async function createJobPost(_prev: FormState, formData: FormData): Promi
   const { error } = await supabase.from("job_posts").insert({
     clinic_id: owner.role === "clinic" ? owner.id : null,
     lab_id: owner.role === "lab" ? owner.id : null,
+    org_type: owner.role,
     job_type,
     lab_specialty,
     lab_category,

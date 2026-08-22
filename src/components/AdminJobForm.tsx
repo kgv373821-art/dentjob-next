@@ -28,7 +28,7 @@ export default function AdminJobForm({ accounts, job }: { accounts: Account[]; j
     return accounts.filter((a) => a.name.includes(q) || a.region.includes(q)).slice(0, 30);
   }, [accounts, query]);
 
-  const editRole: "clinic" | "lab" | undefined = job ? (job.clinic_id ? "clinic" : "lab") : undefined;
+  const editRole: "clinic" | "lab" | undefined = job?.org_type;
   const role = isEdit ? editRole : selected?.role ?? noAccountRole ?? undefined;
   const targetChosen = isEdit || !!selected || !!noAccountRole;
   const jobTypeOptions = role === "lab" ? ["치과기공사", "CAD/CAM", "기공소 직원"] : JOB_TYPES;
