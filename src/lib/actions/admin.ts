@@ -1,8 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { JOB_EXPIRY_DAYS } from "@/lib/constants";
+import { parseJobDetailFields, type FormState } from "@/lib/actions/jobs";
 
 async function assertAdmin(supabase: Awaited<ReturnType<typeof createClient>>) {
   const {
@@ -11,6 +13,86 @@ async function assertAdmin(supabase: Awaited<ReturnType<typeof createClient>>) {
   if (!user) throw new Error("로그인이 필요합니다.");
   const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
   if (profile?.role !== "admin") throw new Error("관리자만 접근할 수 있습니다.");
+}
+
+/**
+ * 관리자가 치과/기공소 계정을 대신해 공고를 등록합니다.
+ * (전화 접수 등 사이트 밖에서 요청받은 공고를 관리자가 대리 입력할 때 사용 — 등록된 공고는 그 계정 소유가 되어
+ * 해당 치과/기공소가 나중에 직접 로그인해도 자기 공고로 조회·수정할 수 있습니다.)
+ */
+export async function adminCreateJobPost(_prev: FormState, formData: FormData): Promise<FormState> {
+  const supabase = await createClient();
+  await assertAdmin(supabase);
+
+  const target_role = String(formData.get("target_role") || "");
+  const target_id = String(formData.get("target_id") || "");
+  if (target_role !== "clinic" && target_role !== "lab") return { error: "공고를 등록할 치과/기공소 계정을 선택해주세요." };
+  if (!target_id) return { error: "공고를 등록할 치과/기공소 계정을 선택해주세요." };
+
+  const { data: target } = await supabase
+    .from(target_role === "clinic" ? "clinics" : "labs")
+    .select("id")
+    .eq("id", target_id)
+    .single();
+  if (!target) return { error: "선택한 계정을 찾을 수 없습니다." };
+
+  const org_name = String(formData.get("org_name") || "").trim() || null;
+  const job_type = String(formData.get("job_type") || "");
+  const title = String(formData.get("title") || "");
+  const region = String(formData.get("region") || "");
+  const payMinRaw = formData.get("pay_min");
+  const pay_min = payMinRaw ? Number(payMinRaw) : null;
+  const work_hours = String(formData.get("work_hours") || "") || null;
+  const description = String(formData.get("description") || "") || null;
+  const welfare = String(formData.get("welfare") || "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const is_urgent = formData.get("is_urgent") === "on";
+
+  let image_urls: string[] = [];
+  try {
+    const raw = JSON.parse(String(formData.get("image_urls") || "[]"));
+    if (Array.isArray(raw)) image_urls = raw.filter((u) => typeof u === "string").slice(0, 5);
+  } catch {
+    image_urls = [];
+  }
+
+  const lab_specialty = target_role === "lab" ? String(formData.get("lab_specialty") || "") || null : null;
+  const lab_category = target_role === "lab" ? String(formData.get("lab_category") || "") || null : null;
+  const pay_note = target_role === "lab" ? "+ 기공 수당 별도" : null;
+
+  if (!job_type || !title || !region) return { error: "필수 항목을 입력해주세요." };
+
+  const now = new Date();
+  const expiresAt = new Date(now.getTime() + JOB_EXPIRY_DAYS * 24 * 60 * 60 * 1000);
+
+  const { error } = await supabase.from("job_posts").insert({
+    clinic_id: target_role === "clinic" ? target_id : null,
+    lab_id: target_role === "lab" ? target_id : null,
+    job_type,
+    lab_specialty,
+    lab_category,
+    title,
+    region,
+    pay_min,
+    pay_note,
+    work_hours,
+    welfare,
+    description,
+    is_urgent,
+    image_urls,
+    org_name,
+    status: "approved",
+    posted_at: now.toISOString(),
+    expires_at: expiresAt.toISOString(),
+    ...parseJobDetailFields(formData),
+  });
+  if (error) return { error: error.message };
+
+  revalidatePath("/jobs");
+  revalidatePath("/admin/jobs");
+  redirect("/admin/jobs");
 }
 
 export async function approveJobPost(id: string) {

@@ -12,7 +12,7 @@ export type FormState = { error: string | null };
 const AUTO_APPROVE_JOBS = process.env.AUTO_APPROVE_JOBS === "true";
 
 /** 채용정보 상세 항목(담당업무/근무형태/모집인원/학력/경력/모집기간/접수방법 등)을 폼에서 읽어옵니다. */
-function parseJobDetailFields(formData: FormData) {
+export function parseJobDetailFields(formData: FormData) {
   const str = (key: string) => String(formData.get(key) || "").trim() || null;
   return {
     duties: str("duties"),
