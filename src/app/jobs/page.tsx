@@ -149,13 +149,57 @@ export default async function JobsPage({
         </div>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {jobs.map((job) => (
-          <JobCard key={job.id} job={job} isLoggedIn={!!user} isFavorited={favoriteIds.includes(job.id)} isSeeker={isSeeker} emphasizeUrgent />
-        ))}
-      </div>
-      {jobs.length === 0 && (
-        <p className="py-16 text-center text-ink-soft">조건에 맞는 공고가 없습니다. 조건을 넓혀 다시 검색해보세요.</p>
+      {category ? (
+        <>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {jobs.map((job) => (
+              <JobCard key={job.id} job={job} isLoggedIn={!!user} isFavorited={favoriteIds.includes(job.id)} isSeeker={isSeeker} emphasizeUrgent />
+            ))}
+          </div>
+          {jobs.length === 0 && (
+            <p className="py-16 text-center text-ink-soft">조건에 맞는 공고가 없습니다. 조건을 넓혀 다시 검색해보세요.</p>
+          )}
+        </>
+      ) : (
+        <>
+          {(() => {
+            const clinicJobs = jobs.filter((j) => !!j.clinic_id);
+            const labJobs = jobs.filter((j) => !!j.lab_id);
+            return (
+              <div className="space-y-8">
+                <section>
+                  <h2 className="mb-3 border-b-2 border-teal pb-1.5 text-[15px] font-extrabold text-teal">
+                    치과 채용공고 <span className="font-normal text-ink-soft">({clinicJobs.length})</span>
+                  </h2>
+                  {clinicJobs.length > 0 ? (
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                      {clinicJobs.map((job) => (
+                        <JobCard key={job.id} job={job} isLoggedIn={!!user} isFavorited={favoriteIds.includes(job.id)} isSeeker={isSeeker} emphasizeUrgent />
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="py-8 text-center text-ink-soft">조건에 맞는 치과 공고가 없습니다.</p>
+                  )}
+                </section>
+
+                <section>
+                  <h2 className="mb-3 border-b-2 border-gold pb-1.5 text-[15px] font-extrabold text-gold">
+                    기공소 채용공고 <span className="font-normal text-ink-soft">({labJobs.length})</span>
+                  </h2>
+                  {labJobs.length > 0 ? (
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                      {labJobs.map((job) => (
+                        <JobCard key={job.id} job={job} isLoggedIn={!!user} isFavorited={favoriteIds.includes(job.id)} isSeeker={isSeeker} emphasizeUrgent />
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="py-8 text-center text-ink-soft">조건에 맞는 기공소 공고가 없습니다.</p>
+                  )}
+                </section>
+              </div>
+            );
+          })()}
+        </>
       )}
     </div>
   );
