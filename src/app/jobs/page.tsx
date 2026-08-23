@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import JobCard from "@/components/JobCard";
-import { REGIONS, JOB_TYPES, LAB_SPECIALTIES, EMPLOYMENT_TYPES } from "@/lib/constants";
+import { REGIONS, JOB_TYPES, LAB_SPECIALTIES, EMPLOYMENT_TYPES, isLabJob } from "@/lib/constants";
 import { getMyFavoriteIds } from "@/lib/actions/favorites";
 import type { JobPost } from "@/lib/types";
 
@@ -43,8 +43,6 @@ export default async function JobsPage({
   if (job_type) query = query.eq("job_type", job_type);
   if (lab_specialty) query = query.eq("lab_specialty", lab_specialty);
   if (employment_type) query = query.eq("employment_type", employment_type);
-  if (category === "lab") query = query.not("lab_id", "is", null);
-  if (category === "clinic") query = query.not("clinic_id", "is", null);
   if (sort === "urgent") query = query.eq("is_urgent", true);
   if (q) query = query.ilike("title", `%${q}%`);
 
@@ -56,17 +54,20 @@ export default async function JobsPage({
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const [{ data }, favoriteIds] = await Promise.all([query.limit(60), getMyFavoriteIds("job_post")]);
+  const [{ data }, favoriteIds] = await Promise.all([query.limit(90), getMyFavoriteIds("job_post")]);
   let isSeeker = false;
   if (user) {
     const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
     isSeeker = profile?.role === "seeker";
   }
-  const jobs = (data || []).map((r) => ({
+  let jobs = (data || []).map((r) => ({
     ...r,
     clinic_name: (r as unknown as { clinics?: { clinic_name: string } }).clinics?.clinic_name,
     lab_name: (r as unknown as { labs?: { lab_name: string } }).labs?.lab_name,
   })) as JobPost[];
+  if (category === "lab") jobs = jobs.filter((j) => isLabJob(j));
+  if (category === "clinic") jobs = jobs.filter((j) => !isLabJob(j));
+  jobs = jobs.slice(0, 60);
 
   const qs = (overrides: Record<string, string | undefined>) => {
     const params = new URLSearchParams();
@@ -163,8 +164,8 @@ export default async function JobsPage({
       ) : (
         <>
           {(() => {
-            const clinicJobs = jobs.filter((j) => !!j.clinic_id);
-            const labJobs = jobs.filter((j) => !!j.lab_id);
+            const labJobs = jobs.filter((j) => isLabJob(j));
+            const clinicJobs = jobs.filter((j) => !isLabJob(j));
             return (
               <div className="space-y-8">
                 <section>

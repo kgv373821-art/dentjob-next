@@ -8,7 +8,7 @@ import PopularClinics from "@/components/PopularClinics";
 import RecentlyViewedJobs from "@/components/RecentlyViewedJobs";
 import NoticesSidebar from "@/components/NoticesSidebar";
 import AdSlot from "@/components/AdSlot";
-import { LAB_SPECIALTIES } from "@/lib/constants";
+import { LAB_SPECIALTIES, isLabJob } from "@/lib/constants";
 import { getMyFavoriteIds } from "@/lib/actions/favorites";
 import type { JobPost, BoardPost } from "@/lib/types";
 import { BOARD_LABELS } from "@/lib/types";
@@ -36,8 +36,7 @@ export default async function HomePage() {
   const [
     { data: premiumJobs },
     { data: todayJobs },
-    { data: labJobs },
-    { data: clinicJobs },
+    { data: categorizedJobsRaw },
     { count: todayCount },
     { count: urgentCount },
     { count: seekerCount },
@@ -65,24 +64,13 @@ export default async function HomePage() {
       .limit(9),
     supabase
       .from("job_posts")
-      .select("*, labs(lab_name)")
+      .select("*, clinics(clinic_name), labs(lab_name)")
       .eq("status", "approved")
-      .not("lab_id", "is", null)
       .or(notExpired)
       .order("is_pinned", { ascending: false })
       .order("is_urgent", { ascending: false })
       .order("posted_at", { ascending: false })
-      .limit(6),
-    supabase
-      .from("job_posts")
-      .select("*, clinics(clinic_name)")
-      .eq("status", "approved")
-      .not("clinic_id", "is", null)
-      .or(notExpired)
-      .order("is_pinned", { ascending: false })
-      .order("is_urgent", { ascending: false })
-      .order("posted_at", { ascending: false })
-      .limit(6),
+      .limit(30),
     supabase
       .from("job_posts")
       .select("*", { count: "exact", head: true })
@@ -111,6 +99,10 @@ export default async function HomePage() {
   const outsourcing = (outsourcingRaw || [])
     .filter((j) => !j.expires_at || j.expires_at > nowIso)
     .slice(0, 4);
+
+  const categorizedJobs = normalizeJobs(categorizedJobsRaw);
+  const labJobs = categorizedJobs.filter((j) => isLabJob(j)).slice(0, 6);
+  const clinicJobs = categorizedJobs.filter((j) => !isLabJob(j)).slice(0, 6);
 
   let isSeeker = false;
   if (user) {
@@ -261,7 +253,7 @@ export default async function HomePage() {
           ))}
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {normalizeJobs(labJobs).map((job) => (
+          {labJobs.map((job) => (
             <JobCard key={job.id} job={job} {...cardProps} isFavorited={favoriteIds.includes(job.id)} emphasizeUrgent />
           ))}
           {(!labJobs || labJobs.length === 0) && (
@@ -298,7 +290,7 @@ export default async function HomePage() {
           ))}
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {normalizeJobs(clinicJobs).map((job) => (
+          {clinicJobs.map((job) => (
             <JobCard key={job.id} job={job} {...cardProps} isFavorited={favoriteIds.includes(job.id)} emphasizeUrgent />
           ))}
           {(!clinicJobs || clinicJobs.length === 0) && (
@@ -315,8 +307,8 @@ export default async function HomePage() {
           </div>
           {(() => {
             const today = normalizeJobs(todayJobs);
-            const todayClinic = today.filter((j) => !!j.clinic_id);
-            const todayLab = today.filter((j) => !!j.lab_id);
+            const todayLab = today.filter((j) => isLabJob(j));
+            const todayClinic = today.filter((j) => !isLabJob(j));
             if (today.length === 0) return <p className="py-12 text-center text-ink-soft">아직 등록된 공고가 없습니다.</p>;
             return (
               <div className="space-y-6">

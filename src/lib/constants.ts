@@ -29,6 +29,14 @@ export const EMPLOYMENT_TYPES = ["정규직", "계약직", "파트타임", "주�
 // 치과기공사 계열(기공소 관련) 직종 — 구직자 희망직종이 이 중 하나일 때만 "기공 전문분야"를 노출
 export const LAB_RELATED_JOB_TYPES = ["치과기공사", "CAD/CAM", "기공소 직원"];
 
+/**
+ * 공고가 기공소 계열인지 판별합니다. lab_id로 계정이 연결된 공고뿐 아니라, 관리자가
+ * 계정 연결 없이 대리 등록한 공고(clinic_id/lab_id 둘 다 null)도 직종으로 정확히 분류합니다.
+ */
+export function isLabJob(job: { lab_id?: string | null; job_type?: string | null }): boolean {
+  return !!job.lab_id || LAB_RELATED_JOB_TYPES.includes(job.job_type || "");
+}
+
 // 업체당 동시에 보유할 수 있는 "긴급 채용" 공고 개수 상한 (승인대기+게시중 기준)
 export const URGENT_LIMIT_CLINIC = 5;
 export const URGENT_LIMIT_LAB = 2;
