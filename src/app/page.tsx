@@ -313,14 +313,44 @@ export default async function HomePage() {
           <div className="mb-4.5 border-b-2 border-ink pb-2.5">
             <h2 className="text-[18px] font-extrabold tracking-tight">오늘 등록된 공고</h2>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {normalizeJobs(todayJobs).map((job) => (
-              <JobCard key={job.id} job={job} {...cardProps} isFavorited={favoriteIds.includes(job.id)} showNewBadge emphasizeUrgent />
-            ))}
-            {(!todayJobs || todayJobs.length === 0) && (
-              <p className="col-span-full py-12 text-center text-ink-soft">아직 등록된 공고가 없습니다.</p>
-            )}
-          </div>
+          {(() => {
+            const today = normalizeJobs(todayJobs);
+            const todayClinic = today.filter((j) => !!j.clinic_id);
+            const todayLab = today.filter((j) => !!j.lab_id);
+            if (today.length === 0) return <p className="py-12 text-center text-ink-soft">아직 등록된 공고가 없습니다.</p>;
+            return (
+              <div className="space-y-6">
+                <div>
+                  <h3 className="mb-2.5 border-b border-teal pb-1.5 text-[13px] font-bold text-teal">
+                    치과 <span className="font-normal text-ink-soft">({todayClinic.length})</span>
+                  </h3>
+                  {todayClinic.length > 0 ? (
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      {todayClinic.map((job) => (
+                        <JobCard key={job.id} job={job} {...cardProps} isFavorited={favoriteIds.includes(job.id)} showNewBadge emphasizeUrgent />
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="py-4 text-center text-[12.5px] text-ink-soft">오늘 등록된 치과 공고가 없습니다.</p>
+                  )}
+                </div>
+                <div>
+                  <h3 className="mb-2.5 border-b border-gold pb-1.5 text-[13px] font-bold text-gold">
+                    기공소 <span className="font-normal text-ink-soft">({todayLab.length})</span>
+                  </h3>
+                  {todayLab.length > 0 ? (
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      {todayLab.map((job) => (
+                        <JobCard key={job.id} job={job} {...cardProps} isFavorited={favoriteIds.includes(job.id)} showNewBadge emphasizeUrgent />
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="py-4 text-center text-[12.5px] text-ink-soft">오늘 등록된 기공소 공고가 없습니다.</p>
+                  )}
+                </div>
+              </div>
+            );
+          })()}
         </div>
 
         <aside className="space-y-4 md:sticky md:top-20 md:self-start">
