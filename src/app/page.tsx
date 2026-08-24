@@ -1,7 +1,7 @@
 import Link from "next/link";
-import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import SearchForm from "@/components/SearchForm";
+import HeroSlideshow from "@/components/HeroSlideshow";
 import JobCard from "@/components/JobCard";
 import AiRecommend from "@/components/AiRecommend";
 import PopularClinics from "@/components/PopularClinics";
@@ -122,13 +122,7 @@ export default async function HomePage() {
     <div>
       {/* 히어로 배너 */}
       <section className="relative min-h-[300px] overflow-hidden px-6 py-10 sm:min-h-[440px] sm:py-16">
-        <Image
-          src="/hero-bg.png"
-          alt=""
-          fill
-          priority
-          className="hero-ken-burns object-cover object-[center_30%]"
-        />
+        <HeroSlideshow images={["/hero-bg.png", "/hero-lab.jpg", "/hero-hygienist.jpg", "/hero-dentist.jpg"]} />
         <div className="absolute inset-0 bg-[rgba(11,61,58,0.9)] sm:hidden" />
         <div
           className="absolute inset-0 hidden sm:block"
