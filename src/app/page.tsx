@@ -70,7 +70,7 @@ export default async function HomePage() {
       .order("is_pinned", { ascending: false })
       .order("is_urgent", { ascending: false })
       .order("posted_at", { ascending: false })
-      .limit(30),
+      .limit(50),
     supabase
       .from("job_posts")
       .select("*", { count: "exact", head: true })
@@ -101,8 +101,8 @@ export default async function HomePage() {
     .slice(0, 4);
 
   const categorizedJobs = normalizeJobs(categorizedJobsRaw);
-  const labJobs = categorizedJobs.filter((j) => isLabJob(j)).slice(0, 6);
-  const clinicJobs = categorizedJobs.filter((j) => !isLabJob(j)).slice(0, 6);
+  const labJobs = categorizedJobs.filter((j) => isLabJob(j)).slice(0, 12);
+  const clinicJobs = categorizedJobs.filter((j) => !isLabJob(j)).slice(0, 12);
 
   let isSeeker = false;
   if (user) {
