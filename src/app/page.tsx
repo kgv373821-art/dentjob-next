@@ -127,7 +127,7 @@ export default async function HomePage() {
           alt=""
           fill
           priority
-          className="object-cover object-[center_30%]"
+          className="hero-ken-burns object-cover object-[center_30%]"
         />
         <div className="absolute inset-0 bg-[rgba(11,61,58,0.9)] sm:hidden" />
         <div

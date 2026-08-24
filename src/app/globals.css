@@ -35,6 +35,26 @@ body {
   color: var(--color-ink);
 }
 
+/* 히어로 배경 사진에 천천히 확대·축소되는 "켄번스 효과"를 줘서 정적인 이미지를 동영상처럼 살아있게 연출 */
+@keyframes ken-burns {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.12);
+  }
+}
+
+.hero-ken-burns {
+  animation: ken-burns 24s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-ken-burns {
+    animation: none;
+  }
+}
+
 .ticket-dot {
   content: "";
   position: absolute;
