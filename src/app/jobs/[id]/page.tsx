@@ -76,7 +76,9 @@ export default async function JobDetailPage({ params }: Props) {
   const address = clinic?.address || lab?.address;
   const phone = clinic?.profiles?.phone || lab?.profiles?.phone;
   const pageUrl = `${process.env.NEXT_PUBLIC_SITE_URL || ""}/jobs/${job.id}`;
-  const isExpired = !!job.expires_at && job.expires_at < new Date().toISOString();
+  const isExpired =
+    (!!job.expires_at && job.expires_at < new Date().toISOString()) ||
+    (!!job.recruit_end_date && job.recruit_end_date < new Date().toISOString().slice(0, 10));
   const isLab = !!job.lab_id;
 
   return (

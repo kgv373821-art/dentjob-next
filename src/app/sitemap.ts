@@ -9,6 +9,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .select("id, updated_at")
     .eq("status", "approved")
     .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
+    .or(`recruit_end_date.is.null,recruit_end_date.gte.${new Date().toISOString().slice(0, 10)}`)
     .limit(1000);
 
   const staticRoutes: MetadataRoute.Sitemap = [

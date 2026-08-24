@@ -33,11 +33,13 @@ export default async function JobsPage({
   const { region, job_type, category, sort = "new", lab_specialty, employment_type, q } = await searchParams;
   const supabase = await createClient();
 
+  const todayStr = new Date().toISOString().slice(0, 10);
   let query = supabase
     .from("job_posts")
     .select("*, clinics(clinic_name), labs(lab_name)")
     .eq("status", "approved")
-    .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`);
+    .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
+    .or(`recruit_end_date.is.null,recruit_end_date.gte.${todayStr}`);
 
   if (region) query = query.eq("region", region);
   if (job_type) query = query.eq("job_type", job_type);

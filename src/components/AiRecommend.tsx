@@ -45,13 +45,14 @@ export default async function AiRecommend({ compact = false }: { compact?: boole
   if (conditions.length > 0) query = query.or(conditions.join(","));
 
   const nowIso = new Date().toISOString();
+  const todayStr = nowIso.slice(0, 10);
   const [{ data: jobs }, favoriteIds] = await Promise.all([
     query.order("posted_at", { ascending: false }).limit((compact ? 3 : 6) * 3),
     getMyFavoriteIds("job_post"),
   ]);
 
   const normalized = (jobs || [])
-    .filter((r) => !r.expires_at || r.expires_at > nowIso)
+    .filter((r) => (!r.expires_at || r.expires_at > nowIso) && (!r.recruit_end_date || r.recruit_end_date >= todayStr))
     .slice(0, compact ? 3 : 6)
     .map((r) => ({
       ...r,

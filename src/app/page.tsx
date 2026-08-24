@@ -31,7 +31,9 @@ export default async function HomePage() {
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0);
   const nowIso = new Date().toISOString();
+  const todayStr = nowIso.slice(0, 10);
   const notExpired = `expires_at.is.null,expires_at.gt.${nowIso}`;
+  const notPastDeadline = `recruit_end_date.is.null,recruit_end_date.gte.${todayStr}`;
 
   const [
     { data: premiumJobs },
@@ -52,6 +54,7 @@ export default async function HomePage() {
       .eq("status", "approved")
       .eq("is_main_exposed", true)
       .or(notExpired)
+      .or(notPastDeadline)
       .order("posted_at", { ascending: false })
       .limit(6),
     supabase
@@ -59,6 +62,7 @@ export default async function HomePage() {
       .select("*, clinics(clinic_name), labs(lab_name)")
       .eq("status", "approved")
       .or(notExpired)
+      .or(notPastDeadline)
       .order("is_pinned", { ascending: false })
       .order("posted_at", { ascending: false })
       .limit(9),
@@ -67,6 +71,7 @@ export default async function HomePage() {
       .select("*, clinics(clinic_name), labs(lab_name)")
       .eq("status", "approved")
       .or(notExpired)
+      .or(notPastDeadline)
       .order("is_pinned", { ascending: false })
       .order("is_urgent", { ascending: false })
       .order("posted_at", { ascending: false })
@@ -81,7 +86,8 @@ export default async function HomePage() {
       .select("*", { count: "exact", head: true })
       .eq("status", "approved")
       .eq("is_urgent", true)
-      .or(notExpired),
+      .or(notExpired)
+      .or(notPastDeadline),
     supabase.from("seekers").select("*", { count: "exact", head: true }),
     supabase.from("board_posts").select("*, profiles(name)").order("created_at", { ascending: false }).limit(5),
     supabase.from("board_posts").select("*, profiles(name)").eq("board", "used_equipment").order("created_at", { ascending: false }).limit(4),
@@ -97,7 +103,7 @@ export default async function HomePage() {
   ]);
 
   const outsourcing = (outsourcingRaw || [])
-    .filter((j) => !j.expires_at || j.expires_at > nowIso)
+    .filter((j) => (!j.expires_at || j.expires_at > nowIso) && (!j.recruit_end_date || j.recruit_end_date >= todayStr))
     .slice(0, 4);
 
   const categorizedJobs = normalizeJobs(categorizedJobsRaw);
