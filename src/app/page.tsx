@@ -225,34 +225,34 @@ export default async function HomePage() {
 
       {/* 광고: 메인중단 */}
       <section className="mx-auto max-w-6xl px-6 pb-9">
-        <AdSlot position="main_mid" />
+        <AdSlot position="main_mid" compact />
       </section>
 
       {/* 치과기공사 전문관 */}
-      <section className="mx-auto max-w-6xl rounded px-6 py-9" style={{ background: "linear-gradient(135deg, #f59e0b, #d97706)" }}>
-        <div className="mb-1.5 flex items-end justify-between border-b-2 border-ink/20 pb-2.5">
-          <h2 className="text-[18px] font-extrabold tracking-tight text-ink">
+      <section className="mx-auto max-w-7xl rounded px-8 py-11" style={{ background: "linear-gradient(180deg, #2dd4bf, #14b8a6)" }}>
+        <div className="mb-2 flex items-end justify-between border-b-2 border-ink/20 pb-3">
+          <h2 className="text-[19px] font-extrabold tracking-tight text-ink">
             치과기공사 전문관 <span className="ml-2 text-[13px] font-bold text-white">기공소 채용 특화</span>
           </h2>
-          <Link href="/jobs?category=lab" className="rounded-sm bg-white px-3 py-1.5 text-[12.5px] font-bold text-[#d97706] hover:bg-white/90">
+          <Link href="/jobs?category=lab" className="rounded-sm bg-white px-3 py-1.5 text-[12.5px] font-bold text-[#0f766e] hover:bg-white/90">
             기공소 회원 바로가기
           </Link>
         </div>
-        <p className="mb-4 mt-1 text-[13.5px] text-ink/70">
+        <p className="mb-5 mt-1.5 text-[13.5px] text-ink/70">
           치과기공사 · CAD/CAM · 기공소 직원 채용만 모아봤습니다. 케이스 단가와 기공 수당을 함께 확인하세요.
         </p>
-        <div className="mb-5 flex flex-wrap gap-1.5">
+        <div className="mb-6 flex flex-wrap gap-1.5">
           {LAB_SPECIALTIES.map((s) => (
             <Link
               key={s}
               href={`/jobs?category=lab&lab_specialty=${encodeURIComponent(s)}`}
-              className="rounded-full bg-white/90 px-3 py-1.5 text-[12px] font-bold text-[#d97706] hover:bg-white"
+              className="rounded-full bg-white/90 px-3 py-1.5 text-[12px] font-bold text-[#0f766e] hover:bg-white"
             >
               {s}
             </Link>
           ))}
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {labJobs.map((job) => (
             <JobCard key={job.id} job={job} {...cardProps} isFavorited={favoriteIds.includes(job.id)} emphasizeUrgent />
           ))}
@@ -264,21 +264,21 @@ export default async function HomePage() {
 
       {/* 치과 구인등록 */}
       <section
-        className="mx-auto mt-6 max-w-6xl rounded px-6 py-9"
+        className="mx-auto mt-6 max-w-7xl rounded px-8 py-11"
         style={{ background: "linear-gradient(180deg, #0d9488, #0f766e)" }}
       >
-        <div className="mb-1.5 flex items-end justify-between border-b-2 border-[#fde68a] pb-2.5">
-          <h2 className="text-[18px] font-extrabold tracking-tight text-white">
+        <div className="mb-2 flex items-end justify-between border-b-2 border-[#fde68a] pb-3">
+          <h2 className="text-[19px] font-extrabold tracking-tight text-white">
             치과 구인등록 <span className="ml-2 text-[13px] font-bold text-[#fde68a]">치과·병원 채용 특화</span>
           </h2>
           <Link href="/jobs?category=clinic" className="rounded-sm border border-white/60 px-3 py-1.5 text-[12.5px] font-bold text-white hover:bg-white/10">
             치과 채용 전체보기
           </Link>
         </div>
-        <p className="mb-4 mt-1 text-[13.5px] text-white/80">
+        <p className="mb-5 mt-1.5 text-[13.5px] text-white/80">
           치과의사·치과위생사·치과조무사부터 데스크·상담실장까지, 치과 전용 채용공고만 모아봤습니다.
         </p>
-        <div className="mb-5 flex flex-wrap gap-1.5">
+        <div className="mb-6 flex flex-wrap gap-1.5">
           {CLINIC_JOB_SHORTCUTS.map((jt) => (
             <Link
               key={jt}
@@ -289,7 +289,7 @@ export default async function HomePage() {
             </Link>
           ))}
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {clinicJobs.map((job) => (
             <JobCard key={job.id} job={job} {...cardProps} isFavorited={favoriteIds.includes(job.id)} emphasizeUrgent />
           ))}

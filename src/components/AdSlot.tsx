@@ -7,7 +7,15 @@ function youtubeId(url: string) {
   return m?.[1] || null;
 }
 
-export default async function AdSlot({ position, className }: { position: AdPosition; className?: string }) {
+export default async function AdSlot({
+  position,
+  className,
+  compact: forceCompact,
+}: {
+  position: AdPosition;
+  className?: string;
+  compact?: boolean;
+}) {
   const supabase = await createClient();
   const today = new Date().toISOString().slice(0, 10);
 
@@ -25,11 +33,12 @@ export default async function AdSlot({ position, className }: { position: AdPosi
   if (ads.length === 0) return null;
 
   const isSidebar = position === "sidebar";
+  const compact = isSidebar || !!forceCompact;
 
   return (
     <div className={`${isSidebar ? "space-y-3" : "grid gap-3 sm:grid-cols-2 lg:grid-cols-3"} ${className || ""}`}>
       {ads.map((ad) => (
-        <AdCard key={ad.id} ad={ad} compact={isSidebar} />
+        <AdCard key={ad.id} ad={ad} compact={compact} />
       ))}
     </div>
   );
