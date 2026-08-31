@@ -223,11 +223,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 광고: 메인중단 */}
-      <section className="mx-auto max-w-4xl px-6 pb-9">
-        <AdSlot position="main_mid" compact />
-      </section>
-
       {/* 치과기공사 전문관 */}
       <section
         className="mx-auto max-w-7xl rounded px-8 py-11"
@@ -359,6 +354,7 @@ export default async function HomePage() {
               광고 상품 보기
             </Link>
           </div>
+          <AdSlot position="main_mid" compact />
           <RecentlyViewedJobs />
           <NoticesSidebar />
         </aside>
