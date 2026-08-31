@@ -224,17 +224,20 @@ export default async function HomePage() {
       </section>
 
       {/* 광고: 메인중단 */}
-      <section className="mx-auto max-w-6xl px-6 pb-9">
+      <section className="mx-auto max-w-4xl px-6 pb-9">
         <AdSlot position="main_mid" compact />
       </section>
 
       {/* 치과기공사 전문관 */}
-      <section className="mx-auto max-w-7xl rounded px-8 py-11" style={{ background: "linear-gradient(180deg, #2dd4bf, #14b8a6)" }}>
-        <div className="mb-2 flex items-end justify-between border-b-2 border-ink/20 pb-3">
+      <section
+        className="mx-auto max-w-7xl rounded px-8 py-11"
+        style={{ background: "linear-gradient(180deg, #fffdf7, #f5eeda)" }}
+      >
+        <div className="mb-2 flex items-end justify-between border-b-2 border-ink/15 pb-3">
           <h2 className="text-[19px] font-extrabold tracking-tight text-ink">
-            치과기공사 전문관 <span className="ml-2 text-[13px] font-bold text-white">기공소 채용 특화</span>
+            치과기공사 전문관 <span className="ml-2 text-[13px] font-bold text-[#b45309]">기공소 채용 특화</span>
           </h2>
-          <Link href="/jobs?category=lab" className="rounded-sm bg-white px-3 py-1.5 text-[12.5px] font-bold text-[#0f766e] hover:bg-white/90">
+          <Link href="/jobs?category=lab" className="rounded-sm bg-ink px-3 py-1.5 text-[12.5px] font-bold text-white hover:bg-ink/90">
             기공소 회원 바로가기
           </Link>
         </div>
@@ -246,7 +249,7 @@ export default async function HomePage() {
             <Link
               key={s}
               href={`/jobs?category=lab&lab_specialty=${encodeURIComponent(s)}`}
-              className="rounded-full bg-white/90 px-3 py-1.5 text-[12px] font-bold text-[#0f766e] hover:bg-white"
+              className="rounded-full border border-ink/25 bg-white px-3 py-1.5 text-[12px] font-bold text-ink hover:border-ink"
             >
               {s}
             </Link>
