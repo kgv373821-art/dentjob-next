@@ -229,16 +229,16 @@ export default async function HomePage() {
       </section>
 
       {/* 치과기공사 전문관 */}
-      <section className="mx-auto max-w-6xl rounded px-6 py-9" style={{ background: "var(--color-ink)" }}>
-        <div className="mb-1.5 flex items-end justify-between border-b-2 border-gold pb-2.5">
-          <h2 className="text-[18px] font-extrabold tracking-tight text-white">
-            치과기공사 전문관 <span className="ml-2 text-[13px] font-bold text-gold">기공소 채용 특화</span>
+      <section className="mx-auto max-w-6xl rounded px-6 py-9" style={{ background: "linear-gradient(135deg, #f59e0b, #d97706)" }}>
+        <div className="mb-1.5 flex items-end justify-between border-b-2 border-ink/20 pb-2.5">
+          <h2 className="text-[18px] font-extrabold tracking-tight text-ink">
+            치과기공사 전문관 <span className="ml-2 text-[13px] font-bold text-white">기공소 채용 특화</span>
           </h2>
-          <Link href="/jobs?category=lab" className="rounded-sm border border-gold px-3 py-1.5 text-[12.5px] font-bold text-gold hover:bg-gold/10">
+          <Link href="/jobs?category=lab" className="rounded-sm bg-white px-3 py-1.5 text-[12.5px] font-bold text-[#d97706] hover:bg-white/90">
             기공소 회원 바로가기
           </Link>
         </div>
-        <p className="mb-4 mt-1 text-[13.5px] text-[#B9BFBC]">
+        <p className="mb-4 mt-1 text-[13.5px] text-ink/70">
           치과기공사 · CAD/CAM · 기공소 직원 채용만 모아봤습니다. 케이스 단가와 기공 수당을 함께 확인하세요.
         </p>
         <div className="mb-5 flex flex-wrap gap-1.5">
@@ -246,7 +246,7 @@ export default async function HomePage() {
             <Link
               key={s}
               href={`/jobs?category=lab&lab_specialty=${encodeURIComponent(s)}`}
-              className="rounded-full border border-gold px-3 py-1.5 text-[12px] font-bold text-gold hover:bg-gold/10"
+              className="rounded-full bg-white/90 px-3 py-1.5 text-[12px] font-bold text-[#d97706] hover:bg-white"
             >
               {s}
             </Link>
@@ -257,7 +257,7 @@ export default async function HomePage() {
             <JobCard key={job.id} job={job} {...cardProps} isFavorited={favoriteIds.includes(job.id)} emphasizeUrgent />
           ))}
           {(!labJobs || labJobs.length === 0) && (
-            <p className="col-span-full py-12 text-center text-[#B9BFBC]">기공소 채용공고가 아직 없습니다.</p>
+            <p className="col-span-full py-12 text-center text-ink/70">기공소 채용공고가 아직 없습니다.</p>
           )}
         </div>
       </section>
@@ -265,11 +265,11 @@ export default async function HomePage() {
       {/* 치과 구인등록 */}
       <section
         className="mx-auto mt-6 max-w-6xl rounded px-6 py-9"
-        style={{ background: "linear-gradient(135deg, #0b4a45, #06211f)" }}
+        style={{ background: "linear-gradient(180deg, #0d9488, #0f766e)" }}
       >
-        <div className="mb-1.5 flex items-end justify-between border-b-2 border-gold pb-2.5">
+        <div className="mb-1.5 flex items-end justify-between border-b-2 border-[#fde68a] pb-2.5">
           <h2 className="text-[18px] font-extrabold tracking-tight text-white">
-            치과 구인등록 <span className="ml-2 text-[13px] font-bold text-gold">치과·병원 채용 특화</span>
+            치과 구인등록 <span className="ml-2 text-[13px] font-bold text-[#fde68a]">치과·병원 채용 특화</span>
           </h2>
           <Link href="/jobs?category=clinic" className="rounded-sm border border-white/60 px-3 py-1.5 text-[12.5px] font-bold text-white hover:bg-white/10">
             치과 채용 전체보기
