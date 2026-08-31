@@ -268,17 +268,17 @@ export default async function HomePage() {
       {/* 치과 구인등록 */}
       <section
         className="mx-auto mt-6 max-w-7xl rounded px-8 py-11"
-        style={{ background: "linear-gradient(180deg, #0d9488, #0f766e)" }}
+        style={{ background: "linear-gradient(180deg, #f0e6c8, #e3d3a0)" }}
       >
-        <div className="mb-2 flex items-end justify-between border-b-2 border-[#fde68a] pb-3">
-          <h2 className="text-[19px] font-extrabold tracking-tight text-white">
-            치과 구인등록 <span className="ml-2 text-[13px] font-bold text-[#fde68a]">치과·병원 채용 특화</span>
+        <div className="mb-2 flex items-end justify-between border-b-2 border-ink/15 pb-3">
+          <h2 className="text-[19px] font-extrabold tracking-tight text-ink">
+            치과 구인등록 <span className="ml-2 text-[13px] font-bold text-[#0f766e]">치과·병원 채용 특화</span>
           </h2>
-          <Link href="/jobs?category=clinic" className="rounded-sm border border-white/60 px-3 py-1.5 text-[12.5px] font-bold text-white hover:bg-white/10">
+          <Link href="/jobs?category=clinic" className="rounded-sm bg-[#0f766e] px-3 py-1.5 text-[12.5px] font-bold text-white hover:bg-[#0b5c55]">
             치과 채용 전체보기
           </Link>
         </div>
-        <p className="mb-5 mt-1.5 text-[13.5px] text-white/80">
+        <p className="mb-5 mt-1.5 text-[13.5px] text-ink/70">
           치과의사·치과위생사·치과조무사부터 데스크·상담실장까지, 치과 전용 채용공고만 모아봤습니다.
         </p>
         <div className="mb-6 flex flex-wrap gap-1.5">
@@ -286,7 +286,7 @@ export default async function HomePage() {
             <Link
               key={jt}
               href={`/jobs?category=clinic&job_type=${encodeURIComponent(jt)}`}
-              className="rounded-full border border-white/60 px-3 py-1.5 text-[12px] font-bold text-white hover:bg-white/10"
+              className="rounded-full border border-[#0f766e]/30 bg-white px-3 py-1.5 text-[12px] font-bold text-ink hover:border-[#0f766e]"
             >
               {jt}
             </Link>
@@ -297,7 +297,7 @@ export default async function HomePage() {
             <JobCard key={job.id} job={job} {...cardProps} isFavorited={favoriteIds.includes(job.id)} emphasizeUrgent />
           ))}
           {(!clinicJobs || clinicJobs.length === 0) && (
-            <p className="col-span-full py-12 text-center text-white/80">치과 채용공고가 아직 없습니다.</p>
+            <p className="col-span-full py-12 text-center text-ink/70">치과 채용공고가 아직 없습니다.</p>
           )}
         </div>
       </section>
