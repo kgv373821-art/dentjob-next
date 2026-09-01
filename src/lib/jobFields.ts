@@ -20,3 +20,16 @@ export function parseJobDetailFields(formData: FormData) {
     contact_email: str("contact_email"),
   };
 }
+
+/** image_urls와 같은 순서로 매칭되는 사진 설명을 폼에서 읽어옵니다. 개수를 imageCount에 맞춰 자르거나 빈 문자열로 채웁니다. */
+export function parseImageCaptions(formData: FormData, imageCount: number): string[] {
+  let captions: string[] = [];
+  try {
+    const raw = JSON.parse(String(formData.get("image_captions") || "[]"));
+    if (Array.isArray(raw)) captions = raw.filter((c) => typeof c === "string").slice(0, imageCount);
+  } catch {
+    captions = [];
+  }
+  while (captions.length < imageCount) captions.push("");
+  return captions;
+}

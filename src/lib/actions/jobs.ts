@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { JOB_EXPIRY_DAYS, URGENT_LIMIT_CLINIC, URGENT_LIMIT_LAB } from "@/lib/constants";
-import { parseJobDetailFields } from "@/lib/jobFields";
+import { parseJobDetailFields, parseImageCaptions } from "@/lib/jobFields";
 
 export type FormState = { error: string | null };
 
@@ -82,6 +82,7 @@ export async function createJobPost(_prev: FormState, formData: FormData): Promi
   } catch {
     image_urls = [];
   }
+  const image_captions = parseImageCaptions(formData, image_urls.length);
 
   // 기공소 전용 필드 (치과기공사 채용 축)
   const lab_specialty = owner.role === "lab" ? String(formData.get("lab_specialty") || "") || null : null;
@@ -114,6 +115,7 @@ export async function createJobPost(_prev: FormState, formData: FormData): Promi
     description,
     is_urgent,
     image_urls,
+    image_captions,
     org_name,
     status: AUTO_APPROVE_JOBS ? "approved" : "pending",
     posted_at: AUTO_APPROVE_JOBS ? now.toISOString() : null,
@@ -153,6 +155,7 @@ export async function updateJobPost(id: string, _prev: FormState, formData: Form
   } catch {
     image_urls = [];
   }
+  const image_captions = parseImageCaptions(formData, image_urls.length);
 
   const lab_specialty = owner.role === "lab" ? String(formData.get("lab_specialty") || "") || null : null;
   const lab_category = owner.role === "lab" ? String(formData.get("lab_category") || "") || null : null;
@@ -180,6 +183,7 @@ export async function updateJobPost(id: string, _prev: FormState, formData: Form
       description,
       is_urgent,
       image_urls,
+      image_captions,
       org_name,
       ...parseJobDetailFields(formData),
     })

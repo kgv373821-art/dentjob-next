@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { JOB_EXPIRY_DAYS } from "@/lib/constants";
-import { parseJobDetailFields } from "@/lib/jobFields";
+import { parseJobDetailFields, parseImageCaptions } from "@/lib/jobFields";
 import type { FormState } from "@/lib/actions/jobs";
 
 async function assertAdmin(supabase: Awaited<ReturnType<typeof createClient>>) {
@@ -61,6 +61,7 @@ export async function adminCreateJobPost(_prev: FormState, formData: FormData): 
   } catch {
     image_urls = [];
   }
+  const image_captions = parseImageCaptions(formData, image_urls.length);
 
   const lab_specialty = target_role === "lab" ? String(formData.get("lab_specialty") || "") || null : null;
   const lab_category = target_role === "lab" ? String(formData.get("lab_category") || "") || null : null;
@@ -87,6 +88,7 @@ export async function adminCreateJobPost(_prev: FormState, formData: FormData): 
     description,
     is_urgent,
     image_urls,
+    image_captions,
     org_name,
     status: "approved",
     posted_at: now.toISOString(),
@@ -128,6 +130,7 @@ export async function adminUpdateJobPost(id: string, _prev: FormState, formData:
   } catch {
     image_urls = [];
   }
+  const image_captions = parseImageCaptions(formData, image_urls.length);
 
   const lab_specialty = target_role === "lab" ? String(formData.get("lab_specialty") || "") || null : null;
   const lab_category = target_role === "lab" ? String(formData.get("lab_category") || "") || null : null;
@@ -150,6 +153,7 @@ export async function adminUpdateJobPost(id: string, _prev: FormState, formData:
       description,
       is_urgent,
       image_urls,
+      image_captions,
       org_name,
       ...parseJobDetailFields(formData),
     })

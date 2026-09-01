@@ -116,6 +116,8 @@ export interface JobPost {
   expires_at: string | null;
   created_at: string;
   image_urls: string[];
+  /** image_urls와 같은 순서로 매칭되는 사진 설명(예: "진료실", "대기실"). 치과 공고 사진 갤러리에만 사용됨. */
+  image_captions: string[];
   // 상세 채용정보
   duties: string | null;
   employment_type: string | null;

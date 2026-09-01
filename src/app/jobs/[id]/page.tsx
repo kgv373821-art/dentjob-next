@@ -96,6 +96,11 @@ export default async function JobDetailPage({ params }: Props) {
           <div className="relative h-[220px] w-full">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={job.image_urls[0]} alt={job.title} className="h-full w-full object-cover" />
+            {!isLab && job.image_captions?.[0] && (
+              <span className="absolute left-3 top-3 rounded-sm bg-teal px-2.5 py-1 text-[12px] font-bold text-white">
+                {job.image_captions[0]}
+              </span>
+            )}
             <div className="absolute right-3 top-3">
               <FavoriteButton targetType="job_post" targetId={job.id} initialFavorited={favoriteIds.includes(job.id)} isLoggedIn={!!user} />
             </div>
@@ -111,7 +116,7 @@ export default async function JobDetailPage({ params }: Props) {
             </div>
           </div>
         )}
-        {job.image_urls && job.image_urls.length > 1 && (
+        {isLab && job.image_urls && job.image_urls.length > 1 && (
           <div className="flex gap-1.5 overflow-x-auto border-b border-line bg-paper-dim p-2">
             {job.image_urls.slice(1).map((url: string) => (
               // eslint-disable-next-line @next/next/no-img-element
@@ -124,6 +129,25 @@ export default async function JobDetailPage({ params }: Props) {
           <div className="mb-4 text-[13px] text-ink-soft">
             {org} · {job.region}
           </div>
+
+          {!isLab && job.image_urls && job.image_urls.length > 1 && (
+            <div className="mb-4.5 space-y-2.5">
+              {job.image_urls.slice(1).map((url: string, i: number) => {
+                const caption = job.image_captions?.[i + 1];
+                return (
+                  <div key={url} className="relative overflow-hidden rounded border border-line">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={url} alt={caption || job.title} className="h-[240px] w-full object-cover" />
+                    {caption && (
+                      <span className="absolute left-2.5 top-2.5 rounded-sm bg-teal px-2.5 py-1 text-[12px] font-bold text-white">
+                        {caption}
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
 
           {isLab && (
             <div className="mb-4.5">

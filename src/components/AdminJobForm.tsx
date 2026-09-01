@@ -35,6 +35,7 @@ export default function AdminJobForm({ accounts, job }: { accounts: Account[]; j
 
   const [payNegotiable, setPayNegotiable] = useState(job ? job.pay_min == null : false);
   const [photoUrls, setPhotoUrls] = useState<string[]>(job?.image_urls || []);
+  const [photoCaptions, setPhotoCaptions] = useState<string[]>(job?.image_captions || []);
   const [photoUploading, setPhotoUploading] = useState(false);
   const [photoError, setPhotoError] = useState<string | null>(null);
 
@@ -72,6 +73,7 @@ export default function AdminJobForm({ accounts, job }: { accounts: Account[]; j
         uploaded.push(data.publicUrl);
       }
       setPhotoUrls((prev) => [...prev, ...uploaded]);
+      setPhotoCaptions((prev) => [...prev, ...uploaded.map(() => "")]);
     } catch (err) {
       setPhotoError((err as Error).message || "사진 업로드에 실패했습니다.");
     } finally {
@@ -80,7 +82,13 @@ export default function AdminJobForm({ accounts, job }: { accounts: Account[]; j
   }
 
   function removePhoto(url: string) {
+    const idx = photoUrls.indexOf(url);
     setPhotoUrls((prev) => prev.filter((u) => u !== url));
+    setPhotoCaptions((prev) => prev.filter((_, i) => i !== idx));
+  }
+
+  function setCaption(index: number, value: string) {
+    setPhotoCaptions((prev) => prev.map((c, i) => (i === index ? value : c)));
   }
 
   const jobTypeRef = useRef<HTMLSelectElement>(null);
@@ -486,19 +494,29 @@ export default function AdminJobForm({ accounts, job }: { accounts: Account[]; j
               공고 사진 <span className="font-normal">(선택, 최대 {MAX_PHOTOS}장)</span>
             </label>
             {photoUrls.length > 0 && (
-              <div className="mb-2 flex flex-wrap gap-2">
-                {photoUrls.map((url) => (
-                  <div key={url} className="relative h-16 w-16 overflow-hidden rounded-sm border border-line">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={url} alt="공고 사진" className="h-full w-full object-cover" />
-                    <button
-                      type="button"
-                      onClick={() => removePhoto(url)}
-                      className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center bg-ink/70 text-[10px] text-white"
-                      aria-label="사진 삭제"
-                    >
-                      ×
-                    </button>
+              <div className="mb-2 space-y-2">
+                {photoUrls.map((url, i) => (
+                  <div key={url} className="flex items-center gap-2">
+                    <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-sm border border-line">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={url} alt="공고 사진" className="h-full w-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => removePhoto(url)}
+                        className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center bg-ink/70 text-[10px] text-white"
+                        aria-label="사진 삭제"
+                      >
+                        ×
+                      </button>
+                    </div>
+                    {role === "clinic" && (
+                      <input
+                        value={photoCaptions[i] || ""}
+                        onChange={(e) => setCaption(i, e.target.value)}
+                        placeholder="사진 설명 (예: 진료실, 대기실, 라운지)"
+                        className="flex-1 rounded-sm border border-line px-2.5 py-2 text-[12.5px]"
+                      />
+                    )}
                   </div>
                 ))}
               </div>
@@ -514,6 +532,7 @@ export default function AdminJobForm({ accounts, job }: { accounts: Account[]; j
             {photoUploading && <p className="mt-1 text-[11.5px] text-ink-soft">업로드 중...</p>}
             {photoError && <p className="mt-1 text-[11.5px] font-bold text-coral">{photoError}</p>}
             <input type="hidden" name="image_urls" value={JSON.stringify(photoUrls)} />
+            <input type="hidden" name="image_captions" value={JSON.stringify(role === "clinic" ? photoCaptions : [])} />
           </div>
 
           <label className="flex items-center gap-2 text-[13px]">
