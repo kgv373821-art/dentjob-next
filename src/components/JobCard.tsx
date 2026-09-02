@@ -36,7 +36,7 @@ export default function JobCard({
     <div
       className={`relative rounded-[3px] border bg-white transition hover:-translate-y-0.5 hover:shadow-lg ${
         job.is_premium
-          ? "border-2 border-premium bg-premium-tint hover:border-premium"
+          ? "border-4 border-premium bg-premium-tint shadow-[0_0_14px_rgba(255,20,147,0.45)] hover:shadow-[0_0_18px_rgba(255,20,147,0.6)]"
           : job.is_urgent
             ? "border-coral hover:border-coral-deep"
             : "border-line hover:border-teal"
@@ -44,13 +44,6 @@ export default function JobCard({
         job.is_pinned ? "ring-1 ring-gold" : ""
       }`}
     >
-      {job.is_premium && (
-        <div className="pointer-events-none absolute left-0 top-0 z-10 h-20 w-20 overflow-hidden rounded-tl-[3px]">
-          <div className="absolute -left-10 top-4 w-40 -rotate-45 bg-premium py-1 text-center text-[10.5px] font-extrabold tracking-wide text-white shadow-sm">
-            PREMIUM
-          </div>
-        </div>
-      )}
       <span className="ticket-dot -left-1.5" />
       <span className="ticket-dot -right-1.5" />
 
@@ -59,6 +52,19 @@ export default function JobCard({
       </div>
 
       <Link href={`/jobs/${job.id}`} className="block pr-9">
+        {job.is_premium && (
+          <div
+            className={`-mb-px block bg-premium text-center font-extrabold tracking-wide text-white ${
+              compact
+                ? "-mx-3 -mt-3 mb-2 px-3 py-1 text-[10px]"
+                : small
+                  ? "-mx-2.5 -mt-2.5 mb-2 px-3 py-1 text-[10px]"
+                  : "-mx-[18px] -mt-[18px] mb-2.5 px-4 py-1.5 text-[11.5px]"
+            }`}
+          >
+            ⭐ 프리미엄 공고 ⭐
+          </div>
+        )}
         {!compact && job.image_urls?.[0] && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -80,7 +86,9 @@ export default function JobCard({
             <span className="rounded-sm bg-gold px-1.5 py-0.5 text-[10px] font-extrabold text-white">상단고정</span>
           )}
           {job.is_premium && (
-            <span className="rounded-sm bg-premium px-1.5 py-0.5 text-[10px] font-extrabold text-white">⭐ 프리미엄</span>
+            <span className="rounded-sm bg-premium px-2 py-1 text-[11px] font-extrabold text-white shadow-[0_1px_4px_rgba(255,20,147,0.5)]">
+              ⭐ 프리미엄
+            </span>
           )}
           {job.is_urgent && (
             <span className="rounded-sm bg-coral px-1.5 py-0.5 text-[10px] font-extrabold text-white">🔥 긴급</span>
