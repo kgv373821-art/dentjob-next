@@ -12,6 +12,8 @@
   --color-coral-deep: #d97706;
   --color-gold: #14b8a6;
   --color-line: #e2e8f0;
+  --color-premium: #7c3aed;
+  --color-premium-tint: #f5f0ff;
 }
 
 @theme inline {
@@ -26,6 +28,8 @@
   --color-coral-deep: var(--color-coral-deep);
   --color-gold: var(--color-gold);
   --color-line: var(--color-line);
+  --color-premium: var(--color-premium);
+  --color-premium-tint: var(--color-premium-tint);
   --font-sans: "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: "IBM Plex Mono", monospace;
 }
