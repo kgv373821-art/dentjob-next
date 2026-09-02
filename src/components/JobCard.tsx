@@ -36,7 +36,7 @@ export default function JobCard({
     <div
       className={`relative rounded-[3px] border bg-white transition hover:-translate-y-0.5 hover:shadow-lg ${
         job.is_premium
-          ? "border-4 border-premium bg-premium-tint shadow-[0_0_14px_rgba(255,20,147,0.45)] hover:shadow-[0_0_18px_rgba(255,20,147,0.6)]"
+          ? "border-4 border-premium bg-premium-tint shadow-[0_0_14px_rgba(230,168,0,0.55)] hover:shadow-[0_0_18px_rgba(230,168,0,0.7)]"
           : job.is_urgent
             ? "border-coral hover:border-coral-deep"
             : "border-line hover:border-teal"
@@ -86,7 +86,7 @@ export default function JobCard({
             <span className="rounded-sm bg-gold px-1.5 py-0.5 text-[10px] font-extrabold text-white">상단고정</span>
           )}
           {job.is_premium && (
-            <span className="rounded-sm bg-premium px-2 py-1 text-[11px] font-extrabold text-white shadow-[0_1px_4px_rgba(255,20,147,0.5)]">
+            <span className="rounded-sm bg-premium px-2 py-1 text-[11px] font-extrabold text-white shadow-[0_1px_4px_rgba(230,168,0,0.5)]">
               ⭐ 프리미엄
             </span>
           )}
