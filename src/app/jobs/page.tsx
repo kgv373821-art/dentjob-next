@@ -48,7 +48,7 @@ export default async function JobsPage({
   if (sort === "urgent") query = query.eq("is_urgent", true);
   if (q) query = query.ilike("title", `%${q}%`);
 
-  query = query.order("is_pinned", { ascending: false });
+  query = query.order("is_pinned", { ascending: false }).order("is_premium", { ascending: false });
   if (sort === "pay") query = query.order("pay_min", { ascending: false, nullsFirst: false });
   else if (sort === "views") query = query.order("view_count", { ascending: false });
   else query = query.order("posted_at", { ascending: false, nullsFirst: false });

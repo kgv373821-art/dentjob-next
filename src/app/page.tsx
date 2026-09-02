@@ -64,6 +64,7 @@ export default async function HomePage() {
       .or(notExpired)
       .or(notPastDeadline)
       .order("is_pinned", { ascending: false })
+      .order("is_premium", { ascending: false })
       .order("posted_at", { ascending: false })
       .limit(9),
     supabase
@@ -73,6 +74,7 @@ export default async function HomePage() {
       .or(notExpired)
       .or(notPastDeadline)
       .order("is_pinned", { ascending: false })
+      .order("is_premium", { ascending: false })
       .order("is_urgent", { ascending: false })
       .order("posted_at", { ascending: false })
       .limit(50),

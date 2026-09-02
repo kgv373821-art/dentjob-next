@@ -48,7 +48,7 @@ export default async function AdminJobsPage() {
         <div>
           <h1 className="text-[21px] font-extrabold">공고 노출 관리</h1>
           <p className="text-[12.5px] text-ink-soft">
-            결제 없이(계좌이체 등 사이트 밖 입금 확인 후) 상단고정·프리미엄(메인노출)·긴급을 수동으로 켜고 끌 수 있습니다.
+            결제 없이(계좌이체 등 사이트 밖 입금 확인 후) 상단고정·프리미엄·메인노출·긴급을 수동으로 켜고 끌 수 있습니다.
           </p>
         </div>
         <Link
@@ -81,7 +81,8 @@ export default async function AdminJobsPage() {
                 </Link>
                 <AdminPromotionToggle jobId={job.id} field="is_urgent" label="긴급" initialValue={!!job.is_urgent} />
                 <AdminPromotionToggle jobId={job.id} field="is_pinned" label="상단고정" initialValue={!!job.is_pinned} />
-                <AdminPromotionToggle jobId={job.id} field="is_main_exposed" label="프리미엄" initialValue={!!job.is_main_exposed} />
+                <AdminPromotionToggle jobId={job.id} field="is_premium" label="프리미엄" initialValue={!!job.is_premium} />
+                <AdminPromotionToggle jobId={job.id} field="is_main_exposed" label="메인노출" initialValue={!!job.is_main_exposed} />
               </div>
             </div>
           </div>

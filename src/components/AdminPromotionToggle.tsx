@@ -10,7 +10,7 @@ export default function AdminPromotionToggle({
   initialValue,
 }: {
   jobId: string;
-  field: "is_pinned" | "is_main_exposed" | "is_urgent";
+  field: "is_pinned" | "is_premium" | "is_main_exposed" | "is_urgent";
   label: string;
   initialValue: boolean;
 }) {

@@ -111,6 +111,7 @@ export interface JobPost {
   is_urgent: boolean;
   is_main_exposed: boolean;
   is_pinned: boolean;
+  is_premium: boolean;
   view_count: number;
   posted_at: string | null;
   expires_at: string | null;

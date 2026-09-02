@@ -36,7 +36,9 @@ export default function JobCard({
     <div
       className={`relative rounded-[3px] border bg-white transition hover:-translate-y-0.5 hover:shadow-lg ${
         job.is_urgent ? "border-coral hover:border-coral-deep" : "border-line hover:border-teal"
-      } ${compact ? "p-3" : small ? "p-2.5" : "p-[18px]"} ${isLab ? "border-l-[3px] border-l-gold" : ""} ${job.is_pinned ? "ring-1 ring-gold" : ""}`}
+      } ${compact ? "p-3" : small ? "p-2.5" : "p-[18px]"} ${isLab ? "border-l-[3px] border-l-gold" : ""} ${
+        job.is_pinned ? "ring-1 ring-gold" : job.is_premium ? "ring-1 ring-gold/40" : ""
+      }`}
     >
       <span className="ticket-dot -left-1.5" />
       <span className="ticket-dot -right-1.5" />
@@ -66,11 +68,14 @@ export default function JobCard({
           {job.is_pinned && (
             <span className="rounded-sm bg-gold px-1.5 py-0.5 text-[10px] font-extrabold text-white">상단고정</span>
           )}
+          {job.is_premium && (
+            <span className="rounded-sm border border-gold bg-white px-1.5 py-0.5 text-[10px] font-extrabold text-gold">프리미엄</span>
+          )}
           {job.is_urgent && (
             <span className="rounded-sm bg-coral px-1.5 py-0.5 text-[10px] font-extrabold text-white">🔥 긴급</span>
           )}
           {job.is_main_exposed && (
-            <span className="rounded-sm bg-teal px-1.5 py-0.5 text-[10px] font-extrabold text-white">프리미엄</span>
+            <span className="rounded-sm bg-teal px-1.5 py-0.5 text-[10px] font-extrabold text-white">메인노출</span>
           )}
           {isLab && (
             <span className="rounded-sm border border-gold bg-ink px-1.5 py-0.5 text-[10px] font-extrabold text-gold">
