@@ -8,6 +8,7 @@ import PopularClinics from "@/components/PopularClinics";
 import RecentlyViewedJobs from "@/components/RecentlyViewedJobs";
 import NoticesSidebar from "@/components/NoticesSidebar";
 import AdSlot from "@/components/AdSlot";
+import SiteIntroVideo from "@/components/SiteIntroVideo";
 import { LAB_SPECIALTIES, isLabJob } from "@/lib/constants";
 import { getMyFavoriteIds } from "@/lib/actions/favorites";
 import type { JobPost, BoardPost } from "@/lib/types";
@@ -163,6 +164,9 @@ export default async function HomePage() {
         <SearchForm bar />
       </section>
       <div className="pb-6" />
+
+      {/* 사이트 소개 영상 */}
+      <SiteIntroVideo />
 
       {/* 광고: 메인상단 */}
       <section className="mx-auto max-w-6xl px-6 pb-9">
