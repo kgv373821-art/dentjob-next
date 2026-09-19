@@ -165,9 +165,6 @@ export default async function HomePage() {
       </section>
       <div className="pb-6" />
 
-      {/* 사이트 소개 영상 */}
-      <SiteIntroVideo />
-
       {/* 광고: 메인상단 */}
       <section className="mx-auto max-w-6xl px-6 pb-9">
         <AdSlot position="main_top" />
@@ -352,6 +349,7 @@ export default async function HomePage() {
         <aside className="space-y-4 md:sticky md:top-20 md:self-start">
           <AiRecommend compact />
           <PopularClinics />
+          <SiteIntroVideo />
           <AdSlot position="sidebar" />
           <div className="rounded-[3px] border border-dashed border-coral/40 bg-coral/5 p-4 text-center">
             <p className="mb-1 text-[12px] font-bold text-coral">📢 광고</p>
