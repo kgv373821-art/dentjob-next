@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://dentjob.example.com"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://dentjob2804.co.kr"),
   title: {
     default: "Job2804 덴트잡 서울경기 | 서울·경기 치과·치과기공사 전용 구인구직",
     template: "%s | Job2804 덴트잡",

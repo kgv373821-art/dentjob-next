@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import SearchForm from "@/components/SearchForm";
@@ -15,6 +16,9 @@ import type { JobPost, BoardPost } from "@/lib/types";
 import { BOARD_LABELS } from "@/lib/types";
 
 export const revalidate = 60;
+
+// utm 등 추적 파라미터가 붙은 접속도 대표 주소(/)로 모이도록 canonical 지정
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 const JOB_TYPE_SHORTCUTS = ["치과기공사", "치과위생사", "치과조무사", "치과의사"];
 const CLINIC_JOB_SHORTCUTS = ["치과의사", "치과위생사", "치과조무사", "상담실장", "데스크"];
@@ -120,6 +124,11 @@ export default async function HomePage() {
   }
 
   const cardProps = { isLoggedIn: !!user, isSeeker };
+  const visibleMarketStats = [
+    { label: "오늘 등록", value: todayCount ?? 0, suffix: "건", className: "text-teal" },
+    { label: "긴급채용", value: urgentCount ?? 0, suffix: "건", className: "text-coral" },
+    { label: "구직자", value: seekerCount ?? 0, suffix: "명", className: "text-teal" },
+  ].filter((stat) => stat.value > 0);
 
   return (
     <div>
@@ -173,15 +182,17 @@ export default async function HomePage() {
       {/* 통계바 */}
       <section className="mx-auto max-w-6xl px-6 pb-9">
         <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 rounded border border-line bg-white py-3.5 text-[13px] font-bold text-ink-soft">
-          <span>
-            오늘 등록 <span className="text-teal">{todayCount ?? 0}건</span>
-          </span>
-          <span>
-            긴급채용 <span className="text-coral">{urgentCount ?? 0}건</span>
-          </span>
-          <span>
-            구직자 <span className="text-teal">{seekerCount ?? 0}명</span>
-          </span>
+          {visibleMarketStats.length > 0 ? (
+            visibleMarketStats.map((stat) => (
+              <span key={stat.label}>
+                {stat.label} <span className={stat.className}>{stat.value}{stat.suffix}</span>
+              </span>
+            ))
+          ) : (
+            <span>
+              새 채용공고는 수시로 업데이트됩니다. <Link href="/jobs" className="text-teal hover:underline">전체 공고 보기 →</Link>
+            </span>
+          )}
         </div>
       </section>
 

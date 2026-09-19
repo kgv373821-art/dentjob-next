@@ -5,10 +5,52 @@ import { REGIONS, JOB_TYPES, LAB_SPECIALTIES, EMPLOYMENT_TYPES, isLabJob } from 
 import { getMyFavoriteIds } from "@/lib/actions/favorites";
 import type { JobPost } from "@/lib/types";
 
-export const metadata: Metadata = {
-  title: "채용공고 전체보기",
-  description: "서울·경기 치과, 치과기공사·기공소 채용공고를 지역·직종·급여별로 검색하세요.",
+type JobSearchParams = {
+  region?: string;
+  job_type?: string;
+  category?: string;
+  sort?: string;
+  lab_specialty?: string;
+  employment_type?: string;
+  q?: string;
 };
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<JobSearchParams>;
+}): Promise<Metadata> {
+  const params = await searchParams;
+  const { category } = params;
+  const isLab = category === "lab";
+  // 주소창에 임의 값을 넣어 title·canonical이 만들어지지 않도록 실제 목록에 있는 값만 반영합니다.
+  const region = REGIONS.find((r) => r === params.region);
+  const job_type = JOB_TYPES.find((t) => t === params.job_type);
+  const lab_specialty = LAB_SPECIALTIES.find((s) => s === params.lab_specialty);
+  const employment_type = EMPLOYMENT_TYPES.find((t) => t === params.employment_type);
+  const filters = [region, job_type, lab_specialty, employment_type].filter(Boolean).join(" · ");
+  const query = new URLSearchParams();
+  if (category === "lab" || category === "clinic") query.set("category", category);
+  if (region) query.set("region", region);
+  if (job_type) query.set("job_type", job_type);
+  if (lab_specialty) query.set("lab_specialty", lab_specialty);
+  if (employment_type) query.set("employment_type", employment_type);
+  const canonical = `/jobs${query.size ? `?${query.toString()}` : ""}`;
+
+  if (isLab) {
+    return {
+      title: filters ? `${filters} 치과기공사·기공소 채용공고` : "치과기공사·기공소 채용공고",
+      description: "서울·경기 치과기공사, CAD/CAM, 기공소 직원 채용공고를 지역·전문분야·근무형태별로 확인하세요.",
+      alternates: { canonical },
+    };
+  }
+
+  return {
+    title: filters ? `${filters} 치과 채용공고` : "채용공고 전체보기",
+    description: "서울·경기 치과, 치과기공사·기공소 채용공고를 지역·직종·급여별로 검색하세요.",
+    alternates: { canonical },
+  };
+}
 
 const SORTS = [
   { key: "new", label: "오늘 등록" },
@@ -20,15 +62,7 @@ const SORTS = [
 export default async function JobsPage({
   searchParams,
 }: {
-  searchParams: Promise<{
-    region?: string;
-    job_type?: string;
-    category?: string;
-    sort?: string;
-    lab_specialty?: string;
-    employment_type?: string;
-    q?: string;
-  }>;
+  searchParams: Promise<JobSearchParams>;
 }) {
   const { region, job_type, category, sort = "new", lab_specialty, employment_type, q } = await searchParams;
   const supabase = await createClient();

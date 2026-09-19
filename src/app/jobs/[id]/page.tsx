@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cache } from "react";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { incrementViewCount } from "@/lib/actions/jobs";
@@ -11,7 +12,17 @@ import { formatPay } from "@/lib/constants";
 
 type Props = { params: Promise<{ id: string }> };
 
-async function getJob(id: string) {
+// 구글 JobPosting은 employmentType에 영문 표준값만 허용합니다.
+const GOOGLE_EMPLOYMENT_TYPES: Record<string, string> = {
+  정규직: "FULL_TIME",
+  계약직: "CONTRACTOR",
+  파트타임: "PART_TIME",
+  주중알바: "PART_TIME",
+  주말알바: "PART_TIME",
+  인턴: "INTERN",
+};
+
+const getJob = cache(async (id: string) => {
   const supabase = await createClient();
   const { data } = await supabase
     .from("job_posts")
@@ -21,7 +32,7 @@ async function getJob(id: string) {
     .eq("id", id)
     .single();
   return data;
-}
+});
 
 function InfoTable({ rows }: { rows: { label: string; value: React.ReactNode }[] }) {
   const visible = rows.filter((r) => r.value !== null && r.value !== undefined && r.value !== "");
@@ -50,6 +61,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: job.title,
     description: `${job.region} · ${job.job_type} · ${formatPay(job.pay_min)} — ${job.description?.slice(0, 100) || ""}`,
+    alternates: { canonical: `/jobs/${id}` },
   };
 }
 
@@ -75,14 +87,58 @@ export default async function JobDetailPage({ params }: Props) {
   const org = job.org_name || clinic?.clinic_name || lab?.lab_name;
   const address = clinic?.address || lab?.address;
   const phone = clinic?.profiles?.phone || lab?.profiles?.phone;
-  const pageUrl = `${process.env.NEXT_PUBLIC_SITE_URL || ""}/jobs/${job.id}`;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dentjob2804.co.kr";
+  const pageUrl = `${siteUrl}/jobs/${job.id}`;
   const isExpired =
     (!!job.expires_at && job.expires_at < new Date().toISOString()) ||
     (!!job.recruit_end_date && job.recruit_end_date < new Date().toISOString().slice(0, 10));
   const isLab = !!job.lab_id;
+  const validThrough = job.recruit_end_date || job.expires_at;
+  const jobPosting = {
+    "@context": "https://schema.org",
+    "@type": "JobPosting",
+    title: job.title,
+    description: job.description || `${job.region} ${job.job_type} 채용공고`,
+    datePosted: job.posted_at || job.created_at,
+    ...(validThrough ? { validThrough } : {}),
+    employmentType: GOOGLE_EMPLOYMENT_TYPES[job.employment_type || ""] || "OTHER",
+    hiringOrganization: {
+      "@type": "Organization",
+      name: org || "덴트잡2804 등록 업체",
+      ...(job.homepage_url ? { sameAs: job.homepage_url } : {}),
+    },
+    jobLocation: {
+      "@type": "Place",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: job.region,
+        ...(address || job.work_address ? { streetAddress: job.work_address || address } : {}),
+        addressCountry: "KR",
+      },
+    },
+    ...(job.pay_min != null
+      ? {
+          baseSalary: {
+            "@type": "MonetaryAmount",
+            currency: "KRW",
+            value: {
+              "@type": "QuantitativeValue",
+              value: job.pay_min * 10000,
+              unitText: "MONTH",
+            },
+          },
+        }
+      : {}),
+    directApply: true,
+    url: pageUrl,
+  };
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-10">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jobPosting).replace(/</g, "\\u003c") }}
+      />
       {isExpired && (
         <p className="mb-4 rounded-sm border border-dashed border-line bg-paper-dim px-3.5 py-2.5 text-center text-[12.5px] font-bold text-ink-soft">
           노출 기간이 만료된 공고입니다. 지원 전 채용 여부를 다시 확인해주세요.
