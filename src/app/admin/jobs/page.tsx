@@ -51,12 +51,26 @@ export default async function AdminJobsPage() {
             결제 없이(계좌이체 등 사이트 밖 입금 확인 후) 상단고정·프리미엄·메인노출·긴급을 수동으로 켜고 끌 수 있습니다.
           </p>
         </div>
-        <Link
-          href="/admin/jobs/new"
-          className="whitespace-nowrap rounded-sm bg-coral px-3.5 py-2 text-[12.5px] font-bold text-white hover:bg-coral-deep"
-        >
-          + 공고 대리 등록
-        </Link>
+        <div className="flex flex-wrap justify-end gap-2">
+          <Link
+            href="/admin/jobs/expiring"
+            className="whitespace-nowrap rounded-sm border border-line px-3.5 py-2 text-[12.5px] font-bold text-ink-soft hover:border-teal hover:text-teal"
+          >
+            마감 임박
+          </Link>
+          <Link
+            href="/admin/jobs/bulk"
+            className="whitespace-nowrap rounded-sm border border-coral px-3.5 py-2 text-[12.5px] font-bold text-coral hover:bg-coral/5"
+          >
+            엑셀 일괄 등록
+          </Link>
+          <Link
+            href="/admin/jobs/new"
+            className="whitespace-nowrap rounded-sm bg-coral px-3.5 py-2 text-[12.5px] font-bold text-white hover:bg-coral-deep"
+          >
+            + 공고 대리 등록
+          </Link>
+        </div>
       </div>
 
       <div className="space-y-2">

@@ -40,6 +40,8 @@ export default async function AdminPage() {
           <Link href="/admin/ads">광고관리</Link>
           <Link href="/admin/jobs">공고 노출 관리</Link>
           <Link href="/admin/jobs/new">공고 대리 등록</Link>
+          <Link href="/admin/jobs/bulk">엑셀 일괄 등록</Link>
+          <Link href="/admin/jobs/expiring">마감 임박</Link>
           <Link href="/admin/community">커뮤니티관리</Link>
         </nav>
       </div>

@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { JOB_EXPIRY_DAYS } from "@/lib/constants";
 import { parseJobDetailFields, parseImageCaptions } from "@/lib/jobFields";
 import type { FormState } from "@/lib/actions/jobs";
+import { validateBulkJobs } from "@/lib/bulkJobs";
 
 async function assertAdmin(supabase: Awaited<ReturnType<typeof createClient>>) {
   const {
@@ -290,4 +291,71 @@ export async function broadcastSms(_prev: { error: string | null }, formData: Fo
   if (!res.ok) return { error: "문자 발송에 실패했습니다." };
   revalidatePath("/admin/sms");
   return { error: null };
+}
+
+export type BulkJobState = { error: string | null; problems: string[]; message: string | null };
+
+/**
+ * 엑셀에서 복사한 여러 줄을 한 번에 공고로 등록합니다. (계정 연결 없이 업체명만으로 등록되는 대리등록 방식)
+ * 한 줄이라도 문제가 있으면 아무것도 등록하지 않고 문제 목록만 돌려줍니다. mode=check이면 검사만 합니다.
+ */
+export async function adminBulkCreateJobPosts(_prev: BulkJobState, formData: FormData): Promise<BulkJobState> {
+  const supabase = await createClient();
+  await assertAdmin(supabase);
+
+  const { rows, problems } = validateBulkJobs(String(formData.get("data") || ""));
+  if (problems.length > 0) {
+    return { error: "고쳐야 할 줄이 있어 아직 아무것도 등록하지 않았습니다.", problems, message: null };
+  }
+  if (formData.get("mode") !== "create") {
+    return { error: null, problems: [], message: `검사 완료: ${rows.length}건 모두 등록 가능합니다. 이상 없으면 "등록하기"를 눌러주세요.` };
+  }
+
+  const now = new Date();
+  const expiresAt = new Date(now.getTime() + JOB_EXPIRY_DAYS * 24 * 60 * 60 * 1000);
+
+  const { error } = await supabase.from("job_posts").insert(
+    rows.map((r) => ({
+      clinic_id: null,
+      lab_id: null,
+      org_type: r.org_type,
+      org_name: r.org_name,
+      job_type: r.job_type,
+      title: r.title,
+      region: r.region,
+      pay_min: r.pay_min,
+      pay_note: r.org_type === "lab" ? "+ 기공 수당 별도" : null,
+      employment_type: r.employment_type,
+      recruit_end_date: r.recruit_end_date,
+      hr_contact_phone: r.hr_contact_phone,
+      description: r.description,
+      welfare: [],
+      image_urls: [],
+      image_captions: [],
+      is_urgent: false,
+      status: "approved",
+      posted_at: now.toISOString(),
+      expires_at: expiresAt.toISOString(),
+    }))
+  );
+  if (error) return { error: error.message, problems: [], message: null };
+
+  revalidatePath("/");
+  revalidatePath("/jobs");
+  revalidatePath("/admin/jobs");
+  return { error: null, problems: [], message: `${rows.length}건을 등록했습니다. "공고 노출 관리"에서 확인할 수 있습니다.` };
+}
+
+/** 관리자가 공고 노출 기간을 오늘부터 다시 JOB_EXPIRY_DAYS일로 연장합니다. (마감이 임박한 공고를 업체 요청으로 재등록할 때) */
+export async function adminExtendJobPost(id: string) {
+  const supabase = await createClient();
+  await assertAdmin(supabase);
+
+  const expiresAt = new Date(Date.now() + JOB_EXPIRY_DAYS * 24 * 60 * 60 * 1000);
+  const { error } = await supabase.from("job_posts").update({ expires_at: expiresAt.toISOString() }).eq("id", id);
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/");
+  revalidatePath("/jobs");
+  revalidatePath("/admin/jobs/expiring");
 }
