@@ -275,10 +275,7 @@ export default async function HomePage() {
       </section>
 
       {/* 치과 구인등록 */}
-      <section
-        className="mx-auto mt-6 max-w-7xl rounded px-8 py-11"
-        style={{ background: "linear-gradient(180deg, #f0e6c8, #e3d3a0)" }}
-      >
+      <section className="mx-auto mt-6 max-w-7xl rounded border border-line bg-white px-8 py-11">
         <div className="mb-2 flex items-end justify-between border-b-2 border-ink/15 pb-3">
           <h2 className="text-[19px] font-extrabold tracking-tight text-ink">
             치과 구인등록 <span className="ml-2 text-[13px] font-bold text-[#0f766e]">치과·병원 채용 특화</span>
