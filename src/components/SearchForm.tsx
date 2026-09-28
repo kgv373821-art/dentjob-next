@@ -46,7 +46,7 @@ export default function SearchForm({ bar = false }: { bar?: boolean }) {
         />
         <button
           type="submit"
-          className="rounded-sm bg-coral px-7 py-2.5 text-[14.5px] font-extrabold text-white shadow-md shadow-coral/30 transition hover:-translate-y-0.5 hover:bg-coral-deep"
+          className="rounded-sm bg-[#dc2626] px-7 py-2.5 text-[14.5px] font-extrabold text-white shadow-md shadow-[#dc2626]/30 transition hover:-translate-y-0.5 hover:bg-[#b91c1c]"
         >
           검색
         </button>
