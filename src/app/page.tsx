@@ -238,10 +238,7 @@ export default async function HomePage() {
       </section>
 
       {/* 치과기공사 전문관 */}
-      <section
-        className="mx-auto max-w-7xl rounded px-8 py-11"
-        style={{ background: "linear-gradient(180deg, #fffdf7, #f5eeda)" }}
-      >
+      <section className="mx-auto max-w-7xl rounded border border-line bg-white px-8 py-11">
         <div className="mb-2 flex items-end justify-between border-b-2 border-ink/15 pb-3">
           <h2 className="text-[19px] font-extrabold tracking-tight text-ink">
             치과기공사 전문관 <span className="ml-2 text-[13px] font-bold text-[#b45309]">기공소 채용 특화</span>
