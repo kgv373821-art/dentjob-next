@@ -325,7 +325,7 @@ export default async function HomePage() {
                   {todayClinic.length > 0 ? (
                     <div className="grid gap-4 sm:grid-cols-2">
                       {todayClinic.map((job) => (
-                        <JobCard key={job.id} job={job} {...cardProps} isFavorited={favoriteIds.includes(job.id)} showNewBadge emphasizeUrgent />
+                        <JobCard key={job.id} job={job} {...cardProps} isFavorited={favoriteIds.includes(job.id)} showNewBadge emphasizeUrgent compact />
                       ))}
                     </div>
                   ) : (
@@ -339,7 +339,7 @@ export default async function HomePage() {
                   {todayLab.length > 0 ? (
                     <div className="grid gap-4 sm:grid-cols-2">
                       {todayLab.map((job) => (
-                        <JobCard key={job.id} job={job} {...cardProps} isFavorited={favoriteIds.includes(job.id)} showNewBadge emphasizeUrgent />
+                        <JobCard key={job.id} job={job} {...cardProps} isFavorited={favoriteIds.includes(job.id)} showNewBadge emphasizeUrgent compact />
                       ))}
                     </div>
                   ) : (
