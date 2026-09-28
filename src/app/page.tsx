@@ -135,12 +135,12 @@ export default async function HomePage() {
       {/* 히어로 배너 */}
       <section className="relative min-h-[300px] overflow-hidden px-6 py-10 sm:min-h-[440px] sm:py-16">
         <HeroVideo />
-        <div className="absolute inset-0 bg-[rgba(11,61,58,0.9)] sm:hidden" />
+        <div className="absolute inset-0 bg-[rgba(28,25,23,0.88)] sm:hidden" />
         <div
           className="absolute inset-0 hidden sm:block"
           style={{
             background:
-              "linear-gradient(90deg, rgba(11,61,58,0.97) 0%, rgba(11,61,58,0.92) 32%, rgba(11,61,58,0.55) 58%, rgba(11,61,58,0.12) 82%)",
+              "linear-gradient(90deg, rgba(28,25,23,0.95) 0%, rgba(28,25,23,0.9) 32%, rgba(28,25,23,0.5) 58%, rgba(28,25,23,0.1) 82%)",
           }}
         />
 
@@ -275,9 +275,9 @@ export default async function HomePage() {
       <section className="mx-auto mt-6 max-w-7xl rounded border border-line bg-white px-8 py-11">
         <div className="mb-2 flex items-end justify-between border-b-2 border-ink/15 pb-3">
           <h2 className="text-[19px] font-extrabold tracking-tight text-ink">
-            치과 구인등록 <span className="ml-2 text-[13px] font-bold text-[#0f766e]">치과·병원 채용 특화</span>
+            치과 구인등록 <span className="ml-2 text-[13px] font-bold text-coral">치과·병원 채용 특화</span>
           </h2>
-          <Link href="/jobs?category=clinic" className="rounded-sm bg-[#0f766e] px-3 py-1.5 text-[12.5px] font-bold text-white hover:bg-[#0b5c55]">
+          <Link href="/jobs?category=clinic" className="rounded-sm bg-ink px-3 py-1.5 text-[12.5px] font-bold text-white hover:bg-ink/85">
             치과 채용 전체보기
           </Link>
         </div>
@@ -289,7 +289,7 @@ export default async function HomePage() {
             <Link
               key={jt}
               href={`/jobs?category=clinic&job_type=${encodeURIComponent(jt)}`}
-              className="rounded-full border border-[#0f766e]/30 bg-white px-3 py-1.5 text-[12px] font-bold text-ink hover:border-[#0f766e]"
+              className="rounded-full border border-line bg-white px-3 py-1.5 text-[12px] font-bold text-ink hover:border-ink"
             >
               {jt}
             </Link>
