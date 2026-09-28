@@ -133,38 +133,30 @@ export default async function HomePage() {
   return (
     <div>
       {/* 히어로 배너 */}
-      <section className="relative min-h-[300px] overflow-hidden px-6 py-10 sm:min-h-[440px] sm:py-16">
-        <HeroVideo />
-        <div className="absolute inset-0 bg-[rgba(28,25,23,0.88)] sm:hidden" />
+      <section className="grid overflow-hidden sm:grid-cols-[1.15fr_1fr]">
         <div
-          className="absolute inset-0 hidden sm:block"
-          style={{
-            background:
-              "linear-gradient(90deg, rgba(28,25,23,0.95) 0%, rgba(28,25,23,0.9) 32%, rgba(28,25,23,0.5) 58%, rgba(28,25,23,0.1) 82%)",
-          }}
-        />
-
-        <div className="relative mx-auto flex max-w-6xl items-center">
-          <div className="max-w-lg text-center lg:text-left">
-            <span className="mb-4 inline-block rounded-full border border-gold/60 bg-white/10 px-3.5 py-1.5 font-mono text-[11.5px] font-bold tracking-widest text-gold">
-              SEOUL · GYEONGGI DENTAL NO.1
-            </span>
-            <h1 className="mb-4 text-[30px] font-extrabold leading-tight tracking-tight text-white sm:text-[42px]">
-              서울·경기 치과 전문
-              <br />
-              구인구직 <span className="text-gold">No.1 플랫폼</span>
-            </h1>
-            <p className="mx-auto max-w-md text-[15px] leading-relaxed text-white/80 lg:mx-0">
-              치과의사부터 데스크·상담실장까지, 치과기공사·기공소 채용까지 — 지역과 직종으로 가장 빠르게 연결합니다.
-            </p>
-            <div className="mt-6 flex flex-wrap justify-center gap-2 lg:justify-start">
-              {["✓ 검증된 병원·기공소", "✓ 원터치 지원", "✓ 무료 등록"].map((t) => (
-                <span key={t} className="rounded-full bg-white/10 px-3 py-1.5 text-[12px] font-semibold text-white">
-                  {t}
-                </span>
-              ))}
-            </div>
+          className="flex flex-col justify-center px-6 py-14 sm:px-12 sm:py-16"
+          style={{ background: "linear-gradient(135deg, #0d9488, #0f766e)" }}
+        >
+          <h1 className="mb-4 text-[28px] font-extrabold leading-tight tracking-tight text-white sm:text-[38px]">
+            서울·경기 치과 전문
+            <br />
+            구인구직 <span className="text-white">No.1 플랫폼</span>
+          </h1>
+          <p className="mb-7 max-w-md text-[15px] leading-relaxed text-white/85">
+            치과의사부터 데스크·상담실장까지, 치과기공사·기공소 채용까지 — 지역과 직종으로 가장 빠르게 연결합니다.
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/jobs" className="rounded-full bg-white px-6 py-3 text-[14px] font-bold text-[#0f766e] hover:bg-white/90">
+              채용정보 보러가기
+            </Link>
+            <Link href="/signup" className="rounded-full border border-white/70 px-6 py-3 text-[14px] font-bold text-white hover:bg-white/10">
+              회원가입하기
+            </Link>
           </div>
+        </div>
+        <div className="relative min-h-[220px] sm:min-h-0">
+          <HeroVideo />
         </div>
       </section>
 
