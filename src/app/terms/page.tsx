@@ -14,7 +14,7 @@ export default function TermsPage() {
       <section className="mb-5">
         <h2 className="mb-1.5 text-[15px] font-bold">제1조 (목적)</h2>
         <p>
-          이 약관은 Job2804 덴트잡 서울경기(이하 &quot;회사&quot;)가 제공하는 치과·치과기공사 구인구직 서비스(이하
+          이 약관은 덴트잡2804 서울경기(이하 &quot;회사&quot;)가 제공하는 치과·치과기공사 구인구직 서비스(이하
           &quot;서비스&quot;)의 이용과 관련하여 회사와 회원 간의 권리·의무 및 책임사항을 규정함을 목적으로 합니다.
         </p>
       </section>

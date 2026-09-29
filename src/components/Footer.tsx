@@ -17,7 +17,7 @@ export default function Footer() {
           광고문의
         </Link>
       </nav>
-      Job2804 덴트잡 서울경기 (DentJob Seoul&amp;Gyeonggi) — 서울·경기 치과·치과기공사 전용 구인구직 플랫폼
+      덴트잡2804 서울경기 (DentJob2804 Seoul&amp;Gyeonggi) — 서울·경기 치과·치과기공사 전용 구인구직 플랫폼
     </footer>
   );
 }

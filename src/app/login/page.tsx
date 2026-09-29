@@ -13,7 +13,7 @@ function LoginForm() {
   return (
     <div className="mx-auto max-w-sm px-6 py-16">
       <h1 className="mb-1 text-[22px] font-extrabold">로그인</h1>
-      <p className="mb-6 text-[13px] text-ink-soft">Job2804 덴트잡 서울경기</p>
+      <p className="mb-6 text-[13px] text-ink-soft">덴트잡2804 서울경기</p>
 
       {justRegistered && (
         <p className="mb-4 rounded-sm bg-teal-tint p-3 text-[13px] font-bold text-teal">
