@@ -36,7 +36,7 @@ export default function KakaoShareButton({ title, description, url, imageUrl }: 
       content: {
         title,
         description,
-        imageUrl: imageUrl || `${process.env.NEXT_PUBLIC_SITE_URL}/og-default.png`,
+        imageUrl: imageUrl || `${process.env.NEXT_PUBLIC_SITE_URL || "https://dentjob2804.co.kr"}/og-default.jpg`,
         link: { mobileWebUrl: url, webUrl: url },
       },
       buttons: [{ title: "공고 보기", link: { mobileWebUrl: url, webUrl: url } }],

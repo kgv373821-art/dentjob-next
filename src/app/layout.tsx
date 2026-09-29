@@ -18,6 +18,7 @@ export const metadata: Metadata = {
     title: "덴트잡2804 서울경기",
     description: "서울·경기·인천 치과·치과기공사 전용 구인구직 플랫폼",
     siteName: "덴트잡2804",
+    images: [{ url: "/og-default.jpg", width: 1200, height: 630 }],
   },
   robots: { index: true, follow: true },
   verification: {

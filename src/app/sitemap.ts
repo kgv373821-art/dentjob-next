@@ -28,10 +28,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  // 실제 활성 공고가 있는 지역·직무 조합만 색인합니다.
-  const seoRoutes: MetadataRoute.Sitemap = seoLandingPages
-    .filter((page) => (jobs || []).some((job) => page.regions.includes(job.region) && page.jobTypes.includes(job.job_type)))
-    .map((page) => ({
+  // 지역·직종 안내 본문이 있어 공고가 없어도 색인 가치가 있으므로 전부 싣습니다.
+  const seoRoutes: MetadataRoute.Sitemap = seoLandingPages.map((page) => ({
       url: `${base}/jobs/seo/${page.slug}`,
       changeFrequency: "hourly",
       priority: 0.8,

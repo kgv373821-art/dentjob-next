@@ -58,10 +58,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const job = await getJob(id);
   if (!job) return { title: "공고를 찾을 수 없습니다" };
+  const joined = job as unknown as { clinics?: { clinic_name?: string }; labs?: { lab_name?: string } };
+  const org = job.org_name || joined.clinics?.clinic_name || joined.labs?.lab_name;
+  const description = `${regionLabel(job.region)} · ${job.job_type} · ${formatPay(job.pay_min)} — ${job.description?.slice(0, 100) || ""}`;
+  // 카톡 등 공유 미리보기에 사이트 이름 대신 공고 제목이 뜨도록 공고별 openGraph를 지정합니다.
+  // (openGraph는 layout 값과 합쳐지지 않고 통째로 대체되므로 이미지·사이트명도 함께 넣습니다)
+  const shareTitle = org ? `[${org}] ${job.title}` : job.title;
+  const image = job.image_urls?.[0] || "/og-default.jpg";
   return {
     title: job.title,
-    description: `${regionLabel(job.region)} · ${job.job_type} · ${formatPay(job.pay_min)} — ${job.description?.slice(0, 100) || ""}`,
+    description,
     alternates: { canonical: `/jobs/${id}` },
+    openGraph: {
+      type: "article",
+      locale: "ko_KR",
+      siteName: "덴트잡2804",
+      url: `/jobs/${id}`,
+      title: shareTitle,
+      description: `${regionLabel(job.region)} · ${job.job_type} · ${formatPay(job.pay_min)}`,
+      images: [{ url: image }],
+    },
+    twitter: { card: "summary_large_image", title: shareTitle, description, images: [image] },
   };
 }
 
@@ -264,7 +281,7 @@ export default async function JobDetailPage({ params }: Props) {
                 </a>
               </>
             )}
-            <KakaoShareButton title={job.title} description={`${org} · ${regionLabel(job.region)} · ${formatPay(job.pay_min)}`} url={pageUrl} />
+            <KakaoShareButton title={org ? `[${org}] ${job.title}` : job.title} description={`${regionLabel(job.region)} · ${job.job_type} · ${formatPay(job.pay_min)}`} url={pageUrl} imageUrl={job.image_urls?.[0]} />
           </div>
 
           {!isLab && (

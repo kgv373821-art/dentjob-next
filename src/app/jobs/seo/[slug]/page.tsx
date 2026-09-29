@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import JobCard from "@/components/JobCard";
 import { createClient } from "@/lib/supabase/server";
 import { LAB_RELATED_JOB_TYPES } from "@/lib/constants";
-import { getSeoLandingPage, type SeoLandingPage } from "@/lib/seoLandingPages";
+import { getSeoLandingPage, seoLandingPages, type SeoLandingPage } from "@/lib/seoLandingPages";
 import type { JobPost } from "@/lib/types";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -48,13 +48,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const page = getSeoLandingPage(slug);
   if (!page) return { title: "채용공고를 찾을 수 없습니다" };
 
-  const jobs = await getJobs(slug);
   return {
     title: page.title,
     description: page.description,
     alternates: { canonical: `/jobs/seo/${page.slug}` },
-    // 공고가 없는 동안은 얇은 페이지가 검색에 색인되지 않도록 합니다. (사이트맵에도 공고가 있는 페이지만 실립니다)
-    ...(jobs.length === 0 ? { robots: { index: false, follow: true } } : {}),
+    openGraph: { title: `${page.title} | 덴트잡2804`, description: page.description, url: `/jobs/seo/${page.slug}`, type: "website", siteName: "덴트잡2804", locale: "ko_KR" },
   };
 }
 
@@ -66,6 +64,8 @@ export default async function SeoJobLandingPage({ params }: Props) {
   const jobs = await getJobs(slug);
   const isLab = isLabPage(page);
   const allJobsHref = isLab ? "/jobs?category=lab" : "/jobs?category=clinic";
+  const pays = jobs.map((j) => j.pay_min).filter((p): p is number => typeof p === "number" && p > 0);
+  const payStats = pays.length > 0 ? { count: pays.length, min: Math.min(...pays), max: Math.max(...pays) } : null;
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-9">
@@ -113,6 +113,56 @@ export default async function SeoJobLandingPage({ params }: Props) {
           </div>
         </section>
       )}
+
+      {/* 지역·직종 안내 본문 */}
+      <article className="mt-10 space-y-7 rounded border border-line bg-white px-6 py-7 sm:px-8">
+        {page.sections.map((s) => (
+          <section key={s.heading}>
+            <h2 className="mb-2.5 text-[17px] font-extrabold tracking-tight">{s.heading}</h2>
+            <p className="text-[14px] leading-[1.85] text-ink/85">{s.body}</p>
+          </section>
+        ))}
+        {payStats && (
+          <section>
+            <h2 className="mb-2.5 text-[17px] font-extrabold tracking-tight">
+              현재 공고 기준 제시 급여 <span className="text-[12.5px] font-bold text-ink-soft">(급여 공개 공고 {payStats.count}건)</span>
+            </h2>
+            <p className="text-[14px] leading-[1.85] text-ink/85">
+              지금 덴트잡2804에 올라와 있는 {page.areaLabel} 지역 {page.kindLabel} 공고 가운데 급여를 공개한 공고의 제시 금액은{" "}
+              <strong>
+                {payStats.min === payStats.max ? `월 ${payStats.min}만원` : `월 ${payStats.min}만원 ~ ${payStats.max}만원`}
+              </strong>
+              입니다. 공고 수가 적을 때는 실제 시세와 차이가 있을 수 있으니 참고용으로만 보시고, 세부 조건은 각 공고에서 확인하세요.
+            </p>
+          </section>
+        )}
+        <section>
+          <h2 className="mb-2.5 text-[17px] font-extrabold tracking-tight">지원 전 체크포인트</h2>
+          <ul className="list-disc space-y-1.5 pl-5 text-[14px] leading-relaxed text-ink/85">
+            {page.checklist.map((c) => (
+              <li key={c}>{c}</li>
+            ))}
+          </ul>
+        </section>
+      </article>
+
+      {/* 다른 지역·직종 채용정보 (내부 링크) */}
+      <nav className="mt-8" aria-label="다른 지역 채용정보">
+        <h2 className="mb-3 text-[14px] font-extrabold text-ink-soft">다른 지역·직종 채용정보</h2>
+        <div className="flex flex-wrap gap-2">
+          {seoLandingPages
+            .filter((p) => p.slug !== page.slug)
+            .map((p) => (
+              <Link
+                key={p.slug}
+                href={`/jobs/seo/${p.slug}`}
+                className="rounded-full border border-line bg-white px-3 py-1.5 text-[12.5px] font-semibold text-ink-soft hover:border-teal hover:text-teal"
+              >
+                {p.title}
+              </Link>
+            ))}
+        </div>
+      </nav>
     </div>
   );
 }
