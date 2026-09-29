@@ -34,18 +34,17 @@ export default async function AdSlot({
 
   const isSidebar = position === "sidebar";
   const compact = isSidebar || !!forceCompact;
-  const banner = !isSidebar && !compact && ads.length === 1;
 
   return (
-    <div className={`${isSidebar ? "space-y-3" : banner ? "" : "grid gap-3 sm:grid-cols-2 lg:grid-cols-3"} ${className || ""}`}>
+    <div className={`${isSidebar ? "space-y-3" : "grid gap-3 sm:grid-cols-2 lg:grid-cols-3"} ${className || ""}`}>
       {ads.map((ad) => (
-        <AdCard key={ad.id} ad={ad} compact={compact} banner={banner} />
+        <AdCard key={ad.id} ad={ad} compact={compact} />
       ))}
     </div>
   );
 }
 
-function AdCard({ ad, compact, banner }: { ad: Ad; compact?: boolean; banner?: boolean }) {
+function AdCard({ ad, compact }: { ad: Ad; compact?: boolean }) {
   if (ad.type === "youtube") {
     const vid = youtubeId(ad.link);
     const thumb = vid ? `https://img.youtube.com/vi/${vid}/hqdefault.jpg` : null;
@@ -82,26 +81,6 @@ function AdCard({ ad, compact, banner }: { ad: Ad; compact?: boolean; banner?: b
     image: { bg: "linear-gradient(135deg, var(--color-teal-tint), rgba(245,158,11,0.12))", icon: "🖼" },
   };
   const ph = placeholder[ad.type] || placeholder.image;
-
-  if (banner && ad.image) {
-    return (
-      <a
-        href={ad.link}
-        target="_blank"
-        rel="noopener noreferrer sponsored"
-        className="block overflow-hidden rounded-[3px] border border-line transition hover:-translate-y-0.5 hover:shadow-lg"
-      >
-        <Image
-          src={ad.image}
-          alt={ad.title}
-          width={1330}
-          height={433}
-          loading="lazy"
-          className="h-auto w-full object-cover"
-        />
-      </a>
-    );
-  }
 
   return (
     <a
