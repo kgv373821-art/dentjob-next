@@ -21,9 +21,9 @@ export default async function Header() {
     <header className="sticky top-0 z-50 border-b border-line bg-paper">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Link href="/" className="flex items-baseline gap-2">
-          <span className="text-[19px] font-extrabold tracking-tight">덴트잡</span>
-          <span className="rounded-sm bg-teal px-2 py-1 font-mono text-[13px] font-bold tracking-wide text-white">2804</span>
-          <span className="hidden text-[11px] font-medium text-ink-soft sm:inline">서울·경기 치과 전용</span>
+          <span className="text-[25px] font-extrabold tracking-tight">덴트잡</span>
+          <span className="rounded-sm bg-teal px-2.5 py-1.5 font-mono text-[17px] font-bold tracking-wide text-white">2804</span>
+          <span className="hidden text-[14px] font-semibold text-ink-soft sm:inline">서울·경기 치과 전용</span>
         </Link>
 
         <nav className="hidden items-center gap-7 md:flex">
