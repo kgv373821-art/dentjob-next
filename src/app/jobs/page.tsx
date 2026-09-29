@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import JobCard from "@/components/JobCard";
-import { REGIONS, JOB_TYPES, LAB_SPECIALTIES, EMPLOYMENT_TYPES, isLabJob } from "@/lib/constants";
+import { REGIONS, JOB_TYPES, LAB_SPECIALTIES, EMPLOYMENT_TYPES, isLabJob, regionLabel } from "@/lib/constants";
 import { getMyFavoriteIds } from "@/lib/actions/favorites";
 import type { JobPost } from "@/lib/types";
 
@@ -40,14 +40,14 @@ export async function generateMetadata({
   if (isLab) {
     return {
       title: filters ? `${filters} 치과기공사·기공소 채용공고` : "치과기공사·기공소 채용공고",
-      description: "서울·경기 치과기공사, CAD/CAM, 기공소 직원 채용공고를 지역·전문분야·근무형태별로 확인하세요.",
+      description: "서울·경기·인천 치과기공사, CAD/CAM, 기공소 직원 채용공고를 지역·전문분야·근무형태별로 확인하세요.",
       alternates: { canonical },
     };
   }
 
   return {
     title: filters ? `${filters} 치과 채용공고` : "채용공고 전체보기",
-    description: "서울·경기 치과, 치과기공사·기공소 채용공고를 지역·직종·급여별로 검색하세요.",
+    description: "서울·경기·인천 치과, 치과기공사·기공소 채용공고를 지역·직종·급여별로 검색하세요.",
     alternates: { canonical },
   };
 }
@@ -138,7 +138,7 @@ export default async function JobsPage({
           <option value="">전체 지역</option>
           {REGIONS.map((r) => (
             <option key={r} value={r}>
-              {r}
+              {regionLabel(r)}
             </option>
           ))}
         </select>

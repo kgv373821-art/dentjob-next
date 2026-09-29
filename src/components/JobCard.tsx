@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { JobPost } from "@/lib/types";
-import { formatPay } from "@/lib/constants";
+import { formatPay, regionLabel } from "@/lib/constants";
 import FavoriteButton from "@/components/FavoriteButton";
 import QuickApplyButton from "@/components/QuickApplyButton";
 
@@ -74,7 +74,7 @@ export default function JobCard({
           />
         )}
         <div className={`font-mono text-ink-soft ${small ? "text-[9px]" : "text-[10.5px]"}`}>
-          NO.{job.id.slice(0, 8).toUpperCase()} · {job.region}
+          NO.{job.id.slice(0, 8).toUpperCase()} · {regionLabel(job.region)}
           {job.lab_specialty ? ` · ${job.lab_specialty}` : ""}
         </div>
 

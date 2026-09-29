@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { REGIONS, JOB_TYPES } from "@/lib/constants";
+import { REGIONS, JOB_TYPES, regionLabel } from "@/lib/constants";
 
 export default function SearchForm({ bar = false }: { bar?: boolean }) {
   const router = useRouter();
@@ -27,7 +27,7 @@ export default function SearchForm({ bar = false }: { bar?: boolean }) {
           <option value="전체">전체 지역</option>
           {REGIONS.map((r) => (
             <option key={r} value={r}>
-              {r}
+              {regionLabel(r)}
             </option>
           ))}
         </select>
@@ -65,7 +65,7 @@ export default function SearchForm({ bar = false }: { bar?: boolean }) {
         <option value="전체">전체 지역</option>
         {REGIONS.map((r) => (
           <option key={r} value={r}>
-            {r}
+            {regionLabel(r)}
           </option>
         ))}
       </select>

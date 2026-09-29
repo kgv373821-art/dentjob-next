@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   const { desired_job, lab_specialty, career_years, motivation, job_title } = await req.json();
 
   const system =
-    "당신은 서울·경기 치과·치과기공사 채용 플랫폼의 자기소개서 작성 도우미입니다. 지원자 정보를 바탕으로 " +
+    "당신은 서울·경기·인천 치과·치과기공사 채용 플랫폼의 자기소개서 작성 도우미입니다. 지원자 정보를 바탕으로 " +
     "진솔하고 구체적인 한국어 자기소개서를 작성합니다. 상투적인 표현을 피하고, 지원 직무와의 연결성을 드러내세요.";
 
   const userPrompt = `지원 직무: ${job_title || desired_job || "미입력"}

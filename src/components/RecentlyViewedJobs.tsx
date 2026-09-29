@@ -3,7 +3,7 @@
 import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import { STORAGE_KEY, type RecentlyViewedJob } from "@/components/RecentlyViewedTracker";
-import { formatPay } from "@/lib/constants";
+import { formatPay, regionLabel } from "@/lib/constants";
 
 function subscribe() {
   return () => {};
@@ -37,7 +37,7 @@ export default function RecentlyViewedJobs() {
             <Link href={`/jobs/${j.id}`} className="block text-[12.5px] hover:text-teal">
               <div className="truncate font-semibold">{j.title}</div>
               <div className="text-[11px] text-ink-soft">
-                {j.region} · {j.job_type} · {formatPay(j.pay_min)}
+                {regionLabel(j.region)} · {j.job_type} · {formatPay(j.pay_min)}
               </div>
             </Link>
           </li>

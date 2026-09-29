@@ -23,7 +23,7 @@ export default async function Header() {
         <Link href="/" className="flex items-baseline gap-2">
           <span className="text-[25px] font-extrabold tracking-tight">덴트잡</span>
           <span className="rounded-sm bg-teal px-2.5 py-1.5 font-mono text-[17px] font-bold tracking-wide text-white">2804</span>
-          <span className="hidden text-[14px] font-semibold text-ink-soft sm:inline">서울·경기 치과 전용</span>
+          <span className="hidden text-[14px] font-semibold text-ink-soft sm:inline">서울·경기·인천 치과 전용</span>
         </Link>
 
         <nav className="hidden items-center gap-7 md:flex">

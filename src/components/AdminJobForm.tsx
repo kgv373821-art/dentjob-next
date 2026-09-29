@@ -3,7 +3,7 @@
 import { useActionState, useMemo, useRef, useState } from "react";
 import { adminCreateJobPost, adminUpdateJobPost } from "@/lib/actions/admin";
 import { createClient } from "@/lib/supabase/client";
-import { REGIONS, JOB_TYPES, LAB_SPECIALTIES, LAB_JOB_CATEGORIES, EMPLOYMENT_TYPES, EDUCATION_LEVELS } from "@/lib/constants";
+import { REGIONS, JOB_TYPES, LAB_SPECIALTIES, LAB_JOB_CATEGORIES, EMPLOYMENT_TYPES, EDUCATION_LEVELS, regionLabel } from "@/lib/constants";
 import type { JobPost } from "@/lib/types";
 
 const MAX_PHOTOS = 5;
@@ -328,7 +328,7 @@ export default function AdminJobForm({ accounts, job }: { accounts: Account[]; j
             </option>
             {REGIONS.map((r) => (
               <option key={r} value={r}>
-                {r}
+                {regionLabel(r)}
               </option>
             ))}
           </select>

@@ -6,17 +6,17 @@ import Footer from "@/components/Footer";
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://dentjob2804.co.kr"),
   title: {
-    default: "덴트잡2804 서울경기 | 서울·경기 치과·치과기공사 전용 구인구직",
+    default: "덴트잡2804 서울경기 | 서울·경기·인천 치과·치과기공사 전용 구인구직",
     template: "%s | 덴트잡2804",
   },
   description:
-    "서울·경기 지역 치과, 치과기공사·기공소 채용에 특화된 구인구직 플랫폼. 치과의사, 치과위생사, 치과기공사, CAD/CAM, 상담실장 채용정보를 지역·급여별로 빠르게 찾아보세요.",
+    "서울·경기·인천 지역 치과, 치과기공사·기공소 채용에 특화된 구인구직 플랫폼. 치과의사, 치과위생사, 치과기공사, CAD/CAM, 상담실장 채용정보를 지역·급여별로 빠르게 찾아보세요.",
   keywords: ["치과 구인구직", "치과기공사 채용", "기공소 채용", "치과위생사 채용", "서울 치과 채용", "경기 치과 채용"],
   openGraph: {
     type: "website",
     locale: "ko_KR",
     title: "덴트잡2804 서울경기",
-    description: "서울·경기 치과·치과기공사 전용 구인구직 플랫폼",
+    description: "서울·경기·인천 치과·치과기공사 전용 구인구직 플랫폼",
     siteName: "덴트잡2804",
   },
   robots: { index: true, follow: true },

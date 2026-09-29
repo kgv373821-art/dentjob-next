@@ -8,7 +8,7 @@ import FavoriteButton from "@/components/FavoriteButton";
 import KakaoShareButton from "@/components/KakaoShareButton";
 import RecentlyViewedTracker from "@/components/RecentlyViewedTracker";
 import { getMyFavoriteIds } from "@/lib/actions/favorites";
-import { formatPay } from "@/lib/constants";
+import { formatPay, regionLabel } from "@/lib/constants";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -60,7 +60,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!job) return { title: "공고를 찾을 수 없습니다" };
   return {
     title: job.title,
-    description: `${job.region} · ${job.job_type} · ${formatPay(job.pay_min)} — ${job.description?.slice(0, 100) || ""}`,
+    description: `${regionLabel(job.region)} · ${job.job_type} · ${formatPay(job.pay_min)} — ${job.description?.slice(0, 100) || ""}`,
     alternates: { canonical: `/jobs/${id}` },
   };
 }
@@ -98,7 +98,7 @@ export default async function JobDetailPage({ params }: Props) {
     "@context": "https://schema.org",
     "@type": "JobPosting",
     title: job.title,
-    description: job.description || `${job.region} ${job.job_type} 채용공고`,
+    description: job.description || `${regionLabel(job.region)} ${job.job_type} 채용공고`,
     datePosted: job.posted_at || job.created_at,
     ...(validThrough ? { validThrough } : {}),
     employmentType: GOOGLE_EMPLOYMENT_TYPES[job.employment_type || ""] || "OTHER",
@@ -111,7 +111,7 @@ export default async function JobDetailPage({ params }: Props) {
       "@type": "Place",
       address: {
         "@type": "PostalAddress",
-        addressLocality: job.region,
+        addressLocality: regionLabel(job.region),
         ...(address || job.work_address ? { streetAddress: job.work_address || address } : {}),
         addressCountry: "KR",
       },
@@ -183,7 +183,7 @@ export default async function JobDetailPage({ params }: Props) {
         <div className="p-7">
           <h1 className="mb-1 text-[20px] font-extrabold">{job.title}</h1>
           <div className="mb-4 text-[13px] text-ink-soft">
-            {org} · {job.region}
+            {org} · {regionLabel(job.region)}
           </div>
 
           {!isLab && job.image_urls && job.image_urls.length > 1 && (
@@ -236,7 +236,7 @@ export default async function JobDetailPage({ params }: Props) {
                   { label: "근무 구분", value: "기공소" },
                   { label: "전문 분야", value: job.lab_specialty },
                   { label: "경력", value: job.career_requirement },
-                  { label: "근무 지역", value: job.region },
+                  { label: "근무 지역", value: regionLabel(job.region) },
                   { label: "근무 형태", value: job.employment_type },
                   { label: "모집 인원", value: job.headcount },
                   { label: "급여 또는 연봉", value: formatPay(job.pay_min) },
@@ -264,7 +264,7 @@ export default async function JobDetailPage({ params }: Props) {
                 </a>
               </>
             )}
-            <KakaoShareButton title={job.title} description={`${org} · ${job.region} · ${formatPay(job.pay_min)}`} url={pageUrl} />
+            <KakaoShareButton title={job.title} description={`${org} · ${regionLabel(job.region)} · ${formatPay(job.pay_min)}`} url={pageUrl} />
           </div>
 
           {!isLab && (

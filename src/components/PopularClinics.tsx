@@ -43,6 +43,7 @@ export default async function PopularClinics() {
     ranked = (clinics || []).map((c) => ({ ...c, avg: 0, count: 0 }));
   }
 
+  ranked = ranked.filter((c) => !/테스트|test/i.test(c.clinic_name));
   if (ranked.length === 0) return null;
 
   return (

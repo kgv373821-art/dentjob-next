@@ -3,7 +3,7 @@
 import { useActionState, useState } from "react";
 import Link from "next/link";
 import { signUp } from "@/lib/actions/auth";
-import { REGIONS, JOB_TYPES, LAB_SPECIALTIES } from "@/lib/constants";
+import { REGIONS, JOB_TYPES, LAB_SPECIALTIES, regionLabel } from "@/lib/constants";
 import type { UserRole } from "@/lib/types";
 
 const ROLE_TABS: { value: UserRole; label: string }[] = [
@@ -53,7 +53,7 @@ export default function SignupPage() {
               </option>
               {REGIONS.map((r) => (
                 <option key={r} value={r}>
-                  {r}
+                  {regionLabel(r)}
                 </option>
               ))}
             </select>
@@ -69,7 +69,7 @@ export default function SignupPage() {
               </option>
               {REGIONS.map((r) => (
                 <option key={r} value={r}>
-                  {r}
+                  {regionLabel(r)}
                 </option>
               ))}
             </select>
@@ -112,7 +112,7 @@ export default function SignupPage() {
               <option value="">희망 지역 (선택)</option>
               {REGIONS.map((r) => (
                 <option key={r} value={r}>
-                  {r}
+                  {regionLabel(r)}
                 </option>
               ))}
             </select>

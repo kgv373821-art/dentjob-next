@@ -2,7 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import JobCard from "@/components/JobCard";
 import { getMyFavoriteIds } from "@/lib/actions/favorites";
-import { formatPay } from "@/lib/constants";
+import { formatPay, regionLabel } from "@/lib/constants";
 import type { JobPost } from "@/lib/types";
 
 export default async function AiRecommend({ compact = false }: { compact?: boolean }) {
@@ -72,7 +72,7 @@ export default async function AiRecommend({ compact = false }: { compact?: boole
               <Link href={`/jobs/${job.id}`} className="block text-[12.5px] hover:text-teal">
                 <div className="truncate font-semibold">{job.title}</div>
                 <div className="text-[11px] text-ink-soft">
-                  {job.region} · {job.job_type} · {formatPay(job.pay_min)}
+                  {regionLabel(job.region)} · {job.job_type} · {formatPay(job.pay_min)}
                 </div>
               </Link>
             </li>

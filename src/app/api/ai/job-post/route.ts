@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   const { org_name, job_type, lab_specialty, region, pay_min, work_hours, welfare, notes } = await req.json();
 
   const system =
-    "당신은 서울·경기 치과·기공소 채용공고 작성 도우미입니다. 입력된 정보를 바탕으로 지원자의 지원 결정에 " +
+    "당신은 서울·경기·인천 치과·기공소 채용공고 작성 도우미입니다. 입력된 정보를 바탕으로 지원자의 지원 결정에 " +
     "도움이 되는 명확하고 매력적인 한국어 채용공고 본문을 작성합니다. 근무 환경, 우대사항, 조직 분위기를 자연스럽게 녹여내세요.";
 
   const userPrompt = `등록 기관: ${org_name || "미입력"}

@@ -8,7 +8,7 @@ import type { Seeker } from "@/lib/types";
 
 export const metadata: Metadata = {
   title: "구직자 전체보기",
-  description: "치과기공사, 치과위생사 등 서울·경기 지역 구직자 이력서를 확인하세요.",
+  description: "치과기공사, 치과위생사 등 서울·경기·인천 지역 구직자 이력서를 확인하세요.",
 };
 
 export default async function SeekersPage() {

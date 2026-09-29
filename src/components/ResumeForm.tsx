@@ -2,7 +2,7 @@
 
 import { useActionState, useRef, useState } from "react";
 import { updateResume } from "@/lib/actions/seeker";
-import { JOB_TYPES, LAB_SPECIALTIES, LAB_RELATED_JOB_TYPES, REGIONS } from "@/lib/constants";
+import { JOB_TYPES, LAB_SPECIALTIES, LAB_RELATED_JOB_TYPES, REGIONS, regionLabel } from "@/lib/constants";
 import type { Seeker } from "@/lib/types";
 
 export default function ResumeForm({ seeker }: { seeker: Seeker }) {
@@ -71,7 +71,7 @@ export default function ResumeForm({ seeker }: { seeker: Seeker }) {
         <option value="">희망 지역</option>
         {REGIONS.map((r) => (
           <option key={r} value={r}>
-            {r}
+            {regionLabel(r)}
           </option>
         ))}
       </select>

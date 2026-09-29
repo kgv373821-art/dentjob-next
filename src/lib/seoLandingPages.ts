@@ -14,6 +14,7 @@ const SEOUL_REGIONS = [
 ];
 
 const GYEONGGI_REGIONS = ["의정부", "성남", "수원", "고양", "용인", "부천", "안양", "남양주", "김포"];
+const INCHEON_REGIONS = ["인천중구", "동구", "미추홀", "연수", "남동", "부평", "계양", "서구", "강화", "옹진"];
 const LAB_JOB_TYPES = ["치과기공사", "CAD/CAM", "기공소 직원"];
 
 export const seoLandingPages: SeoLandingPage[] = [
@@ -80,6 +81,22 @@ export const seoLandingPages: SeoLandingPage[] = [
     regions: GYEONGGI_REGIONS,
     jobTypes: ["치과위생사"],
     intro: "경기 치과의원과 병원의 최신 치과위생사 채용공고입니다.",
+  },
+  {
+    slug: "incheon-dental-technician-jobs",
+    title: "인천 치과기공사 구인·구직",
+    description: "인천 지역 치과기공사와 기공소 직원 채용공고를 확인하세요. 근무 지역, 급여, 전문분야별로 비교하고 바로 지원할 수 있습니다.",
+    regions: INCHEON_REGIONS,
+    jobTypes: LAB_JOB_TYPES,
+    intro: "인천 지역 기공소와 치과 내 기공실의 최신 채용공고입니다.",
+  },
+  {
+    slug: "incheon-dental-hygienist-jobs",
+    title: "인천 치과위생사 채용",
+    description: "인천 치과위생사 채용공고를 지역과 근무형태별로 확인하세요. 치과의원과 병원의 최신 공고를 한곳에서 비교할 수 있습니다.",
+    regions: INCHEON_REGIONS,
+    jobTypes: ["치과위생사"],
+    intro: "인천 치과의원과 병원의 최신 치과위생사 채용공고입니다.",
   },
 ];
 

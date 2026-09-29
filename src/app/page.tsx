@@ -139,7 +139,7 @@ export default async function HomePage() {
           style={{ background: "linear-gradient(135deg, #4a6b63, #3a5850)" }}
         >
           <h1 className="mb-4 text-[28px] font-extrabold leading-tight tracking-tight text-white sm:text-[38px]">
-            서울·경기 치과 전문
+            서울·경기·인천 치과 전문
             <br />
             구인구직 <span className="text-white">No.1 플랫폼</span>
           </h1>
@@ -257,8 +257,12 @@ export default async function HomePage() {
           {labJobs.map((job) => (
             <JobCard key={job.id} job={job} {...cardProps} isFavorited={favoriteIds.includes(job.id)} emphasizeUrgent />
           ))}
-          {(!labJobs || labJobs.length === 0) && (
-            <p className="col-span-full py-12 text-center text-ink/70">기공소 채용공고가 아직 없습니다.</p>
+          {labJobs.length === 0 && (
+            <EmptyJobCta
+              title="우리 기공소의 첫 공고를 올려보세요"
+              desc="지금은 오픈 기념으로 공고 등록이 무료입니다. 등록 즉시 이 자리에 노출됩니다."
+              href={user ? "/dashboard/lab/new" : "/signup"}
+            />
           )}
         </div>
       </section>
@@ -291,8 +295,12 @@ export default async function HomePage() {
           {clinicJobs.map((job) => (
             <JobCard key={job.id} job={job} {...cardProps} isFavorited={favoriteIds.includes(job.id)} emphasizeUrgent />
           ))}
-          {(!clinicJobs || clinicJobs.length === 0) && (
-            <p className="col-span-full py-12 text-center text-ink/70">치과 채용공고가 아직 없습니다.</p>
+          {clinicJobs.length === 0 && (
+            <EmptyJobCta
+              title="우리 치과의 첫 공고를 올려보세요"
+              desc="지금은 오픈 기념으로 공고 등록이 무료입니다. 등록 즉시 이 자리에 노출됩니다."
+              href={user ? "/dashboard/clinic/new" : "/signup"}
+            />
           )}
         </div>
       </section>
@@ -301,7 +309,7 @@ export default async function HomePage() {
       <section className="mx-auto grid max-w-6xl gap-6 px-6 py-9 md:grid-cols-[1fr_300px]">
         <div>
           <div className="mb-4.5 border-b-2 border-ink pb-2.5">
-            <h2 className="text-[18px] font-extrabold tracking-tight">오늘 등록된 공고</h2>
+            <h2 className="text-[18px] font-extrabold tracking-tight">최근 등록된 공고</h2>
           </div>
           {(() => {
             const today = normalizeJobs(todayJobs);
@@ -321,7 +329,7 @@ export default async function HomePage() {
                       ))}
                     </div>
                   ) : (
-                    <p className="py-4 text-center text-[12.5px] text-ink-soft">오늘 등록된 치과 공고가 없습니다.</p>
+                    <EmptyInlineCta text="치과 공고를 무료로 올려보세요" href={user ? "/dashboard/clinic/new" : "/signup"} />
                   )}
                 </div>
                 <div>
@@ -335,7 +343,7 @@ export default async function HomePage() {
                       ))}
                     </div>
                   ) : (
-                    <p className="py-4 text-center text-[12.5px] text-ink-soft">오늘 등록된 기공소 공고가 없습니다.</p>
+                    <EmptyInlineCta text="기공소 공고를 무료로 올려보세요" href={user ? "/dashboard/lab/new" : "/signup"} />
                   )}
                 </div>
               </div>
@@ -373,7 +381,7 @@ export default async function HomePage() {
               href: `/community/${p.board}/${p.id}`,
               label: `[${BOARD_LABELS[p.board]}] ${p.title}`,
             }))}
-            emptyLabel="아직 등록된 글이 없습니다."
+            emptyCta={{ text: "첫 글 남기기", href: "/community/free/new" }}
           />
           <PreviewList
             title="🛠 중고장비"
@@ -384,14 +392,14 @@ export default async function HomePage() {
               href: `/community/used_equipment/${p.id}`,
               label: p.price ? `${p.title} · ${p.price.toLocaleString()}원` : p.title,
             }))}
-            emptyLabel="등록된 중고장비가 없습니다."
+            emptyCta={{ text: "중고장비 무료 등록", href: "/community/used_equipment/new" }}
           />
           <PreviewList
             title="🔗 외주거래"
             href="/jobs?category=lab&lab_specialty=외주 의뢰"
             accent="border-t-coral"
             items={normalizeJobs(outsourcing).map((j) => ({ id: j.id, href: `/jobs/${j.id}`, label: `${j.title} · ${j.lab_name || ""}` }))}
-            emptyLabel="등록된 외주 공고가 없습니다."
+            emptyCta={{ text: "외주 의뢰 무료 등록", href: user ? "/dashboard/lab/new" : "/signup" }}
           />
         </div>
       </section>
@@ -408,13 +416,13 @@ function PreviewList({
   title,
   href,
   items,
-  emptyLabel,
+  emptyCta,
   accent,
 }: {
   title: string;
   href: string;
   items: { id: string; href: string; label: string }[];
-  emptyLabel: string;
+  emptyCta: { text: string; href: string };
   accent: string;
 }) {
   return (
@@ -436,8 +444,30 @@ function PreviewList({
           ))}
         </ul>
       ) : (
-        <p className="py-4 text-center text-[12px] text-ink-soft">{emptyLabel}</p>
+        <div className="py-3 text-center"><Link href={emptyCta.href} className="inline-block rounded-full border border-teal/40 bg-teal/5 px-3.5 py-1.5 text-[12px] font-bold text-teal hover:bg-teal/10">+ {emptyCta.text}</Link></div>
       )}
+    </div>
+  );
+}
+
+function EmptyJobCta({ title, desc, href }: { title: string; desc: string; href: string }) {
+  return (
+    <div className="col-span-full rounded-[3px] border border-dashed border-ink/20 bg-[#fffdf7] px-6 py-10 text-center">
+      <p className="mb-1.5 text-[15px] font-extrabold text-ink">{title}</p>
+      <p className="mb-5 text-[13px] text-ink/70">{desc}</p>
+      <Link href={href} className="inline-block rounded-full bg-ink px-6 py-2.5 text-[13px] font-bold text-white hover:bg-ink/85">
+        첫 공고 무료 등록하기
+      </Link>
+    </div>
+  );
+}
+
+function EmptyInlineCta({ text, href }: { text: string; href: string }) {
+  return (
+    <div className="py-3 text-center">
+      <Link href={href} className="inline-block rounded-full border border-teal/40 bg-teal/5 px-3.5 py-1.5 text-[12px] font-bold text-teal hover:bg-teal/10">
+        + {text}
+      </Link>
     </div>
   );
 }

@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   const { desired_job, lab_specialty, career_years, certifications, highlights } = await req.json();
 
   const system =
-    "당신은 서울·경기 치과·치과기공사 채용 플랫폼의 이력서 작성 도우미입니다. 지원자가 입력한 정보를 바탕으로 " +
+    "당신은 서울·경기·인천 치과·치과기공사 채용 플랫폼의 이력서 작성 도우미입니다. 지원자가 입력한 정보를 바탕으로 " +
     "채용담당자가 빠르게 훑어볼 수 있는 간결하고 전문적인 한국어 이력서 요약문을 작성합니다. 과장하지 않고 사실 기반으로 작성하세요.";
 
   const userPrompt = `직종: ${desired_job || "미입력"}

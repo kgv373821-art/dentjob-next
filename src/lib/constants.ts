@@ -12,6 +12,15 @@ export const REGIONS = [
   "인천중구", "동구", "미추홀", "연수", "남동", "부평", "계양", "서구", "강화", "옹진",
 ];
 
+export const INCHEON_REGIONS = ["인천중구", "동구", "미추홀", "연수", "남동", "부평", "계양", "서구", "강화", "옹진"];
+
+/** 화면 표시용 지역명 — 인천 구는 "인천 미추홀"처럼 앞에 "인천"을 붙여 서울·경기 지역과 헷갈리지 않게 합니다. (DB 저장값은 그대로) */
+export function regionLabel(region: string | null | undefined): string {
+  if (!region) return "";
+  if (region === "인천중구") return "인천 중구";
+  return INCHEON_REGIONS.includes(region) ? `인천 ${region}` : region;
+}
+
 export const JOB_TYPES: JobType[] = [
   "치과의사", "치과위생사", "치과조무사", "치과기공사", "상담실장", "데스크", "CAD/CAM", "기공소 직원",
 ];
@@ -32,11 +41,26 @@ export const EMPLOYMENT_TYPES = ["정규직", "계약직", "파트타임", "주�
 export const LAB_RELATED_JOB_TYPES = ["치과기공사", "CAD/CAM", "기공소 직원"];
 
 /**
- * 공고가 기공소 계열인지 판별합니다. lab_id로 계정이 연결된 공고뿐 아니라, 관리자가
- * 계정 연결 없이 대리 등록한 공고(clinic_id/lab_id 둘 다 null)도 직종으로 정확히 분류합니다.
+ * 공고가 기공소 계열인지 판별합니다. "누가 올린 공고인가"(업체 종류)를 기준으로 하며,
+ * 모집 직종은 마지막 판단 근거로만 씁니다 — 치과가 원내 치과기공사를 뽑는 공고는 치과 공고입니다.
+ * 1) 계정 연결: lab_id → 기공소, clinic_id → 치과
+ * 2) 계정 없이 대리 등록된 공고: 업체명에 "기공"/"랩"/"lab"이 있으면 기공소, "치과"가 있으면 치과
+ * 3) 그래도 모르면 모집 직종(치과기공사·CAD/CAM·기공소 직원)으로 판단
  */
-export function isLabJob(job: { lab_id?: string | null; job_type?: string | null }): boolean {
-  return !!job.lab_id || LAB_RELATED_JOB_TYPES.includes(job.job_type || "");
+export function isLabJob(job: {
+  lab_id?: string | null;
+  clinic_id?: string | null;
+  job_type?: string | null;
+  org_name?: string | null;
+  clinic_name?: string | null;
+  lab_name?: string | null;
+}): boolean {
+  if (job.lab_id) return true;
+  if (job.clinic_id) return false;
+  const name = (job.org_name || job.lab_name || job.clinic_name || "").toLowerCase();
+  if (/기공|랩|lab|밀링/.test(name)) return true;
+  if (name.includes("치과")) return false;
+  return LAB_RELATED_JOB_TYPES.includes(job.job_type || "");
 }
 
 // 업체당 동시에 보유할 수 있는 "긴급 채용" 공고 개수 상한 (승인대기+게시중 기준)
