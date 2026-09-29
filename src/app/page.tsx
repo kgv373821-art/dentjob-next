@@ -136,7 +136,7 @@ export default async function HomePage() {
       <section className="grid overflow-hidden sm:grid-cols-[1.15fr_1fr]">
         <div
           className="flex flex-col justify-center px-6 py-14 sm:px-12 sm:py-16"
-          style={{ background: "linear-gradient(135deg, #0d9488, #0f766e)" }}
+          style={{ background: "linear-gradient(135deg, #4a6b63, #3a5850)" }}
         >
           <h1 className="mb-4 text-[28px] font-extrabold leading-tight tracking-tight text-white sm:text-[38px]">
             서울·경기 치과 전문
@@ -147,7 +147,7 @@ export default async function HomePage() {
             치과의사부터 데스크·상담실장까지, 치과기공사·기공소 채용까지 — 지역과 직종으로 가장 빠르게 연결합니다.
           </p>
           <div className="flex flex-wrap gap-3">
-            <Link href="/jobs" className="rounded-full bg-white px-6 py-3 text-[14px] font-bold text-[#0f766e] hover:bg-white/90">
+            <Link href="/jobs" className="rounded-full bg-white px-6 py-3 text-[14px] font-bold text-[#3a5850] hover:bg-white/90">
               채용정보 보러가기
             </Link>
             <Link href="/signup" className="rounded-full border border-white/70 px-6 py-3 text-[14px] font-bold text-white hover:bg-white/10">
