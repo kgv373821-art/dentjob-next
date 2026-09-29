@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/lib/actions/auth";
+import { SHOW_PRICING } from "@/lib/siteInfo";
 
 export default async function Header() {
   const supabase = await createClient();
@@ -45,9 +46,11 @@ export default async function Header() {
           <Link href="/community" className="text-[14.5px] font-semibold text-ink-soft hover:text-teal">
             커뮤니티
           </Link>
-          <Link href="/pricing" className="text-[14.5px] font-semibold text-ink-soft hover:text-teal">
-            요금안내
-          </Link>
+          {SHOW_PRICING && (
+            <Link href="/pricing" className="text-[14.5px] font-semibold text-ink-soft hover:text-teal">
+              요금안내
+            </Link>
+          )}
         </nav>
 
         <div className="flex items-center gap-2.5 text-[13.5px]">

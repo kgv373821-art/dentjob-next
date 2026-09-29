@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { PRODUCT_LABELS } from "@/lib/constants";
+import { SHOW_PRICING, SITE_INFO } from "@/lib/siteInfo";
 
-export const metadata: Metadata = { title: "요금 안내" };
+export const metadata: Metadata = { title: "요금 안내", robots: SHOW_PRICING ? undefined : { index: false, follow: false } };
 
 export default function PricingPage() {
+  // 사업자등록 전까지 요금표 비공개 (lib/siteInfo.ts의 SHOW_PRICING)
+  if (!SHOW_PRICING) notFound();
   return (
     <div className="mx-auto max-w-3xl px-6 py-10">
       <h1 className="mb-5 border-b-2 border-ink pb-2.5 text-[21px] font-extrabold">요금 안내</h1>
@@ -32,8 +36,8 @@ export default function PricingPage() {
       <div className="mt-8 rounded-sm border border-teal bg-teal-tint p-5 text-center">
         <h2 className="mb-1.5 text-[15px] font-extrabold text-teal">배너 광고 · 제휴 문의</h2>
         <p className="mb-3 text-[13px] text-ink-soft">메인 페이지 배너 광고, 기업 페이지 광고 등 문의는 아래 이메일로 연락해주세요.</p>
-        <a href="mailto:t01028848755@gmail.com" className="inline-block rounded-sm bg-teal px-5 py-2.5 text-[13.5px] font-bold text-white hover:bg-teal-deep">
-          t01028848755@gmail.com
+        <a href={`mailto:${SITE_INFO.email}`} className="inline-block rounded-sm bg-teal px-5 py-2.5 text-[13.5px] font-bold text-white hover:bg-teal-deep">
+          {SITE_INFO.email}
         </a>
       </div>
     </div>

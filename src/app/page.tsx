@@ -12,6 +12,7 @@ import AdSlot from "@/components/AdSlot";
 import SiteIntroVideo from "@/components/SiteIntroVideo";
 import { LAB_SPECIALTIES, isLabJob } from "@/lib/constants";
 import { getMyFavoriteIds } from "@/lib/actions/favorites";
+import { SHOW_PRICING } from "@/lib/siteInfo";
 import type { JobPost, BoardPost } from "@/lib/types";
 import { BOARD_LABELS } from "@/lib/types";
 
@@ -356,13 +357,15 @@ export default async function HomePage() {
           <PopularClinics />
           <SiteIntroVideo />
           <AdSlot position="sidebar" />
-          <div className="rounded-[3px] border border-dashed border-coral/40 bg-coral/5 p-4 text-center">
-            <p className="mb-1 text-[12px] font-bold text-coral">📢 광고</p>
-            <p className="mb-3 text-[12.5px]">우리 병원/기공소를 메인에 노출해보세요.</p>
-            <Link href="/pricing" className="inline-block rounded-sm bg-coral px-4 py-2 text-[12px] font-bold text-white hover:bg-coral-deep">
-              광고 상품 보기
-            </Link>
-          </div>
+          {SHOW_PRICING && (
+            <div className="rounded-[3px] border border-dashed border-coral/40 bg-coral/5 p-4 text-center">
+              <p className="mb-1 text-[12px] font-bold text-coral">📢 광고</p>
+              <p className="mb-3 text-[12.5px]">우리 병원/기공소를 메인에 노출해보세요.</p>
+              <Link href="/pricing" className="inline-block rounded-sm bg-coral px-4 py-2 text-[12px] font-bold text-white hover:bg-coral-deep">
+                광고 상품 보기
+              </Link>
+            </div>
+          )}
           <AdSlot position="main_mid" compact />
           <RecentlyViewedJobs />
           <NoticesSidebar />

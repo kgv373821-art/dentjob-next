@@ -15,6 +15,8 @@ const ROLE_TABS: { value: UserRole; label: string }[] = [
 export default function SignupPage() {
   const [state, formAction, pending] = useActionState(signUp, { error: null });
   const [role, setRole] = useState<UserRole>("seeker");
+  const [agree, setAgree] = useState({ age: false, terms: false, privacy: false });
+  const allAgreed = agree.age && agree.terms && agree.privacy;
 
   return (
     <div className="mx-auto max-w-md px-6 py-16">
@@ -119,10 +121,41 @@ export default function SignupPage() {
           </>
         )}
 
+        <div className="space-y-2 rounded-sm border border-line bg-white p-3.5 text-[13px]">
+          <label className="flex items-center gap-2 border-b border-line pb-2.5 font-bold">
+            <input type="checkbox" checked={allAgreed} onChange={(e) => setAgree({ age: e.target.checked, terms: e.target.checked, privacy: e.target.checked })} />
+            전체 동의
+          </label>
+          <label className="flex items-center gap-2">
+            <input type="checkbox" name="agree_age" checked={agree.age} onChange={(e) => setAgree({ ...agree, age: e.target.checked })} />
+            <span><span className="font-bold text-coral">[필수]</span> 만 14세 이상입니다</span>
+          </label>
+          <label className="flex items-center gap-2">
+            <input type="checkbox" name="agree_terms" checked={agree.terms} onChange={(e) => setAgree({ ...agree, terms: e.target.checked })} />
+            <span className="flex-1"><span className="font-bold text-coral">[필수]</span> 이용약관 동의</span>
+            <Link href="/terms" target="_blank" className="text-[12px] text-ink-soft underline">보기</Link>
+          </label>
+          <label className="flex items-center gap-2">
+            <input type="checkbox" name="agree_privacy" checked={agree.privacy} onChange={(e) => setAgree({ ...agree, privacy: e.target.checked })} />
+            <span className="flex-1"><span className="font-bold text-coral">[필수]</span> 개인정보 수집·이용 동의</span>
+            <Link href="/privacy" target="_blank" className="text-[12px] text-ink-soft underline">보기</Link>
+          </label>
+          <details className="rounded-sm bg-paper-dim px-3 py-2 text-[11.5px] leading-relaxed text-ink-soft">
+            <summary className="cursor-pointer font-semibold">수집·이용 내용 요약</summary>
+            <ul className="mt-1.5 list-disc space-y-0.5 pl-4">
+              <li>항목: 이메일, 비밀번호, 이름(담당자명), 회원 유형, 업체명·지역(업체 회원) / 선택: 휴대폰 번호, 희망 직종·지역</li>
+              <li>목적: 회원 관리, 채용공고 게재·지원 등 구인구직 서비스 제공, 문의 응대</li>
+              <li>보유 기간: 회원 탈퇴 시까지 (법령상 보존 의무가 있는 정보는 해당 기간)</li>
+              <li>서비스 운영을 위해 Supabase·Vercel(미국 업체)에 처리를 위탁하며, 자세한 내용은 개인정보처리방침에서 확인할 수 있습니다.</li>
+              <li>동의를 거부할 수 있으나, 거부 시 회원가입이 제한됩니다.</li>
+            </ul>
+          </details>
+        </div>
+
         {state.error && <p className="text-[12.5px] font-bold text-coral">{state.error}</p>}
         <button
           type="submit"
-          disabled={pending}
+          disabled={pending || !allAgreed}
           className="w-full rounded-sm bg-coral py-3 text-[14.5px] font-bold text-white hover:bg-coral-deep disabled:opacity-60"
         >
           {pending ? "가입 처리 중..." : "회원가입"}

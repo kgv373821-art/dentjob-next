@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { operatorInfoRows } from "@/components/OperatorInfo";
+import { SHOW_PRICING, SITE_INFO } from "@/lib/siteInfo";
 
 export default function Footer() {
   return (
@@ -10,13 +12,24 @@ export default function Footer() {
         <Link href="/terms" className="hover:text-teal">
           이용약관
         </Link>
-        <Link href="/privacy" className="hover:text-teal">
+        <Link href="/privacy" className="font-extrabold text-ink hover:text-teal">
           개인정보처리방침
         </Link>
-        <Link href="/pricing" className="hover:text-teal">
-          광고문의
-        </Link>
+        {SHOW_PRICING && (
+          <Link href="/pricing" className="hover:text-teal">
+            광고문의
+          </Link>
+        )}
+        <a href={`mailto:${SITE_INFO.email}`} className="hover:text-teal">
+          문의하기
+        </a>
       </nav>
+      <p className="mb-2 text-[11.5px] leading-relaxed">
+        {operatorInfoRows()
+          .filter((r) => r.label !== "서비스명")
+          .map((r) => `${r.label}: ${r.value}`)
+          .join(" | ")}
+      </p>
       덴트잡2804 서울경기 (DentJob2804 Seoul&amp;Gyeonggi) — 서울·경기·인천 치과·치과기공사 전용 구인구직 플랫폼
     </footer>
   );

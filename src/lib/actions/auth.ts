@@ -16,12 +16,17 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
 
   if (!email || !password || !name) return { error: "필수 항목을 입력해주세요." };
   if (password.length < 8) return { error: "비밀번호는 8자 이상이어야 합니다." };
+  if (formData.get("agree_age") !== "on" || formData.get("agree_terms") !== "on" || formData.get("agree_privacy") !== "on") {
+    return { error: "만 14세 이상 확인과 필수 약관에 모두 동의해주세요." };
+  }
 
   const supabase = await createClient();
+  // 동의 시각을 계정 정보에 함께 남겨, 나중에 동의 여부를 증빙할 수 있게 한다.
+  const agreedAt = new Date().toISOString();
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: { data: { role, name, phone } },
+    options: { data: { role, name, phone, over_14: true, terms_agreed_at: agreedAt, privacy_agreed_at: agreedAt } },
   });
   if (error) return { error: error.message };
   if (!data.user) return { error: "회원가입에 실패했습니다." };

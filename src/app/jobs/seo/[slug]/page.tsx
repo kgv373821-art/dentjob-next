@@ -10,7 +10,9 @@ import type { JobPost } from "@/lib/types";
 
 type Props = { params: Promise<{ slug: string }> };
 
-const CONTACT_EMAIL = "t01028848755@gmail.com";
+import { SITE_INFO } from "@/lib/siteInfo";
+
+const CONTACT_EMAIL = SITE_INFO.email;
 
 const getJobs = cache(async (slug: string) => {
   const page = getSeoLandingPage(slug);
