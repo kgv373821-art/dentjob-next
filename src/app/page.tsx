@@ -260,7 +260,7 @@ export default async function HomePage() {
           ))}
           {labJobs.length === 0 && (
             <EmptyJobCta
-              title="우리 기공소의 첫 공고를 올려보세요"
+              title="우리 기공소 공고를 올려보세요"
               desc="지금은 오픈 기념으로 공고 등록이 무료입니다. 등록 즉시 이 자리에 노출됩니다."
               href={user ? "/dashboard/lab/new" : "/signup"}
             />
@@ -298,7 +298,7 @@ export default async function HomePage() {
           ))}
           {clinicJobs.length === 0 && (
             <EmptyJobCta
-              title="우리 치과의 첫 공고를 올려보세요"
+              title="우리 치과 공고를 올려보세요"
               desc="지금은 오픈 기념으로 공고 등록이 무료입니다. 등록 즉시 이 자리에 노출됩니다."
               href={user ? "/dashboard/clinic/new" : "/signup"}
             />
@@ -459,7 +459,7 @@ function EmptyJobCta({ title, desc, href }: { title: string; desc: string; href:
       <p className="mb-1.5 text-[15px] font-extrabold text-ink">{title}</p>
       <p className="mb-5 text-[13px] text-ink/70">{desc}</p>
       <Link href={href} className="inline-block rounded-full bg-ink px-6 py-2.5 text-[13px] font-bold text-white hover:bg-ink/85">
-        첫 공고 무료 등록하기
+        무료 등록
       </Link>
     </div>
   );
