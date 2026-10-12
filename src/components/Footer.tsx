@@ -30,7 +30,7 @@ export default function Footer() {
           .map((r) => `${r.label}: ${r.value}`)
           .join(" | ")}
       </p>
-      덴트잡2804 서울경기 (DentJob2804 Seoul&amp;Gyeonggi) — 서울·경기·인천 치과·치과기공사 전용 구인구직 플랫폼
+      덴트잡2804 서울·경기권 (DentJob2804 Seoul&amp;Gyeonggi, Incheon·Suwon) — 서울·경기권(인천·수원) 치과·치과기공사 전용 구인구직 플랫폼
     </footer>
   );
 }

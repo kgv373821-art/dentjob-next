@@ -1,18 +1,22 @@
 import type { JobType, LabSpecialty, LabJobCategory } from "@/lib/types";
 
 // 서울 25개 구 전체 + 경기 주요 도시 + 인천 주요 구
-export const REGIONS = [
-  // 서울
+export const SEOUL_REGIONS = [
   "강남", "강동", "강북", "강서", "관악", "광진", "구로", "금천", "노원", "도봉",
   "동대문", "동작", "마포", "서대문", "서초", "성동", "성북", "송파", "양천", "영등포",
   "용산", "은평", "종로", "중구", "중랑",
-  // 경기
-  "의정부", "성남", "수원", "고양", "용인", "부천", "안양", "남양주", "김포",
-  // 인천 — "중구"는 서울 중구와 이름이 겹쳐 "인천중구"로 구분
-  "인천중구", "동구", "미추홀", "연수", "남동", "부평", "계양", "서구", "강화", "옹진",
 ];
-
+export const GYEONGGI_REGIONS = ["의정부", "성남", "수원", "고양", "용인", "부천", "안양", "남양주", "김포"];
+// 인천 — "중구"는 서울 중구와 이름이 겹쳐 "인천중구"로 구분
 export const INCHEON_REGIONS = ["인천중구", "동구", "미추홀", "연수", "남동", "부평", "계양", "서구", "강화", "옹진"];
+
+export const REGIONS = [...SEOUL_REGIONS, ...GYEONGGI_REGIONS, ...INCHEON_REGIONS];
+
+export const REGION_GROUPS = [
+  { label: "서울", regions: SEOUL_REGIONS },
+  { label: "경기", regions: GYEONGGI_REGIONS },
+  { label: "인천", regions: INCHEON_REGIONS },
+];
 
 /** 화면 표시용 지역명 — 인천 구는 "인천 미추홀"처럼 앞에 "인천"을 붙여 서울·경기 지역과 헷갈리지 않게 합니다. (DB 저장값은 그대로) */
 export function regionLabel(region: string | null | undefined): string {

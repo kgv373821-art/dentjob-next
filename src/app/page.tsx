@@ -140,7 +140,7 @@ export default async function HomePage() {
           style={{ background: "linear-gradient(135deg, #4a6b63, #3a5850)" }}
         >
           <h1 className="mb-4 text-[28px] font-extrabold leading-tight tracking-tight text-white sm:text-[38px]">
-            서울·경기·인천 치과 전문
+            서울·경기권(인천·수원) 치과 전문
             <br />
             구인구직 <span className="text-white">No.1 플랫폼</span>
           </h1>

@@ -1,7 +1,24 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { REGIONS, JOB_TYPES, regionLabel } from "@/lib/constants";
+import { REGION_GROUPS, JOB_TYPES, regionLabel } from "@/lib/constants";
+
+function RegionOptions() {
+  return (
+    <>
+      <option value="전체">전체 지역</option>
+      {REGION_GROUPS.map((g) => (
+        <optgroup key={g.label} label={g.label}>
+          {g.regions.map((r) => (
+            <option key={r} value={r}>
+              {regionLabel(r)}
+            </option>
+          ))}
+        </optgroup>
+      ))}
+    </>
+  );
+}
 
 export default function SearchForm({ bar = false }: { bar?: boolean }) {
   const router = useRouter();
@@ -24,12 +41,7 @@ export default function SearchForm({ bar = false }: { bar?: boolean }) {
         className="mx-auto flex max-w-6xl flex-col gap-2 rounded border border-line bg-white p-3 shadow-xl sm:flex-row"
       >
         <select name="region" className="rounded-sm border border-line bg-paper-dim px-3 py-2.5 text-[13.5px] sm:w-40">
-          <option value="전체">전체 지역</option>
-          {REGIONS.map((r) => (
-            <option key={r} value={r}>
-              {regionLabel(r)}
-            </option>
-          ))}
+          <RegionOptions />
         </select>
         <select name="job_type" className="rounded-sm border border-line bg-paper-dim px-3 py-2.5 text-[13.5px] sm:w-40">
           <option value="전체">전체 직종</option>
@@ -62,12 +74,7 @@ export default function SearchForm({ bar = false }: { bar?: boolean }) {
 
       <label className="mb-1 block text-[11.5px] font-bold tracking-wide text-ink-soft">지역 선택</label>
       <select name="region" className="mb-3 w-full rounded-sm border border-line bg-paper-dim px-3 py-2.5 text-[13.5px]">
-        <option value="전체">전체 지역</option>
-        {REGIONS.map((r) => (
-          <option key={r} value={r}>
-            {regionLabel(r)}
-          </option>
-        ))}
+        <RegionOptions />
       </select>
 
       <label className="mb-1 block text-[11.5px] font-bold tracking-wide text-ink-soft">직종 선택</label>
