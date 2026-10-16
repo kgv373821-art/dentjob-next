@@ -96,7 +96,7 @@ function AdCard({ ad, compact }: { ad: Ad; compact?: boolean }) {
           width={480}
           height={270}
           loading="lazy"
-          className={`w-full object-cover ${compact ? "h-28" : "h-32"}`}
+          className={`w-full ${compact ? "h-auto" : "h-32 object-cover"}`}
         />
       ) : (
         <div
