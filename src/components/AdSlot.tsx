@@ -36,7 +36,7 @@ export default async function AdSlot({
   const compact = isSidebar || !!forceCompact;
 
   return (
-    <div className={`${isSidebar ? "space-y-3" : "grid gap-3 sm:grid-cols-2 lg:grid-cols-3"} ${className || ""}`}>
+    <div className={`${compact ? "space-y-3" : "grid gap-3 sm:grid-cols-2 lg:grid-cols-3"} ${className || ""}`}>
       {ads.map((ad) => (
         <AdCard key={ad.id} ad={ad} compact={compact} />
       ))}
@@ -96,7 +96,7 @@ function AdCard({ ad, compact }: { ad: Ad; compact?: boolean }) {
           width={480}
           height={270}
           loading="lazy"
-          className={`w-full object-cover ${compact ? "h-14" : "h-32"}`}
+          className={`w-full object-cover ${compact ? "h-28" : "h-32"}`}
         />
       ) : (
         <div
