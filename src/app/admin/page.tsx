@@ -34,6 +34,7 @@ export default async function AdminPage() {
       <div className="mb-5 flex items-center justify-between border-b-2 border-ink pb-2.5">
         <h1 className="text-[21px] font-extrabold">관리자</h1>
         <nav className="flex gap-4 text-[13px] font-bold text-teal">
+          <Link href="/admin/members">회원 관리</Link>
           <Link href="/admin/reports">신고 관리</Link>
           <Link href="/admin/notices">공지사항</Link>
           <Link href="/admin/sms">문자 발송</Link>
