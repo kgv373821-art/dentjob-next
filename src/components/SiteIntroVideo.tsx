@@ -12,10 +12,10 @@ export default function SiteIntroVideo() {
           controls
           playsInline
           preload="metadata"
-          poster="/dentjob-intro-poster.jpg"
+          poster="/dentjob-intro-poster.jpg?v=20261021"
           className="mx-auto aspect-[9/16] w-full max-w-[200px] rounded-md border border-line/60 bg-black object-cover shadow"
         >
-          <source src="/dentjob-intro.mp4" type="video/mp4" />
+          <source src="/dentjob-intro.mp4?v=20261021" type="video/mp4" />
         </video>
       </div>
     </div>
