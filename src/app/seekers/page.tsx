@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import SeekerCard from "@/components/SeekerCard";
-import { maskName } from "@/lib/constants";
 import { getMyFavoriteIds } from "@/lib/actions/favorites";
 import type { Seeker } from "@/lib/types";
 
@@ -36,10 +35,13 @@ export default async function SeekersPage() {
     );
   }
 
-  const [{ data }, favoriteIds] = await Promise.all([
-    supabase.from("seekers").select("*, profiles(name)").order("updated_at", { ascending: false }).limit(40),
+  const [{ data }, { data: names }, favoriteIds] = await Promise.all([
+    supabase.from("seekers").select("*").order("updated_at", { ascending: false }).limit(40),
+    supabase.rpc("seeker_masked_names"),
     getMyFavoriteIds("seeker"),
   ]);
+  // 사업자는 구직자 실명을 직접 읽을 수 없어서(지원·제안 수락 전), 가린 이름만 따로 받아옵니다.
+  const maskedName = new Map(((names || []) as { seeker_id: string; masked_name: string }[]).map((n) => [n.seeker_id, n.masked_name]));
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-9">
@@ -47,11 +49,11 @@ export default async function SeekersPage() {
         <h1 className="text-[21px] font-extrabold tracking-tight">전체 구직자</h1>
       </div>
       <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
-        {((data || []) as (Seeker & { profiles: { name: string } })[]).map((s) => (
+        {((data || []) as Seeker[]).map((s) => (
           <SeekerCard
             key={s.id}
             seeker={s}
-            name={maskName(s.profiles?.name || "")}
+            name={maskedName.get(s.id) || "구직자"}
             isLoggedIn={!!user}
             isFavorited={favoriteIds.includes(s.id)}
           />

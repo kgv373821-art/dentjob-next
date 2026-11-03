@@ -15,6 +15,17 @@ export default async function Header() {
     role = profile?.role ?? null;
   }
 
+  // 구직자에게 답을 기다리는 면접 제안이 있으면 마이페이지 버튼에 숫자로 알려줌
+  let pendingOffers = 0;
+  if (user && role === "seeker") {
+    const { count } = await supabase
+      .from("job_offers")
+      .select("id, seekers!inner(user_id)", { count: "exact", head: true })
+      .eq("status", "pending")
+      .eq("seekers.user_id", user.id);
+    pendingOffers = count ?? 0;
+  }
+
   const dashboardHref =
     role === "clinic" ? "/dashboard/clinic" : role === "lab" ? "/dashboard/lab" : role === "admin" ? "/admin" : "/dashboard/seeker";
 
@@ -61,6 +72,11 @@ export default async function Header() {
               </Link>
               <Link href={dashboardHref} className="rounded-sm border border-teal px-4 py-2 font-bold text-teal hover:bg-teal-tint">
                 마이페이지
+                {pendingOffers > 0 && (
+                  <span className="ml-1.5 rounded-full bg-coral px-1.5 py-0.5 text-[10.5px] text-white" title="새 면접 제안">
+                    제안 {pendingOffers}
+                  </span>
+                )}
               </Link>
               <form action={signOut}>
                 <button className="rounded-sm border border-line px-4 py-2 font-bold text-ink-soft hover:bg-paper-dim">

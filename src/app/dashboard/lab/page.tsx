@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { deleteJobPost, closeJobPost } from "@/lib/actions/jobs";
 import { LAB_JOB_CATEGORIES } from "@/lib/constants";
 import ExpiryCell from "@/components/ExpiryCell";
+import SentOffers from "@/components/SentOffers";
 
 export default async function LabDashboard() {
   const supabase = await createClient();
@@ -86,6 +87,7 @@ export default async function LabDashboard() {
           </div>
         );
       })}
+      <SentOffers />
     </div>
   );
 }

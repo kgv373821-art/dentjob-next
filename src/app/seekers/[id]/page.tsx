@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { maskName } from "@/lib/constants";
+import OfferForm from "@/components/OfferForm";
 
 export default async function SeekerDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -29,10 +29,13 @@ export default async function SeekerDetailPage({ params }: { params: Promise<{ i
     );
   }
 
-  const { data: seeker } = await supabase.from("seekers").select("*, profiles(name)").eq("id", id).single();
+  const [{ data: seeker }, { data: names }] = await Promise.all([
+    supabase.from("seekers").select("*").eq("id", id).single(),
+    supabase.rpc("seeker_masked_names"),
+  ]);
   if (!seeker) notFound();
 
-  const name = maskName((seeker as unknown as { profiles?: { name: string } }).profiles?.name || "");
+  const name = ((names || []) as { seeker_id: string; masked_name: string }[]).find((n) => n.seeker_id === id)?.masked_name || "구직자";
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-10">
@@ -87,6 +90,65 @@ export default async function SeekerDetailPage({ params }: { params: Promise<{ i
           )}
         </div>
       </div>
+
+      {(role === "clinic" || role === "lab") && user && <OfferBox seekerId={id} userId={user.id} role={role} />}
+    </div>
+  );
+}
+
+async function OfferBox({ seekerId, userId, role }: { seekerId: string; userId: string; role: "clinic" | "lab" }) {
+  const supabase = await createClient();
+  const [{ data: org }, { data: me }, { data: offers }] = await Promise.all([
+    role === "clinic"
+      ? supabase.from("clinics").select("id, name:clinic_name").eq("user_id", userId).maybeSingle()
+      : supabase.from("labs").select("id, name:lab_name").eq("user_id", userId).maybeSingle(),
+    supabase.from("profiles").select("phone").eq("id", userId).single(),
+    supabase.from("job_offers").select("status, created_at").eq("seeker_id", seekerId).eq("sender_id", userId).order("created_at", { ascending: false }).limit(1),
+  ]);
+
+  const { data: jobs } = org
+    ? await supabase
+        .from("job_posts")
+        .select("id, title")
+        .eq(role === "clinic" ? "clinic_id" : "lab_id", org.id)
+        .eq("status", "approved")
+        .order("created_at", { ascending: false })
+    : { data: [] };
+
+  const last = offers?.[0];
+  const dashboard = `/dashboard/${role}`;
+
+  return (
+    <div className="mt-5 rounded border border-line bg-white p-5">
+      <h2 className="mb-1 text-[16px] font-extrabold">면접 제안하기</h2>
+      <p className="mb-3.5 text-[12.5px] leading-relaxed text-ink-soft">
+        구직자에게 제안이 전달되고, 구직자가 <b>수락하면</b> 실명과 연락처가 공개됩니다. 거절하면 연락처는 공개되지 않습니다.
+      </p>
+
+      {!org ? (
+        <p className="text-[13px] text-ink-soft">업체 정보가 없어 제안할 수 없습니다. 마이페이지에서 업체 정보를 먼저 등록해주세요.</p>
+      ) : last?.status === "pending" ? (
+        <p className="rounded-sm bg-paper p-3 text-[13px] font-semibold">
+          이미 보낸 제안이 답을 기다리고 있습니다.{" "}
+          <Link href={dashboard} className="text-teal underline">
+            보낸 제안 보기
+          </Link>
+        </p>
+      ) : last?.status === "accepted" ? (
+        <p className="rounded-sm bg-teal-tint p-3 text-[13px] font-semibold text-teal">
+          구직자가 제안을 수락했습니다.{" "}
+          <Link href={dashboard} className="underline">
+            마이페이지에서 연락처 확인하기
+          </Link>
+        </p>
+      ) : (
+        <>
+          {last?.status === "declined" && (
+            <p className="mb-3 text-[12.5px] text-ink-soft">지난번 제안은 구직자가 거절했습니다. 다시 제안할 수 있습니다.</p>
+          )}
+          <OfferForm seekerId={seekerId} orgName={org.name} defaultPhone={me?.phone || ""} jobs={jobs || []} />
+        </>
+      )}
     </div>
   );
 }

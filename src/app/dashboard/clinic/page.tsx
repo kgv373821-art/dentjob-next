@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { deleteJobPost, closeJobPost } from "@/lib/actions/jobs";
 import ExpiryCell from "@/components/ExpiryCell";
+import SentOffers from "@/components/SentOffers";
 
 export default async function ClinicDashboard() {
   const supabase = await createClient();
@@ -89,6 +90,7 @@ export default async function ClinicDashboard() {
         </tbody>
       </table>
       {(!jobs || jobs.length === 0) && <p className="py-12 text-center text-ink-soft">등록한 공고가 없습니다.</p>}
+      <SentOffers />
     </div>
   );
 }
