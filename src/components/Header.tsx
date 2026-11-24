@@ -26,6 +26,17 @@ export default async function Header() {
     pendingOffers = count ?? 0;
   }
 
+  // 읽지 않은 운영자 메시지 (모든 회원)
+  let unreadMessages = 0;
+  if (user) {
+    const { count } = await supabase
+      .from("member_messages")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .is("read_at", null);
+    unreadMessages = count ?? 0;
+  }
+
   const dashboardHref =
     role === "clinic" ? "/dashboard/clinic" : role === "lab" ? "/dashboard/lab" : role === "admin" ? "/admin" : "/dashboard/seeker";
 
@@ -75,6 +86,11 @@ export default async function Header() {
                 {pendingOffers > 0 && (
                   <span className="ml-1.5 rounded-full bg-coral px-1.5 py-0.5 text-[10.5px] text-white" title="새 면접 제안">
                     제안 {pendingOffers}
+                  </span>
+                )}
+                {unreadMessages > 0 && (
+                  <span className="ml-1.5 rounded-full bg-coral px-1.5 py-0.5 text-[10.5px] text-white" title="운영자 메시지">
+                    새 알림
                   </span>
                 )}
               </Link>

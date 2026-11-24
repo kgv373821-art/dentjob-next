@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { regionLabel } from "@/lib/constants";
+import SendMessageForm from "@/components/SendMessageForm";
 
 type Member = {
   id: string;
@@ -139,6 +140,8 @@ export default async function AdminMembersPage({ searchParams }: { searchParams:
               )}
               {m.role === "seeker" && <span className="text-ink-soft">지원 {m.application_count}건</span>}
             </div>
+
+            {m.role !== "admin" && <SendMessageForm userId={m.id} name={m.name || "회원"} />}
 
             {m.role === "seeker" &&
               (m.seeker_id ? (

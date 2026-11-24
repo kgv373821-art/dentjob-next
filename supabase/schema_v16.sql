@@ -1,0 +1,1 @@
+-- v16: 운영자 메시지(member_messages) — 실제 적용은 Supabase 마이그레이션 member_messages (2026-11-25)

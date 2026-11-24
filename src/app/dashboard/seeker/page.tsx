@@ -4,6 +4,7 @@ import ResumeForm from "@/components/ResumeForm";
 import { openConversation } from "@/lib/actions/chat";
 import { withdrawApplication } from "@/lib/actions/applications";
 import ReceivedOffers from "@/components/ReceivedOffers";
+import MemberMessages from "@/components/MemberMessages";
 
 const STATUS_LABEL: Record<string, string> = {
   applied: "지원접수",
@@ -40,6 +41,7 @@ export default async function SeekerDashboard() {
     <div className="mx-auto max-w-4xl px-6 py-9">
       <h1 className="mb-5 border-b-2 border-ink pb-2.5 text-[21px] font-extrabold">내 이력서 · 지원 현황</h1>
 
+      <MemberMessages />
       <ReceivedOffers seekerId={seeker.id} />
 
       <div className="grid gap-8 md:grid-cols-2">

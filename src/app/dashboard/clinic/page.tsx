@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { deleteJobPost, closeJobPost } from "@/lib/actions/jobs";
 import ExpiryCell from "@/components/ExpiryCell";
 import SentOffers from "@/components/SentOffers";
+import MemberMessages from "@/components/MemberMessages";
 
 export default async function ClinicDashboard() {
   const supabase = await createClient();
@@ -29,6 +30,7 @@ export default async function ClinicDashboard() {
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-9">
+      <MemberMessages />
       <div className="mb-5 flex items-center justify-between border-b-2 border-ink pb-2.5">
         <div>
           <h1 className="text-[21px] font-extrabold">{clinic.clinic_name} 대시보드</h1>

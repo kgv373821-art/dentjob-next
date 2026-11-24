@@ -5,6 +5,7 @@ import { deleteJobPost, closeJobPost } from "@/lib/actions/jobs";
 import { LAB_JOB_CATEGORIES } from "@/lib/constants";
 import ExpiryCell from "@/components/ExpiryCell";
 import SentOffers from "@/components/SentOffers";
+import MemberMessages from "@/components/MemberMessages";
 
 export default async function LabDashboard() {
   const supabase = await createClient();
@@ -30,6 +31,7 @@ export default async function LabDashboard() {
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-9">
+      <MemberMessages />
       <div className="mb-5 flex items-center justify-between border-b-2 border-gold pb-2.5">
         <div>
           <h1 className="text-[21px] font-extrabold">{lab.lab_name} 대시보드</h1>
