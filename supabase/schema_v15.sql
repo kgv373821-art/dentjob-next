@@ -1,0 +1,2 @@
+-- v15: 구직자 지원 취소(withdraw_application) / 취소했던 공고 재지원(reapply_application)
+-- 실제 적용은 Supabase 마이그레이션 withdraw_and_reapply_application 으로 함 (2026-11-25)

@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import ResumeForm from "@/components/ResumeForm";
 import { openConversation } from "@/lib/actions/chat";
+import { withdrawApplication } from "@/lib/actions/applications";
 import ReceivedOffers from "@/components/ReceivedOffers";
 
 const STATUS_LABEL: Record<string, string> = {
@@ -62,6 +63,13 @@ export default async function SeekerDashboard() {
                   <span className="rounded-full bg-paper-dim px-2.5 py-0.5 text-[11px] font-bold text-ink-soft">
                     {STATUS_LABEL[a.status] || a.status}
                   </span>
+                  {["applied", "reviewing", "interview"].includes(a.status) && (
+                    <form action={withdrawApplication.bind(null, a.id)}>
+                      <button className="rounded-sm border border-coral px-2.5 py-1 text-[11px] font-bold text-coral hover:bg-paper-dim">
+                        지원 취소
+                      </button>
+                    </form>
+                  )}
                   <form action={openConversation.bind(null, a.id)}>
                     <button className="rounded-sm border border-line px-2.5 py-1 text-[11px] font-bold text-ink-soft hover:border-teal hover:text-teal">
                       채팅

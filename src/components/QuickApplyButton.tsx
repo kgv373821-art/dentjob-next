@@ -18,6 +18,7 @@ export default function QuickApplyButton({ jobPostId }: { jobPostId: string }) {
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
+        if (!window.confirm("이 공고에 지원하시겠습니까?\n내 이력서가 업체에 전달됩니다.")) return;
         startTransition(async () => {
           const fd = new FormData();
           const res = await applyToJob(jobPostId, { error: null }, fd);

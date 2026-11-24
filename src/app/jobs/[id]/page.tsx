@@ -384,7 +384,15 @@ export default async function JobDetailPage({ params }: Props) {
             </div>
           )}
 
-          <ApplyForm jobPostId={job.id} isLoggedIn={!!user} />
+          <ApplyForm
+            jobPostId={job.id}
+            isLoggedIn={!!user}
+            directContact={
+              !job.clinic_id && !job.lab_id
+                ? { phone: job.hr_contact_phone || null, email: job.contact_email || job.application_email || null }
+                : null
+            }
+          />
         </div>
       </div>
     </div>
