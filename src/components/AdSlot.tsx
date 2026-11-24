@@ -96,7 +96,7 @@ function AdCard({ ad, compact }: { ad: Ad; compact?: boolean }) {
           width={480}
           height={270}
           loading="lazy"
-          className={`w-full ${compact ? "h-auto" : "h-32 object-cover"}`}
+          className={`w-full ${compact ? "h-auto" : "aspect-[16/5] bg-white object-contain"}`}
         />
       ) : (
         <div
@@ -107,13 +107,13 @@ function AdCard({ ad, compact }: { ad: Ad; compact?: boolean }) {
         </div>
       )}
       <div className={compact ? "p-1.5" : "p-2.5"}>
-        <div className="mb-0.5 flex items-center gap-1.5">
-          <span className="rounded-sm bg-paper-dim px-1.5 py-0.5 text-[9.5px] font-bold text-ink-soft">
+        <div className="mb-0.5 flex items-start gap-1.5">
+          <span className="mt-0.5 shrink-0 rounded-sm bg-paper-dim px-1.5 py-0.5 text-[9.5px] font-bold text-ink-soft">
             {ad.type === "game" ? "게임" : ad.type === "blog" ? "블로그" : "AD"}
           </span>
-          <span className={`truncate font-bold ${compact ? "text-[12px]" : "text-[13px]"}`}>{ad.title}</span>
+          <span className={`font-bold leading-snug ${compact ? "truncate text-[12px]" : "text-[13px]"}`}>{ad.title}</span>
         </div>
-        {ad.description && !compact && <p className="line-clamp-2 text-[11.5px] text-ink-soft">{ad.description}</p>}
+        {ad.description && !compact && <p className="text-[11.5px] leading-relaxed text-ink-soft">{ad.description}</p>}
       </div>
     </a>
   );
